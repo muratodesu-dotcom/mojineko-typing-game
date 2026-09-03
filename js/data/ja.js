@@ -125,6 +125,62 @@ const JA_SENTENCES = [
   { text: 'スマホばかり見ていないで、たまには外に出ましょう。', reading: 'スマホばかりみていないで、たまにはそとにでましょう。', en: 'Stop staring at your phone all the time and go outside once in a while.', level: 3, tag: 'daily' },
   { text: '家族と過ごす時間は、何よりも大切だと感じています。', reading: 'かぞくとすごすじかんは、なによりもたいせつだとかんじています。', en: 'I feel that time spent with family is more important than anything.', level: 3, tag: 'daily' },
   { text: '一日の終わりに、感謝したことを三つ書き出しています。', reading: 'いちにちのおわりに、かんしゃしたことをみっつかきだしています。', en: 'At the end of each day I write down three things I\'m grateful for.', level: 3, tag: 'daily' },
+
+  // ---- 日常 (daily) 追加 -------------------------------------------
+  { text: '朝ごはんを食べましたか？', reading: 'あさごはんをたべましたか？', en: 'Did you eat breakfast?', level: 1, tag: 'daily' },
+  { text: '今日は少し寒いですね。', reading: 'きょうはすこしさむいですね。', en: 'It\'s a little cold today.', level: 1, tag: 'daily' },
+  { text: '電気を消すのを忘れないでね。', reading: 'でんきをけすのをわすれないでね。', en: 'Don\'t forget to turn off the lights.', level: 1, tag: 'daily' },
+  { text: '鍵をどこに置いたか忘れました。', reading: 'かぎをどこにおいたかわすれました。', en: 'I forgot where I put my keys.', level: 2, tag: 'daily' },
+  { text: '明日の朝、七時に起こしてください。', reading: 'あしたのあさ、しちじにおこしてください。', en: 'Please wake me up at seven tomorrow morning.', level: 2, tag: 'daily' },
+  { text: '洗濯物を干してから出かけます。', reading: 'せんたくものをほしてからでかけます。', en: 'I\'ll hang the laundry before going out.', level: 2, tag: 'daily' },
+  { text: '久しぶりに実家に帰って、ゆっくり休みました。', reading: 'ひさしぶりにじっかにかえって、ゆっくりやすみました。', en: 'I went back to my parents\' home for the first time in a while and rested well.', level: 2, tag: 'daily' },
+  { text: '隣の人が引っ越してきたので、挨拶に行きました。', reading: 'となりのひとがひっこしてきたので、あいさつにいきました。', en: 'New neighbors moved in, so I went to say hello.', level: 2, tag: 'daily' },
+  { text: '週に一度は部屋を片付けるようにしています。', reading: 'しゅうにいちどはへやをかたづけるようにしています。', en: 'I try to tidy my room once a week.', level: 2, tag: 'daily' },
+  { text: '眠れない夜は、温かい牛乳を飲むと落ち着きます。', reading: 'ねむれないよるは、あたたかいぎゅうにゅうをのむとおちつきます。', en: 'On sleepless nights, warm milk calms me down.', level: 3, tag: 'daily' },
+  { text: '小さな習慣の積み重ねが、大きな変化につながります。', reading: 'ちいさなしゅうかんのつみかさねが、おおきなへんかにつながります。', en: 'Small habits piled up lead to big changes.', level: 3, tag: 'daily' },
+  { text: '時間があるときに、昔の写真を整理しようと思っています。', reading: 'じかんがあるときに、むかしのしゃしんをせいりしようとおもっています。', en: 'When I have time, I\'m thinking of organizing old photos.', level: 3, tag: 'daily' },
+
+  // ---- 旅行 (travel) 追加 ------------------------------------------
+  { text: '次の駅で降ります。', reading: 'つぎのえきでおります。', en: 'I\'ll get off at the next station.', level: 1, tag: 'travel' },
+  { text: 'トイレはどこですか？', reading: 'トイレはどこですか？', en: 'Where is the restroom?', level: 1, tag: 'travel' },
+  { text: '写真を撮ってもいいですか？', reading: 'しゃしんをとってもいいですか？', en: 'May I take a photo?', level: 1, tag: 'travel' },
+  { text: 'この近くに安いホテルはありますか。', reading: 'このちかくにやすいホテルはありますか。', en: 'Is there a cheap hotel near here?', level: 2, tag: 'travel' },
+  { text: '終電に間に合うように、早めに店を出ました。', reading: 'しゅうでんにまにあうように、はやめにみせをでました。', en: 'I left the shop early to catch the last train.', level: 2, tag: 'travel' },
+  { text: '沖縄の海は信じられないほど青かったです。', reading: 'おきなわのうみはしんじられないほどあおかったです。', en: 'The sea in Okinawa was unbelievably blue.', level: 2, tag: 'travel' },
+  { text: '旅館の夕食は、地元の食材をたっぷり使っていました。', reading: 'りょかんのゆうしょくは、じもとのしょくざいをたっぷりつかっていました。', en: 'The inn\'s dinner used plenty of local ingredients.', level: 2, tag: 'travel' },
+  { text: 'レンタカーを借りて、海岸沿いをドライブしました。', reading: 'レンタカーをかりて、かいがんぞいをドライブしました。', en: 'I rented a car and drove along the coast.', level: 2, tag: 'travel' },
+  { text: '空港で乗り継ぎに三時間もかかりました。', reading: 'くうこうでのりつぎにさんじかんもかかりました。', en: 'The transfer at the airport took three whole hours.', level: 2, tag: 'travel' },
+  { text: '旅先で出会った人と、今でも連絡を取り合っています。', reading: 'たびさきでであったひとと、いまでもれんらくをとりあっています。', en: 'I still keep in touch with people I met while traveling.', level: 3, tag: 'travel' },
+  { text: '計画を立てすぎない旅のほうが、思いがけない発見があります。', reading: 'けいかくをたてすぎないたびのほうが、おもいがけないはっけんがあります。', en: 'Trips that aren\'t overplanned bring unexpected discoveries.', level: 3, tag: 'travel' },
+  { text: '世界遺産に登録されたお城を、一度は見てみたいです。', reading: 'せかいいさんにとうろくされたおしろを、いちどはみてみたいです。', en: 'I\'d like to see the castle registered as a World Heritage site at least once.', level: 3, tag: 'travel' },
+
+  // ---- 仕事 (work) 追加 --------------------------------------------
+  { text: 'お疲れさまでした。', reading: 'おつかれさまでした。', en: 'Thank you for your hard work.', level: 1, tag: 'work' },
+  { text: '少々お待ちください。', reading: 'しょうしょうおまちください。', en: 'Please wait a moment.', level: 1, tag: 'work' },
+  { text: '来週の予定を確認します。', reading: 'らいしゅうのよていをかくにんします。', en: 'I\'ll check next week\'s schedule.', level: 1, tag: 'work' },
+  { text: '会議室を午後二時から予約しました。', reading: 'かいぎしつをごごにじからよやくしました。', en: 'I booked the meeting room from 2 p.m.', level: 2, tag: 'work' },
+  { text: '新人の研修を担当することになりました。', reading: 'しんじんのけんしゅうをたんとうすることになりました。', en: 'I\'ve been put in charge of training the new employees.', level: 2, tag: 'work' },
+  { text: 'プレゼンの資料を今晩中に仕上げます。', reading: 'プレゼンのしりょうをこんばんじゅうにしあげます。', en: 'I\'ll finish the presentation materials tonight.', level: 2, tag: 'work' },
+  { text: '上司に相談してから、お返事いたします。', reading: 'じょうしにそうだんしてから、おへんじいたします。', en: 'I\'ll reply after consulting my boss.', level: 2, tag: 'work' },
+  { text: '先ほどのメールに資料を添付し忘れました。', reading: 'さきほどのメールにしりょうをてんぷしわすれました。', en: 'I forgot to attach the file to my earlier email.', level: 2, tag: 'work' },
+  { text: '今期の売上目標を達成するために、新しい施策を考えています。', reading: 'こんきのうりあげもくひょうをたっせいするために、あたらしいしさくをかんがえています。', en: 'To reach this quarter\'s sales target, we\'re planning new measures.', level: 3, tag: 'work' },
+  { text: '無理なスケジュールは、結局チーム全体の負担になります。', reading: 'むりなスケジュールは、けっきょくチームぜんたいのふたんになります。', en: 'An unreasonable schedule ends up burdening the whole team.', level: 3, tag: 'work' },
+  { text: '会議では結論を先に言うと、話が伝わりやすくなります。', reading: 'かいぎではけつろんをさきにいうと、はなしがつたわりやすくなります。', en: 'Stating the conclusion first in meetings makes your point clearer.', level: 3, tag: 'work' },
+  { text: '休憩をきちんと取ったほうが、午後の集中力が続きます。', reading: 'きゅうけいをきちんととったほうが、ごごのしゅうちゅうりょくがつづきます。', en: 'Taking proper breaks keeps your concentration going in the afternoon.', level: 3, tag: 'work' },
+
+  // ---- 食べ物 (food) 追加 ------------------------------------------
+  { text: 'お水をもう一杯ください。', reading: 'おみずをもういっぱいください。', en: 'Another glass of water, please.', level: 1, tag: 'food' },
+  { text: 'これは何の料理ですか？', reading: 'これはなんのりょうりですか？', en: 'What dish is this?', level: 1, tag: 'food' },
+  { text: '今日の晩ごはんはカレーです。', reading: 'きょうのばんごはんはカレーです。', en: 'Tonight\'s dinner is curry.', level: 1, tag: 'food' },
+  { text: '焼き魚と白いご飯があれば十分です。', reading: 'やきざかなとしろいごはんがあればじゅうぶんです。', en: 'Grilled fish and white rice are enough for me.', level: 2, tag: 'food' },
+  { text: '駅前のパン屋のクロワッサンが評判です。', reading: 'えきまえのパンやのクロワッサンがひょうばんです。', en: 'The croissants at the bakery by the station are popular.', level: 2, tag: 'food' },
+  { text: 'おでんは寒い日に食べると体が温まります。', reading: 'おでんはさむいひにたべるとからだがあたたまります。', en: 'Oden warms you up on a cold day.', level: 2, tag: 'food' },
+  { text: '初めて自分で餃子を包んでみました。', reading: 'はじめてじぶんでぎょうざをつつんでみました。', en: 'I tried wrapping dumplings myself for the first time.', level: 2, tag: 'food' },
+  { text: '出汁をしっかり取ると、味噌汁の味が変わります。', reading: 'だしをしっかりとると、みそしるのあじがかわります。', en: 'Making proper dashi changes the taste of miso soup.', level: 2, tag: 'food' },
+  { text: '甘いものは別腹だと、つい食べすぎてしまいます。', reading: 'あまいものはべつばらだと、ついたべすぎてしまいます。', en: 'Saying sweets go in a separate stomach, I end up eating too much.', level: 3, tag: 'food' },
+  { text: '家族で鍋を囲む時間が、冬の楽しみの一つです。', reading: 'かぞくでなべをかこむじかんが、ふゆのたのしみのひとつです。', en: 'Gathering around a hot pot with family is one of winter\'s pleasures.', level: 3, tag: 'food' },
+  { text: '野菜を多めに使った料理を、毎日一品は作るようにしています。', reading: 'やさいをおおめにつかったりょうりを、まいにちいっぴんはつくるようにしています。', en: 'I try to make at least one vegetable-heavy dish every day.', level: 3, tag: 'food' },
+  { text: '食べ物を残さないことは、作った人への感謝でもあります。', reading: 'たべものをのこさないことは、つくったひとへのかんしゃでもあります。', en: 'Not leaving food is also a way of thanking the person who made it.', level: 3, tag: 'food' },
 ];
 
 // Warm-up drill items: kana rows and short words.
@@ -164,4 +220,20 @@ const JA_DRILLS = [
   { text: '新聞', reading: 'しんぶん', en: 'newspaper' },
   { text: 'コーヒー', reading: 'コーヒー', en: 'coffee' },
   { text: 'ありがとう', reading: 'ありがとう', en: 'thanks' },
+];
+
+// Curated paragraphs for 段落 mode: coherent 3-sentence passages per theme and level.
+const JA_PARAGRAPHS = [
+  { text: '今日は日曜日です。朝ゆっくり起きて、コーヒーを飲みました。午後は友達と公園を散歩する予定です。', reading: 'きょうはにちようびです。あさゆっくりおきて、コーヒーをのみました。ごごはともだちとこうえんをさんぽするよていです。', en: 'Today is Sunday. I got up late and had coffee. In the afternoon I plan to walk in the park with a friend.', level: 1, tag: 'daily' },
+  { text: '最近、朝の時間の使い方を見直しました。早く起きて三十分だけ読書をすると、一日が落ち着いて始まります。夜はスマホを早めに置いて、眠る準備をしています。', reading: 'さいきん、あさのじかんのつかいかたをみなおしました。はやくおきてさんじゅっぷんだけどくしょをすると、いちにちがおちついてはじまります。よるはスマホをはやめにおいて、ねむるじゅんびをしています。', en: 'Recently I rethought how I use my mornings. Getting up early and reading for just thirty minutes starts the day calmly. At night I put my phone down early and get ready to sleep.', level: 2, tag: 'daily' },
+  { text: '引っ越してから半年が経ち、ようやく新しい街に慣れてきました。近所の商店街には親切な店主が多く、買い物のたびに少し話をします。知らない土地でも、人とのつながりがあれば暮らしは豊かになると感じています。', reading: 'ひっこしてからはんとしがたち、ようやくあたらしいまちになれてきました。きんじょのしょうてんがいにはしんせつなてんしゅがおおく、かいもののたびにすこしはなしをします。しらないとちでも、ひととのつながりがあればくらしはゆたかになるとかんじています。', en: 'Half a year after moving, I have finally gotten used to the new town. The shopping street nearby has many kind shopkeepers, and we chat a little every time I shop. Even in an unfamiliar place, life becomes rich when you have connections with people.', level: 3, tag: 'daily' },
+  { text: '夏休みに沖縄へ行きました。海がとてもきれいでした。毎日泳いで、たくさん写真を撮りました。', reading: 'なつやすみにおきなわへいきました。うみがとてもきれいでした。まいにちおよいで、たくさんしゃしんをとりました。', en: 'I went to Okinawa for summer vacation. The sea was very beautiful. I swam every day and took lots of photos.', level: 1, tag: 'travel' },
+  { text: '京都の旅は二日目が一番楽しかったです。朝早く清水寺に行ったので、人が少なく静かに参拝できました。昼は湯豆腐を食べて、夕方は鴨川のそばを歩きました。', reading: 'きょうとのたびはふつかめがいちばんたのしかったです。あさはやくきよみずでらにいったので、ひとがすくなくしずかにさんぱいできました。ひるはゆどうふをたべて、ゆうがたはかもがわのそばをあるきました。', en: 'The second day of my Kyoto trip was the most fun. I went to Kiyomizu-dera early, so there were few people and I could visit quietly. I had yudofu for lunch and walked along the Kamo River in the evening.', level: 2, tag: 'travel' },
+  { text: '初めての海外一人旅では、言葉の壁に何度も戸惑いました。それでも、地図を指さしながら道を尋ねると、通りすがりの人が親切に案内してくれました。完璧に話せなくても、伝えようとする気持ちがあれば旅は続けられるのだと学びました。', reading: 'はじめてのかいがいひとりたびでは、ことばのかべになんどもとまどいました。それでも、ちずをゆびさしながらみちをたずねると、とおりすがりのひとがしんせつにあんないしてくれました。かんぺきにはなせなくても、つたえようとするきもちがあればたびはつづけられるのだとまなびました。', en: 'On my first solo trip abroad, the language barrier confused me many times. Still, when I asked for directions while pointing at a map, passers-by kindly showed me the way. I learned that even without perfect language, the will to communicate keeps a journey going.', level: 3, tag: 'travel' },
+  { text: '私の会社は九時に始まります。午前中はメールを読んで、午後は会議があります。六時に仕事が終わります。', reading: 'わたしのかいしゃはくじにはじまります。ごぜんちゅうはメールをよんで、ごごはかいぎがあります。ろくじにしごとがおわります。', en: 'My company starts at nine. In the morning I read emails and in the afternoon there are meetings. Work ends at six.', level: 1, tag: 'work' },
+  { text: '今週は新しいプロジェクトの準備で忙しいです。まず、お客様の要望を整理して、チームで役割を決めました。金曜日までに簡単な計画書を作る予定です。', reading: 'こんしゅうはあたらしいプロジェクトのじゅんびでいそがしいです。まず、おきゃくさまのようぼうをせいりして、チームでやくわりをきめました。きんようびまでにかんたんなけいかくしょをつくるよていです。', en: 'This week I am busy preparing a new project. First we organized the client\'s requests and decided roles as a team. We plan to make a simple plan document by Friday.', level: 2, tag: 'work' },
+  { text: '在宅勤務が増えてから、仕事と生活の境目が曖昧になりがちです。そこで、始業と終業の時間を決め、終わったらパソコンを閉じて散歩に出るようにしました。小さな区切りを作るだけで、集中力も気持ちの切り替えも驚くほど良くなりました。', reading: 'ざいたくきんむがふえてから、しごととせいかつのさかいめがあいまいになりがちです。そこで、しぎょうとしゅうぎょうのじかんをきめ、おわったらパソコンをとじてさんぽにでるようにしました。ちいさなくぎりをつくるだけで、しゅうちゅうりょくもきもちのきりかえもおどろくほどよくなりました。', en: 'Since working from home more, the line between work and life tends to blur. So I set start and end times, and when I am done I close the laptop and go for a walk. Just creating small boundaries improved both my focus and my ability to switch off remarkably.', level: 3, tag: 'work' },
+  { text: '今日の昼ごはんはラーメンでした。スープが熱くておいしかったです。デザートにアイスも食べました。', reading: 'きょうのひるごはんはラーメンでした。スープがあつくておいしかったです。デザートにアイスもたべました。', en: 'Today\'s lunch was ramen. The soup was hot and delicious. I also had ice cream for dessert.', level: 1, tag: 'food' },
+  { text: '週末に初めてカレーを一から作ってみました。玉ねぎをゆっくり炒めるのに時間がかかりましたが、甘みが出て味が深くなりました。家族にも好評だったので、また作りたいと思います。', reading: 'しゅうまつにはじめてカレーをいちからつくってみました。たまねぎをゆっくりいためるのにじかんがかかりましたが、あまみがでてあじがふかくなりました。かぞくにもこうひょうだったので、またつくりたいとおもいます。', en: 'On the weekend I tried making curry from scratch for the first time. Slowly frying the onions took time, but it brought out sweetness and deepened the flavor. My family liked it too, so I want to make it again.', level: 2, tag: 'food' },
+  { text: '日本の家庭料理は、季節の食材を無駄なく使う知恵に満ちています。春は山菜、夏はきゅうりやなす、秋はきのこ、冬は根菜と、旬のものを味わうことで自然の移り変わりを感じられます。忙しい毎日でも、一品だけは旬の食材を使うようにすると、食卓が少し豊かになります。', reading: 'にほんのかていりょうりは、きせつのしょくざいをむだなくつかうちえにみちています。はるはさんさい、なつはきゅうりやなす、あきはきのこ、ふゆはこんさいと、しゅんのものをあじわうことでしぜんのうつりかわりをかんじられます。いそがしいまいにちでも、いっぴんだけはしゅんのしょくざいをつかうようにすると、しょくたくがすこしゆたかになります。', en: 'Japanese home cooking is full of wisdom for using seasonal ingredients without waste. Spring wild vegetables, summer cucumbers and eggplant, autumn mushrooms, winter root vegetables: tasting what is in season lets you feel nature\'s changes. Even on busy days, using a seasonal ingredient in just one dish makes the table a little richer.', level: 3, tag: 'food' },
 ];

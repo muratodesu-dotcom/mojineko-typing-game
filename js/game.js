@@ -8,17 +8,45 @@
   const escapeHtml = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const kataToHira = s => s.replace(/[ァ-ヶ]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0x60));
   const isPunct = ch => /[\s、。！？!?.,「」・～\-]/.test(ch);
+  const isKanji = ch => /[一-龯々〆]/.test(ch);
+
+  // Align kanji runs to their readings by anchoring on the kana between them.
+  // Returns [{ t, r? }] segments, or null when the reading cannot be aligned.
+  function alignFurigana(text, reading) {
+    if (!reading || reading === text) return null;
+    const hira = kataToHira(reading);
+    const segs = [];
+    for (const ch of text) {
+      const k = isKanji(ch);
+      const last = segs[segs.length - 1];
+      if (last && last.kanji === k) last.t += ch; else segs.push({ t: ch, kanji: k });
+    }
+    if (!segs.some(s => s.kanji)) return null;
+    const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    let m = null;
+    try { m = hira.match(new RegExp('^' + segs.map(s => s.kanji ? '(.+?)' : esc(kataToHira(s.t))).join('') + '$')); } catch (e) { m = null; }
+    if (!m) return null;
+    let gi = 1;
+    return segs.map(s => s.kanji ? { t: s.t, r: m[gi++] } : { t: s.t });
+  }
 
   // ---------------------------------------------------------------------
   // Static config
   // ---------------------------------------------------------------------
   const LANGS = {
-    ja: { sentences: () => JA_SENTENCES, drills: () => JA_DRILLS, inputs: ['hiragana', 'mixed'] },   // both typed through the IME
-    ko: { sentences: () => KO_SENTENCES, drills: () => KO_DRILLS, inputs: ['jamo', 'direct'] },
+    ja: { sentences: () => JA_SENTENCES, drills: () => JA_DRILLS, paragraphs: () => JA_PARAGRAPHS, inputs: ['hiragana', 'mixed'] },   // both typed through the IME
+    ko: { sentences: () => KO_SENTENCES, drills: () => KO_DRILLS, paragraphs: () => KO_PARAGRAPHS, inputs: ['jamo', 'direct'] },
+    en: { sentences: () => EN_SENTENCES, drills: () => EN_DRILLS, paragraphs: () => EN_PARAGRAPHS, inputs: ['keys'] },
   };
+  const plainUnits = text => [...text].map(ch => ({ text: ch, alts: [ch], canon: ch, typed: '', partial: p => p }));
+  const speedUnitFor = (lang, direct) => (direct ? 'cpm' : lang === 'en' ? 'wpm' : 'kpm');
   const isDirectInput = (lang, input) => lang === 'ja' || input === 'direct';
   const PACKS = ['all', 'daily', 'travel', 'work', 'food', 'weak', 'custom'];
-  const COUNT_MODES = { sprint: null, daily: 10, drill: 15 }; // null = user-selected
+  const FONTS = ['clean', 'round', 'serif', 'pixel', 'system'];
+  const PETS = ['cat', 'dog', 'rabbit', 'bear', 'chick'];
+  const SIZES = ['s', 'm', 'l'];
+  const COUNT_MODES = { sprint: null, daily: 10, drill: 15, paragraph: 3 }; // null = user-selected
+  const PARAGRAPH_SENTENCES = 4;
 
   const RANKS = [
     { r: 'S', min: 8000 }, { r: 'A', min: 5500 }, { r: 'B', min: 3500 },
@@ -38,6 +66,8 @@
     { id: 'games10', ico: '🎮', test: (r, s) => s.stats.games >= 10 },
     { id: 'games50', ico: '🏅', test: (r, s) => s.stats.games >= 50 },
     { id: 'bilingual', ico: '🌏', test: (r, s) => s.stats.langs.ja > 0 && s.stats.langs.ko > 0 },
+    { id: 'trilingual', ico: '🌐', test: (r, s) => s.stats.langs.ja > 0 && s.stats.langs.ko > 0 && (s.stats.langs.en || 0) > 0 },
+    { id: 'lucky', ico: '🍀', test: r => r.lucky },
     { id: 'streak3', ico: '📅', test: (r, s) => s.streak.count >= 3 },
     { id: 'streak7', ico: '🗓️', test: (r, s) => s.streak.count >= 7 },
     { id: 'chars10k', ico: '📚', test: (r, s) => s.stats.chars >= 10000 },
@@ -47,6 +77,7 @@
     { id: 'dailyOne', ico: '📆', test: r => r.mode === 'daily' && r.sentences >= 10 },
     { id: 'drillOne', ico: '🧘', test: r => r.mode === 'drill' && r.sentences >= 15 },
     { id: 'revenge', ico: '⚔️', test: r => r.pack === 'weak' && r.sentences >= 3 },
+    { id: 'paragraph', ico: '📜', test: r => r.mode === 'paragraph' && r.sentences >= 3 },
     // Difficulty-based
     { id: 'easyClear', ico: '🌱', test: r => r.level === '1' && r.sentences >= 3 },
     { id: 'normalClear', ico: '🌿', test: r => r.level === '2' && r.sentences >= 3 },
@@ -69,6 +100,7 @@
     moon: '<svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>',
     soundOn: '<svg viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4zM15.5 8.5a5 5 0 0 1 0 7M19 5.5a9 9 0 0 1 0 13"/></svg>',
     soundOff: '<svg viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4zM22 9l-6 6M16 9l6 6"/></svg>',
+    gear: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>',
   };
 
   // ---------------------------------------------------------------------
@@ -81,7 +113,7 @@
   const G = {
     active: false, phase: 'idle', // idle | countdown | play | done
     lang: 'ja', input: 'hiragana', direct: true, mode: 'time', duration: 60, count: 10, level: 'mixed', pack: 'all',
-    pool: [], poolIdx: 0, sentence: null, target: '', units: [], uIdx: 0, buf: '', err: '',
+    pool: [], poolIdx: 0, sentence: null, target: '', units: [], uIdx: 0, buf: '', err: '', furi: null,
     startAt: 0, elapsed: 0, raf: 0, timer: 0, timeline: [], ghost: null,
     score: 0, combo: 0, maxCombo: 0, hits: 0, misses: 0, keys: 0, chars: 0,
     sentences: 0, perfect: 0, sentenceMisses: 0, levelSentences: { 1: 0, 2: 0, 3: 0 }, roundMisses: {},
@@ -93,12 +125,15 @@
     screens: { home: $('#screen-home'), play: $('#screen-play'), result: $('#screen-result') },
     inputLabel: $('#input-label'), inputChips: $('#input-chips'), inputHint: $('#input-hint'), modeHint: $('#mode-hint'),
     fieldDuration: $('#field-duration'), fieldSprint: $('#field-sprint'), fieldPack: $('#field-pack'), fieldLevel: $('#field-level'),
+    fontChips: $('#font-chips'), sizeChips: $('#size-chips'), petChips: $('#pet-chips'),
+    cheerHome: $('#cheer-home-text'), cheerResult: $('#cheer-result-text'),
     packChips: $('#pack-chips'), packHint: $('#pack-hint'), customEditor: $('#custom-editor'), customText: $('#custom-text'), customHelp: $('#custom-help'), btnCustomSave: $('#btn-custom-save'),
     toggleGuide: $('#toggle-guide'), toggleKeyboard: $('#toggle-keyboard'), toggleStrict: $('#toggle-strict'), toggleFurigana: $('#toggle-furigana'), toggleHideInput: $('#toggle-hide-input'),
     optGuide: $('#opt-guide'), optKeyboard: $('#opt-keyboard'), optStrict: $('#opt-strict'), optFurigana: $('#opt-furigana'), optHideInput: $('#opt-hide-input'), optTranslation: $('#opt-translation'), optVolume: $('#opt-volume'),
     btnStart: $('#btn-start'), btnRetry: $('#btn-retry'), btnHome: $('#btn-home'), btnReset: $('#btn-reset'), btnShare: $('#btn-share'),
     btnExport: $('#btn-export'), btnImport: $('#btn-import'), importFile: $('#import-file'),
-    btnSound: $('#btn-sound'), btnTheme: $('#btn-theme'),
+    btnSound: $('#btn-sound'), btnTheme: $('#btn-theme'), btnSettings: $('#btn-settings'), btnSettingsClose: $('#btn-settings-close'), settingsModal: $('#settings-modal'),
+    sideTabs: $('#side-tabs'),
     goals: $('#goals'), mascotHome: $('#mascot-home'), mascotPlay: $('#mascot-play'), mascotPreview: $('#mascot-preview'), mascotNext: $('#mascot-next'),
     homeStats: $('#home-stats'), homeBoard: $('#home-board'), boardLabel: $('#board-label'), achGrid: $('#ach-grid'), achCount: $('#ach-count'),
     historyChart: $('#history-chart'), historyList: $('#history-list'), historyLabel: $('#history-label'), dailyList: $('#daily-list'), dailyLabel: $('#daily-label'),
@@ -130,15 +165,22 @@
     el.btnTheme.innerHTML = th === 'dark' ? ICONS.sun : ICONS.moon;
     el.btnTheme.title = t('theme');
   }
+  function applyDisplay() {
+    el.root.dataset.font = set.font;
+    el.root.dataset.size = set.textSize;
+  }
   function applyI18n() {
     el.root.dataset.lang = set.lang;
     el.root.lang = set.lang;
+    applyDisplay();
     $$('[data-t]').forEach(n => { n.textContent = t(n.dataset.t); });
     el.playHint.innerHTML = t('quitHint').replace('Esc', '<kbd>Esc</kbd>');
     el.newRecord.textContent = t('newRecord');
     el.btnSound.innerHTML = set.sound ? ICONS.soundOn : ICONS.soundOff;
     el.btnSound.title = t('sound');
     el.customHelp.textContent = t('customHelp');
+    el.btnSettings.innerHTML = ICONS.gear;
+    el.btnSettings.title = t('settingsTitle');
     applyTheme();
   }
 
@@ -230,7 +272,26 @@
       const f = list.filter(s => s.level === +level);
       if (f.length >= 5) list = f;
     }
-    return shuffle(list.length ? list : all, rnd);
+    const pool = shuffle(list.length ? list : all, rnd);
+    if (mode !== 'paragraph') return pool;
+    // Paragraph mode: curated passages first (matching theme and difficulty), then joined sentences to fill up.
+    const paras = [];
+    if (pack !== 'custom' && pack !== 'weak') {
+      let curated = LANGS[lang].paragraphs().filter(p => pack === 'all' || p.tag === pack);
+      if (level !== 'mixed') curated = curated.filter(p => p.level === +level);
+      paras.push(...shuffle(curated, rnd).slice(0, COUNT_MODES.paragraph).map(p => ({ ...p, parts: [p.level, p.level, p.level] })));
+    }
+    const joiner = lang === 'ja' ? '' : ' ';
+    for (let i = 0; i + 1 < pool.length && paras.length < COUNT_MODES.paragraph; i += PARAGRAPH_SENTENCES) {
+      const group = pool.slice(i, i + PARAGRAPH_SENTENCES);
+      paras.push({
+        text: group.map(s => s.text).join(joiner),
+        reading: lang === 'ja' ? group.map(s => s.reading || s.text).join(joiner) : undefined,
+        en: group.map(s => s.en).join(' '),
+        level: 'para', parts: group.map(s => s.level), tag: 'paragraph',
+      });
+    }
+    return paras;
   }
 
   // ---------------------------------------------------------------------
@@ -244,18 +305,19 @@
     if (!inputs.includes(set.input[set.lang])) set.input[set.lang] = inputs[0];
     const names = t('inputs')[set.lang];
     el.inputLabel.textContent = set.lang === 'ja' ? t('script') : t('inputMethod');
+    el.inputChips.parentElement.hidden = set.lang === 'en';
     el.inputChips.innerHTML = inputs.map(id =>
       `<button class="chip${id === set.input[set.lang] ? ' active' : ''}" data-input="${id}">${names[id].name}</button>`).join('');
     el.inputHint.textContent = names[set.input[set.lang]].hint;
 
     $$('#mode-chips .chip').forEach(b => b.classList.toggle('active', b.dataset.mode === set.mode));
-    el.modeHint.textContent = t({ time: 'modeHintTime', sprint: 'modeHintSprint', daily: 'modeHintDaily', drill: 'modeHintDrill' }[set.mode]);
+    el.modeHint.textContent = t({ time: 'modeHintTime', sprint: 'modeHintSprint', daily: 'modeHintDaily', drill: 'modeHintDrill', paragraph: 'modeHintParagraph' }[set.mode]);
     $$('#duration-chips .chip').forEach(b => b.classList.toggle('active', +b.dataset.duration === set.duration));
     $$('#sprint-chips .chip').forEach(b => b.classList.toggle('active', +b.dataset.sprint === set.sprintCount));
     $$('#level-chips .chip').forEach(b => b.classList.toggle('active', b.dataset.level === String(set.level)));
     el.fieldDuration.hidden = set.mode !== 'time';
     el.fieldSprint.hidden = set.mode !== 'sprint';
-    const freeMode = set.mode === 'time' || set.mode === 'sprint';
+    const freeMode = set.mode === 'time' || set.mode === 'sprint' || set.mode === 'paragraph';
     el.fieldPack.hidden = !freeMode;
     el.fieldLevel.hidden = !freeMode || set.pack === 'custom';
 
@@ -265,11 +327,19 @@
     el.customEditor.hidden = set.pack !== 'custom';
     if (set.pack === 'custom') {
       el.customText.value = (S.custom[set.lang] || []).map(c => c.reading ? `${c.text}｜${c.reading}` : c.text).join('\n');
-      el.customText.placeholder = set.lang === 'ja' ? '今日はいい天気ですね。｜きょうはいいてんきですね。' : '오늘 날씨가 좋네요.';
+      el.customText.placeholder = set.lang === 'ja' ? '今日はいい天気ですね。｜きょうはいいてんきですね。' : set.lang === 'ko' ? '오늘 날씨가 좋네요.' : 'The weather is nice today.';
     }
 
+    const previewFonts = {
+      clean: "'Noto Sans JP', 'Noto Sans KR', sans-serif", round: "'Zen Maru Gothic', 'Gowun Dodum', sans-serif", serif: "'Noto Serif JP', 'Noto Serif KR', serif",
+      pixel: "'Galmuri11', 'DotGothic16', monospace", system: 'system-ui, sans-serif',
+    };
+    el.petChips.innerHTML = PETS.map(p => `<button class="chip${p === set.pet ? ' active' : ''}" data-pet="${p}">${Sprite.pet(p, 'idle', 2, currentLook())}${t('pets')[p]}</button>`).join('');
+    el.fontChips.innerHTML = FONTS.map(f => `<button class="chip${f === set.font ? ' active' : ''}" data-font="${f}" style="font-family:${previewFonts[f]}">${t('fonts')[f]}</button>`).join('');
+    el.sizeChips.innerHTML = SIZES.map(z => `<button class="chip${z === set.textSize ? ' active' : ''}" data-size="${z}">${t('sizes')[z]}</button>`).join('');
+
     const builtin = !isDirectInput(set.lang, set.input[set.lang]);
-    el.toggleGuide.hidden = !builtin;
+    el.toggleGuide.hidden = !builtin || set.lang === 'en';
     el.toggleKeyboard.hidden = !builtin;
     el.toggleStrict.hidden = !builtin;
     el.toggleFurigana.hidden = !(set.lang === 'ja' && set.input[set.lang] === 'mixed');
@@ -284,6 +354,9 @@
     Sfx.setEnabled(set.sound);
     Sfx.setVolume(set.volume / 100);
 
+    $$('#side-tabs .chip').forEach(b => b.classList.toggle('active', b.dataset.tab === set.sideTab));
+    $$('.side-panel').forEach(p => { p.hidden = p.dataset.panel !== set.sideTab; });
+
     renderTopbar();
     renderStats();
     renderHistory();
@@ -293,7 +366,33 @@
     renderAchievements();
     renderMascotPanel();
     setMascot(el.mascotHome, 'idle');
+    showCheer(el.cheerHome);
   }
+
+  // Encouragement from ムラト: random line, rank-aware on the result screen.
+  function timeOfDay() {
+    const h = new Date().getHours();
+    if (h >= 5 && h < 11) return 'morning';
+    if (h >= 18 && h < 23) return 'evening';
+    if (h >= 23 || h < 4) return 'night';
+    return null;
+  }
+  function showCheer(node, rank) {
+    const lines = t('cheers');
+    let text = lines[Math.floor(Math.random() * lines.length)];
+    const tod = timeOfDay();
+    if (tod && Math.random() < 0.5) { const tl = t('cheerTime')[tod]; text = tl[Math.floor(Math.random() * tl.length)]; }
+    if (rank) {
+      const byRank = t('cheerRank');
+      text = 'SA'.includes(rank) ? byRank.high : 'BC'.includes(rank) ? byRank.mid : byRank.low;
+      if (Math.random() < 0.5) text = lines[Math.floor(Math.random() * lines.length)];
+    }
+    node.textContent = text;
+    node.style.animation = 'none';
+    void node.offsetWidth;
+    node.style.animation = '';
+  }
+  setInterval(() => { if (el.screens.home.classList.contains('active') && !el.settingsModal.open) showCheer(el.cheerHome); }, 15000);
 
   function renderTopbar() {
     el.streak.textContent = currentStreak();
@@ -319,7 +418,7 @@
       statCard(t('timePlayed'), mins < 60 ? fmt(mins) : (st.seconds / 3600).toFixed(1), mins < 60 ? t('min') : t('hour')),
       statCard(t('xp'), fmt(st.xp)),
       statCard(t('bestStreak'), fmt(S.streak.best), t('days')),
-      statCard(t('pets'), fmt(st.pets || 0)),
+      statCard(t('petsStat'), fmt(st.pets || 0)),
     ].join('');
   }
 
@@ -336,7 +435,7 @@
     const W = 300, H = 90, padL = 28, padB = 14, padT = 6;
     const max = Math.max(...rows.map(r => r.speed), 1);
     const slot = (W - padL) / 20, bw = Math.max(4, slot - 2);
-    const unit = t(rows[0].speedUnit || (isDirectInput(set.lang, input) ? 'cpm' : 'kpm'));
+    const unit = t(rows[0].speedUnit || speedUnitFor(set.lang, isDirectInput(set.lang, input)));
     const bars = rows.map((r, i) => {
       const h = Math.max(2, ((H - padB - padT) * r.speed) / max);
       const x = padL + i * slot, y = H - padB - h;
@@ -421,7 +520,9 @@
   const currentLook = () => Sprite.lookFor(levelFromXp(S.stats.xp));
   function setMascot(node, frame) {
     if (!node) return;
-    node.innerHTML = Sprite.cat(frame, node === el.mascotPlay ? 4 : 5, currentLook());
+    const zzz = node.querySelector('.zzz');
+    node.innerHTML = Sprite.pet(set.pet, frame, node === el.mascotPlay ? 4 : 5, currentLook());
+    if (zzz && frame === 'sleep') node.appendChild(zzz);
   }
   function renderMascotPanel() {
     setMascot(el.mascotPreview, 'idle');
@@ -438,6 +539,36 @@
     node.classList.add(frame);
     mascotTimer = setTimeout(() => { setMascot(node, 'idle'); node.classList.remove('happy', 'sad'); }, ms);
   }
+  // Sleepy pet: doze off after a minute without input on the menu, wake with a stretch.
+  const IDLE_MS = 60000;
+  let idleTimer = 0, asleep = false;
+  function sleepPet() {
+    if (!el.screens.home.classList.contains('active') || el.settingsModal.open || asleep) return;
+    asleep = true;
+    setMascot(el.mascotHome, 'sleep');
+    el.mascotHome.classList.remove('wake', 'pet', 'happy', 'sad');
+    el.mascotHome.classList.add('sleep');
+    const z = document.createElement('div');
+    z.className = 'zzz';
+    z.innerHTML = Sprite.zzz(2);
+    el.mascotHome.appendChild(z);
+  }
+  function wakePet() {
+    if (!asleep) return;
+    asleep = false;
+    el.mascotHome.classList.remove('sleep');
+    setMascot(el.mascotHome, 'idle');
+    el.mascotHome.classList.add('wake');
+    setTimeout(() => el.mascotHome.classList.remove('wake'), 650);
+  }
+  function resetIdle() {
+    wakePet();
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(sleepPet, IDLE_MS);
+  }
+  ['mousemove', 'mousedown', 'keydown', 'touchstart', 'wheel'].forEach(ev => document.addEventListener(ev, resetIdle, { passive: true }));
+  resetIdle();
+
   const petTimers = new Map();
   function petCat(node) {
     Sfx.unlock();
@@ -486,7 +617,7 @@
     const input = set.input[set.lang];
     const mode = set.mode;
     const count = countFor(mode, set.sprintCount);
-    const free = mode === 'time' || mode === 'sprint';
+    const free = mode === 'time' || mode === 'sprint' || mode === 'paragraph';
     Object.assign(G, {
       active: true, phase: 'countdown',
       lang: set.lang, input, direct: isDirectInput(set.lang, input),
@@ -502,8 +633,8 @@
     G.pool = buildPool(G.lang, G.input, mode, G.level, G.pack, rnd);
     G.ghost = S.ghosts[boardKeyFor(G.lang, G.input, G.mode, G.duration, G.count)] || null;
 
-    el.hudSpeedLabel.textContent = t(G.direct ? 'cpm' : 'kpm');
-    el.hudTimeLabel.textContent = G.mode === 'time' ? t('hudTime') : G.mode === 'drill' ? t('hudItems') : t('hudSentences');
+    el.hudSpeedLabel.textContent = t(speedUnitFor(G.lang, G.direct));
+    el.hudTimeLabel.textContent = G.mode === 'time' ? t('hudTime') : G.mode === 'drill' ? t('hudItems') : G.mode === 'paragraph' ? t('hudParagraphs') : t('hudSentences');
     el.hudGhostBox.hidden = !G.ghost;
     el.hudGhost.textContent = '±0';
     el.hudGhost.className = 'hud-value';
@@ -576,9 +707,15 @@
         el.ghostMarker.style.left = `${clamp((gs / finalBest) * 100, 0, 100)}%`;
       }
     }
-    const mins = Math.max(G.elapsed, 1) / 60;
-    el.hudSpeed.textContent = Math.round((G.direct ? G.chars : G.keys) / mins);
+    el.hudSpeed.textContent = speedNow();
     G.raf = requestAnimationFrame(tick);
+  }
+
+  function speedNow() {
+    const mins = Math.max(G.elapsed, 1) / 60;
+    if (G.direct) return Math.round(G.chars / mins);
+    if (G.lang === 'en') return Math.round(G.keys / 5 / mins);
+    return Math.round(G.keys / mins);
   }
 
   function quitGame() {
@@ -609,10 +746,16 @@
 
     if (G.lang === 'ja') G.target = G.input === 'hiragana' ? kataToHira(G.sentence.reading || G.sentence.text) : G.sentence.text;
     else G.target = G.sentence.text;
-    G.units = G.direct ? [] : Hangul.buildUnits(G.target);
+    G.units = G.direct ? [] : G.lang === 'en' ? plainUnits(G.target) : Hangul.buildUnits(G.target);
 
-    el.reading.textContent = (G.lang === 'ja' && G.input === 'mixed' && set.furigana && G.sentence.reading && G.sentence.reading !== G.sentence.text) ? kataToHira(G.sentence.reading) : '';
-    el.en.textContent = set.translation ? (G.sentence.en || '') : '';
+    G.furi = (G.lang === 'ja' && G.input === 'mixed' && set.furigana) ? alignFurigana(G.sentence.text, G.sentence.reading) : null;
+    el.reading.textContent = '';
+    el.en.textContent = set.translation && G.mode !== 'paragraph' ? (G.sentence.en || '') : '';
+    el.main.classList.remove('swap');
+    void el.main.offsetWidth;
+    el.main.classList.add('swap');
+    el.main.classList.toggle('long', G.target.length > 60);
+    el.main.classList.toggle('furi', !!G.furi);
     renderSentence();
     renderDots();
   }
@@ -636,7 +779,7 @@
       return unitSpan(i < cur ? 'done' : i === cur ? 'cur' : 'pend', u.text);
     }).join('');
 
-    if (set.guide) {
+    if (set.guide && G.lang !== 'en') {
       el.guide.innerHTML = G.units.map((u, i) => {
         if (u.text === ' ') return '<span class="g sp"></span>';
         if (i < cur) return `<span class="g done">${escapeHtml(u.typed)}</span>`;
@@ -718,16 +861,37 @@
     const composing = G.ime.composing;
     let html = '';
     let mismatch = false;
-    for (let i = 0; i < target.length; i++) {
+    const charSpan = i => {
       const ch = target[i];
       if (i < typed.length) {
-        if (!mismatch && typed[i] === ch) html += unitSpan('done', ch);
-        else { mismatch = true; html += unitSpan(composing ? 'comp' : 'bad', ch); }
-      } else html += unitSpan(i === typed.length ? 'cur' : 'pend', ch);
+        if (!mismatch && typed[i] === ch) return unitSpan('done', ch);
+        mismatch = true;
+        return unitSpan(composing ? 'comp' : 'bad', ch);
+      }
+      return unitSpan(i === typed.length ? 'cur' : 'pend', ch);
+    };
+    if (G.furi) {
+      let i = 0;
+      for (const seg of G.furi) {
+        let inner = '';
+        for (let k = 0; k < seg.t.length; k++) inner += charSpan(i++);
+        html += seg.r ? `<ruby>${inner}<rt>${escapeHtml(seg.r)}</rt></ruby>` : inner;
+      }
+    } else {
+      for (let i = 0; i < target.length; i++) html += charSpan(i);
     }
     el.main.innerHTML = html;
     el.guide.innerHTML = '';
     el.directInput.classList.toggle('bad', mismatch && !composing);
+    if (composing) {
+      // Provisional score and combo while the IME composition is still open, so the HUD moves as you type.
+      let correct = 0;
+      while (correct < typed.length && correct < target.length && typed[correct] === target[correct]) correct++;
+      const prov = Math.max(0, correct - G.ime.scored);
+      el.hudScore.textContent = fmt(G.score + prov * unitValue() * multiplier());
+      el.hudCombo.textContent = G.combo + prov;
+      el.hudComboBox.classList.toggle('hot', G.combo + prov >= 25);
+    }
   }
 
   function evaluateDirect() {
@@ -764,6 +928,7 @@
     if (playSound) Sfx.hit(G.combo);
     el.hudComboBox.classList.add('pop');
     setTimeout(() => el.hudComboBox.classList.remove('pop'), 90);
+    if (G.combo === 77) floatText('77 🍀', 'ok');
     if (G.combo === 25 || (G.combo >= 50 && G.combo % 50 === 0)) {
       floatText(`${G.combo} ${t('comboHit')}`, 'big');
       Sfx.milestone();
@@ -792,7 +957,8 @@
 
   function completeSentence() {
     G.sentences++;
-    if (G.levelSentences[G.sentence.level] !== undefined && G.mode !== 'drill') G.levelSentences[G.sentence.level]++;
+    if (G.sentence.parts) G.sentence.parts.forEach(lv => { if (G.levelSentences[lv] !== undefined) G.levelSentences[lv]++; });
+    else if (G.levelSentences[G.sentence.level] !== undefined && G.mode !== 'drill') G.levelSentences[G.sentence.level]++;
     let bonus = 100;
     if (G.sentenceMisses === 0) { bonus += 100; G.perfect++; floatText(t('perfectFloat'), 'ok'); mascotReact('happy', 1000); }
     else floatText(t('bonusFloat'), 'ok');
@@ -821,7 +987,7 @@
     d.textContent = text;
     d.style.left = `${40 + Math.random() * 20}%`;
     el.floatLayer.appendChild(d);
-    setTimeout(() => d.remove(), 900);
+    setTimeout(() => d.remove(), 650);
   }
 
   // ---------------------------------------------------------------------
@@ -830,11 +996,11 @@
   const KEY_ROWS = [
     ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', 'backspace'],
     ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
-    ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
+    ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', "'"],
     ['shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/'],
     [' '],
   ];
-  const SHIFT_MAP = { '?': '/', '!': '1', '~': '`', '_': '-' };
+  const SHIFT_MAP = { '?': '/', '!': '1', '~': '`', '_': '-', '"': "'", ':': ';', '<': ',', '>': '.' };
 
   function buildKeyboard() {
     if (!set.keyboard || G.direct) { el.keyboard.innerHTML = ''; return; }
@@ -842,7 +1008,7 @@
       if (k === 'shift') return '<div class="key wide" data-key="shift">⇧</div>';
       if (k === 'backspace') return '<div class="key wide" data-key="Backspace">⌫</div>';
       if (k === ' ') return '<div class="key space" data-key=" ">space</div>';
-      if (Hangul.KEY_LABELS[k]) {
+      if (G.lang === 'ko' && Hangul.KEY_LABELS[k]) {
         const sh = Hangul.SHIFT_LABELS[k] ? `<span class="shifted">${Hangul.SHIFT_LABELS[k]}</span>` : '';
         return `<div class="key" data-key="${k}">${sh}<span class="jamo">${Hangul.KEY_LABELS[k]}</span></div>`;
       }
@@ -889,13 +1055,14 @@
     const r = {
       lang: G.lang, input: G.input, mode: G.mode, duration: G.duration, count: G.count, level: G.level, pack: G.pack,
       score: Math.round(G.score),
-      speed: Math.round((G.direct ? G.chars : G.keys) / minutes),
-      speedUnit: G.direct ? 'cpm' : 'kpm',
+      speed: speedNow(),
+      speedUnit: speedUnitFor(G.lang, G.direct),
       acc: total ? Math.round((G.hits / total) * 100) : 100,
       maxCombo: G.maxCombo, misses: G.misses, sentences: G.sentences, perfect: G.perfect,
       chars: G.chars, seconds: Math.round(G.elapsed), hour: new Date().getHours(), date: todayStr(),
     };
     r.rank = RANKS.find(x => r.score / minutes >= x.min).r;
+    r.lucky = r.score % 1000 === 777 || r.maxCombo === 77;
 
     // Persist.
     const st = S.stats;
@@ -964,6 +1131,7 @@
     }).join('');
     renderBoard(el.resultBoard, el.resultBoardLabel, key, myIdx);
     renderTopbar();
+    showCheer(el.cheerResult, r.rank);
     showScreen('result');
 
     Sfx.finish();
@@ -971,6 +1139,7 @@
     const newLevel = levelFromXp(st.xp);
     if (newLevel > prevLevel) setTimeout(() => { Sfx.levelUp(); toast('⬆', `${t('levelUp')} ${t('lv')}${newLevel}`, levelTitle(newLevel)); }, 600);
     if (frozen) setTimeout(() => toast('🧊', t('streakFreeze'), ''), 1200);
+    if (r.lucky) setTimeout(() => { Sfx.milestone(); toast('🍀', t('lucky'), `${fmt(r.score)} · ${r.maxCombo}x`); }, 900);
   }
 
   function toast(ico, title, desc) {
@@ -995,8 +1164,8 @@
     ctx.fillStyle = col('--surface'); ctx.fillRect(20, 20, W - 40, H - 40);
     ctx.strokeStyle = col('--ink'); ctx.lineWidth = 4; ctx.strokeRect(20, 20, W - 40, H - 40);
     ctx.fillStyle = col('--ink'); ctx.fillRect(28, H - 20, W - 40, 6); ctx.fillRect(W - 20, 28, 6, H - 40);
-    const pixel = "'Press Start 2P', 'Galmuri11', 'DotGothic16', monospace";
-    const text = "'Galmuri11', 'DotGothic16', 'Noto Sans JP', 'Noto Sans KR', sans-serif";
+    const pixel = col('--font-num') || 'sans-serif';
+    const text = col('--font-ui') || 'sans-serif';
     ctx.fillStyle = col('--text');
     ctx.font = `bold 20px ${text}`; ctx.fillText('Kotoba Type', 44, 60);
     ctx.font = `14px ${text}`; ctx.fillStyle = col('--muted');
@@ -1012,7 +1181,7 @@
     });
     ctx.fillStyle = col('--muted'); ctx.font = `12px ${text}`; ctx.fillText(r.date, 44, H - 40);
     const look = currentLook();
-    Sprite.drawCat(ctx, r.rank === 'S' || r.rank === 'A' ? 'happy' : 'idle', W - 210, 90, 11, { k: col('--ink'), w: col('--sprite-body'), p: col('--accent'), b: col('--accent'), y: col('--warn'), r: col('--bad') }, look);
+    Sprite.drawPet(ctx, set.pet, r.rank === 'S' || r.rank === 'A' ? 'happy' : 'idle', W - 210, 90, 11, { k: col('--ink'), w: col('--sprite-body'), p: col('--accent'), b: col('--accent'), y: col('--warn'), r: col('--bad') }, look);
     c.toBlob(blob => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -1093,6 +1262,13 @@
   chipHandler('#sprint-chips', 'sprint', v => { set.sprintCount = +v; });
   chipHandler('#level-chips', 'level', v => { set.level = v === 'mixed' ? 'mixed' : +v; });
   chipHandler('#pack-chips', 'pack', v => { set.pack = v; });
+  chipHandler('#font-chips', 'font', v => { set.font = v; });
+  chipHandler('#pet-chips', 'pet', v => { set.pet = v; });
+  chipHandler('#side-tabs', 'tab', v => { set.sideTab = v; });
+  el.btnSettings.addEventListener('click', () => { renderHome(); el.settingsModal.showModal(); });
+  el.btnSettingsClose.addEventListener('click', () => el.settingsModal.close());
+  el.settingsModal.addEventListener('click', e => { if (e.target === el.settingsModal) el.settingsModal.close(); });
+  chipHandler('#size-chips', 'size', v => { set.textSize = v; });
   el.btnCustomSave.addEventListener('click', () => {
     const lines = el.customText.value.split('\n').map(l => l.trim()).filter(Boolean);
     S.custom[set.lang] = lines.map(l => {
@@ -1143,6 +1319,7 @@
       (again || next).focus();
     }
     if (e.key === 'Enter' && !e.repeat && (home || el.screens.result.classList.contains('active'))) {
+      if (el.settingsModal.open) return;
       const a = document.activeElement;
       if (a && (a.tagName === 'BUTTON' || a.tagName === 'TEXTAREA' || a.classList.contains('mascot')) && a !== el.btnStart && a !== el.btnRetry) return;
       e.preventDefault();
