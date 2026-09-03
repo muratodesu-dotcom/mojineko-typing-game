@@ -4,15 +4,59 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="light dark">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2712%27 fill=%27%23ff85a1%27/%3E%3Ctext x=%2732%27 y=%2745%27 font-size=%2738%27 text-anchor=%27middle%27 font-family=%27sans-serif%27 font-weight=%27700%27 fill=%27%233b2f45%27%3E言%3C/text%3E%3C/svg%3E">
-  <title>Kotoba Type</title>
+  <title>もじねこ！ – 日本語・韓国語・英語のタイピング練習ゲーム</title>
+  <meta name="description" content="もじねこ！は日本語・韓国語・英語のかわいいピクセルアート風タイピング練習ゲーム。ひらがな・漢字混じり・2벌식・英語に対応。スコア、ランク、コンボ、実績、連続記録つき。登録不要、ブラウザだけで動き、記録は端末内に保存されます。">
+  <meta name="application-name" content="もじねこ！">
+  <meta name="apple-mobile-web-app-title" content="もじねこ！">
+  <meta name="theme-color" content="#ff85a1">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://type.muratodesu.com/">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/icon-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="もじねこ！">
+  <meta property="og:title" content="もじねこ！ – 日本語・韓国語・英語のタイピング練習ゲーム">
+  <meta property="og:description" content="ねこと一緒に毎日ちょっとずつ。ひらがな・漢字混じり・한국어・English に対応した、スコアと実績つきのかわいいタイピング練習ゲーム。">
+  <meta property="og:url" content="https://type.muratodesu.com/">
+  <meta property="og:image" content="https://type.muratodesu.com/assets/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="もじねこ！ ピクセルアートのねこと「日本語・韓国語・英語 タイピング練習ゲーム」の文字">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:locale:alternate" content="ko_KR">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="もじねこ！ – 日本語・韓国語・英語のタイピング練習ゲーム">
+  <meta name="twitter:description" content="ねこと一緒に毎日ちょっとずつ。スコアと実績つきのかわいいタイピング練習ゲーム。">
+  <meta name="twitter:image" content="https://type.muratodesu.com/assets/og.png">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "もじねこ！",
+    "alternateName": ["Mojineko", "もじねこ"],
+    "url": "https://type.muratodesu.com/",
+    "description": "日本語・韓国語・英語のタイピング練習ゲーム。ひらがな・漢字混じり・2벌식・英語に対応し、スコア、ランク、実績、連続記録で毎日の練習を続けやすくします。",
+    "applicationCategory": "GameApplication",
+    "applicationSubCategory": "Typing practice",
+    "operatingSystem": "Any (web browser)",
+    "browserRequirements": "Requires JavaScript",
+    "inLanguage": ["ja", "ko", "en"],
+    "isAccessibleForFree": true,
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
+    "image": "https://type.muratodesu.com/assets/og.png",
+    "author": { "@type": "Person", "name": "ムラト" }
+  }
+  </script>
   <script>
     // Apply the saved theme before first paint to avoid a flash.
     (function () {
       try {
         var s = JSON.parse(localStorage.getItem('kotoba-type:v2') || '{}');
         var t = s.settings && s.settings.theme;
-        if (t !== 'light' && t !== 'dark') t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        if (t !== 'dark') t = 'light';  // light by default, regardless of the OS setting
         document.documentElement.dataset.theme = t;
         if (s.settings && s.settings.lang) { document.documentElement.dataset.lang = s.settings.lang; document.documentElement.lang = s.settings.lang; }
         if (s.settings && s.settings.font) document.documentElement.dataset.font = s.settings.font;
@@ -27,10 +71,13 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <noscript>
+    <p>もじねこ！は日本語・韓国語・英語のタイピング練習ゲームです。ひらがな・漢字混じり・한국어（2벌식）・English に対応し、スコア・ランク・実績・連続記録で毎日の練習を続けやすくします。プレイには JavaScript を有効にしてください。</p>
+  </noscript>
   <header class="topbar">
     <div class="brand" id="brand-home" role="button" tabindex="0">
-      <span class="brand-mark">言</span>
-      <span class="brand-name">Kotoba Type</span><span class="brand-heart" aria-hidden="true"></span>
+      <span class="brand-mark" id="brand-mark" aria-hidden="true"></span>
+      <span class="brand-name">もじねこ！</span>
     </div>
     <div class="topbar-right">
       <div class="pill" id="pill-streak"><span class="dot"></span><b id="streak-count">0</b><span id="streak-label"></span></div>
@@ -39,6 +86,7 @@
         <span id="level-title"></span>
         <span class="xp-bar"><span id="xp-fill"></span></span>
       </div>
+      <button class="icon-btn" id="btn-help" aria-label="about"></button>
       <button class="icon-btn" id="btn-settings" aria-label="settings"></button>
       <button class="icon-btn" id="btn-theme" aria-label="theme"></button>
       <button class="icon-btn" id="btn-sound" aria-label="sound"></button>
@@ -52,8 +100,8 @@
         <div class="setup">
           <div class="hero">
             <div>
-              <h1 class="hero-title" data-t="heroTitle"></h1>
-              <p class="hero-sub" data-t="heroSub"></p>
+              <h1 class="hero-title" data-t="heroTitle">タイピング練習</h1>
+              <p class="hero-sub" data-t="heroSub">言語を選んでスタート。ハイスコアを目指そう。</p>
             </div>
             <div class="mascot" id="mascot-home" role="button" tabindex="0"></div>
           </div>
@@ -279,6 +327,14 @@
         </div>
       </div>
     </div>
+  </dialog>
+
+  <dialog class="settings about" id="about-modal">
+    <div class="settings-head">
+      <h2 data-t="aboutTitle"></h2>
+      <button class="icon-btn" id="btn-about-close" aria-label="close">✕</button>
+    </div>
+    <div class="settings-body about-body" id="about-body"></div>
   </dialog>
 
   <footer class="footer"><span data-t="madeBy"></span></footer>

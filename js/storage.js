@@ -5,7 +5,7 @@ const Store = (() => {
   const DEFAULTS = () => ({
     settings: {
       lang: 'ja',
-      theme: 'system',   // 'system' | 'light' | 'dark'
+      theme: 'light',    // 'light' | 'dark' (light is the default; anything else is treated as light)
       font: 'clean',     // 'clean' | 'round' | 'serif' | 'pixel' | 'system'
       textSize: 'm',     // sentence size: 's' | 'm' | 'l'
       sideTab: 'overview',
@@ -74,7 +74,7 @@ const Store = (() => {
   }
 
   function exportJson() {
-    return JSON.stringify({ app: 'kotoba-type', version: 2, exportedAt: new Date().toISOString(), data: state }, null, 2);
+    return JSON.stringify({ app: 'mojineko', version: 2, exportedAt: new Date().toISOString(), data: state }, null, 2);
   }
 
   function deepMerge(base, extra) {

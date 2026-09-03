@@ -27,12 +27,10 @@ const KO_SENTENCES = [
 
   // ---- Level 2 --------------------------------------------------------
   { text: '주말에 친구들과 바다에 갈 계획이에요.', en: 'I plan to go to the sea with friends this weekend.', level: 2, tag: 'travel' },
-  { text: '새 컴퓨터를 사서 일이 훨씬 빨라졌어요.', en: 'I bought a new computer, so work got much faster.', level: 2, tag: 'work' },
   { text: '서울의 여름은 정말 덥고 습해요.', en: 'Summer in Seoul is really hot and humid.', level: 2, tag: 'daily' },
   { text: '버스가 늦어지고 있으니 조금만 기다려 주세요.', en: 'The bus is running late, so please wait a moment.', level: 2, tag: 'daily' },
   { text: '엄마가 만든 음식이 세상에서 제일 맛있어요.', en: 'My mom\'s cooking is the most delicious in the world.', level: 2, tag: 'food' },
   { text: '비가 올 것 같으니까 우산을 가져가세요.', en: 'It looks like rain, so take an umbrella.', level: 2, tag: 'daily' },
-  { text: '다음 달부터 새로운 일을 시작해요.', en: 'I\'ll start a new job next month.', level: 2, tag: 'work' },
   { text: '이 책은 어렵지만 정말 재미있어요.', en: 'This book is difficult but really interesting.', level: 2, tag: 'daily' },
   { text: '매일 삼십 분 정도 달리려고 노력하고 있어요.', en: 'I try to run about thirty minutes every day.', level: 2, tag: 'daily' },
   { text: '역 앞에 새로운 라면 가게가 생겼어요.', en: 'A new ramen shop opened in front of the station.', level: 2, tag: 'travel' },
@@ -42,7 +40,6 @@ const KO_SENTENCES = [
   { text: '어젯밤에 오랜만에 친구와 전화로 이야기했어요.', en: 'Last night I talked on the phone with a friend for the first time in a while.', level: 2, tag: 'daily' },
   { text: '고양이가 창가에서 기분 좋게 자고 있어요.', en: 'The cat is sleeping happily by the window.', level: 2, tag: 'daily' },
   { text: '봄이 되면 공원에서 꽃놀이를 하는 사람이 많아져요.', en: 'When spring comes, more people enjoy flower viewing in the park.', level: 2, tag: 'daily' },
-  { text: '회의는 오후 세 시에 시작할 예정이에요.', en: 'The meeting is scheduled to start at 3 p.m.', level: 2, tag: 'work' },
   { text: '기차를 타고 부산까지 여행했어요.', en: 'I traveled to Busan by train.', level: 2, tag: 'travel' },
   { text: '겨울에는 따뜻한 차를 마시면서 책 읽는 걸 좋아해요.', en: 'In winter I like reading books while drinking warm tea.', level: 2, tag: 'food' },
   { text: '잊은 물건이 없는지 한 번 더 확인해 주세요.', en: 'Please check once more that you haven\'t forgotten anything.', level: 2, tag: 'daily' },
@@ -51,12 +48,10 @@ const KO_SENTENCES = [
   { text: '꾸준함이 힘이라는 말처럼 매일 조금씩 연습하는 것이 중요해요.', en: 'As the saying "consistency is strength" goes, practicing a little every day is important.', level: 3, tag: 'daily' },
   { text: '기술의 발전 덕분에 우리의 생활은 예전보다 훨씬 편리해졌어요.', en: 'Thanks to technological advances, our lives have become far more convenient than before.', level: 3, tag: 'daily' },
   { text: '환경을 지키기 위해 할 수 있는 것부터 시작해 보는 건 어때요?', en: 'How about starting with what you can do to protect the environment?', level: 3, tag: 'daily' },
-  { text: '마감이 가까워서 이번 주에는 야근을 해야 할지도 몰라요.', en: 'The deadline is near, so I might have to work late this week.', level: 3, tag: 'work' },
   { text: '그녀는 세 개 국어를 할 수 있을 뿐만 아니라 프로그래밍도 잘해요.', en: 'She can not only speak three languages but is also good at programming.', level: 3, tag: 'daily' },
   { text: '실패를 두려워하지 않고 계속 도전하면 언젠가 반드시 성공할 거예요.', en: 'If you keep challenging yourself without fearing failure, you\'ll surely succeed someday.', level: 3, tag: 'daily' },
   { text: '태풍의 영향으로 내일 비행기가 결항될 가능성이 있습니다.', en: 'Due to the typhoon, tomorrow\'s flight may be canceled.', level: 3, tag: 'travel' },
   { text: '건강을 위해 채소를 많이 먹고 밤늦게까지 깨어 있지 않으려고 해요.', en: 'For my health, I eat lots of vegetables and try not to stay up late.', level: 3, tag: 'food' },
-  { text: '새 프로젝트의 성공은 팀원 모두의 협력에 달려 있어요.', en: 'The success of the new project depends on everyone\'s cooperation.', level: 3, tag: 'work' },
   { text: '역사를 배우면 현재의 사회를 더 깊이 이해할 수 있게 됩니다.', en: 'By learning history, we can understand today\'s society more deeply.', level: 3, tag: 'daily' },
   { text: '여행 전에 여권의 유효 기간을 꼭 확인해 두세요.', en: 'Before traveling, be sure to check your passport\'s expiration date.', level: 3, tag: 'travel' },
   { text: '지진이 일어나면 먼저 침착하게 몸의 안전을 확보하세요.', en: 'When an earthquake occurs, first stay calm and ensure your safety.', level: 3, tag: 'daily' },
@@ -83,19 +78,6 @@ const KO_SENTENCES = [
   { text: '해외여행 전에 환전과 보험 절차를 미리 끝내 두세요.', en: 'Before traveling abroad, finish the currency exchange and insurance in advance.', level: 3, tag: 'travel' },
   { text: '현지 사람에게 맛집을 물어보는 게 여행의 가장 큰 즐거움이에요.', en: 'Asking locals for good restaurants is the greatest joy of traveling.', level: 3, tag: 'travel' },
 
-  // ---- 일 (work) ------------------------------------------------------
-  { text: '회의는 열 시부터예요.', en: 'The meeting starts at ten.', level: 1, tag: 'work' },
-  { text: '자료를 보내 주세요.', en: 'Please send me the documents.', level: 1, tag: 'work' },
-  { text: '오늘은 야근이 있어요.', en: 'I have overtime today.', level: 1, tag: 'work' },
-  { text: '메일 답장은 내일까지 부탁드립니다.', en: 'Please reply to the email by tomorrow.', level: 2, tag: 'work' },
-  { text: '새 프로젝트 팀원을 소개하겠습니다.', en: 'Let me introduce the new project team members.', level: 2, tag: 'work' },
-  { text: '다음 주 출장 일정을 조율하고 있어요.', en: 'I\'m coordinating next week\'s business trip schedule.', level: 2, tag: 'work' },
-  { text: '보고서 마감은 금요일 오후 다섯 시입니다.', en: 'The report deadline is Friday at 5 p.m.', level: 2, tag: 'work' },
-  { text: '오늘 회의의 회의록을 공유드립니다.', en: 'I\'m sharing the minutes of today\'s meeting.', level: 2, tag: 'work' },
-  { text: '바쁘신 중에 죄송하지만 확인 부탁드립니다.', en: 'Sorry to bother you while you\'re busy, but please check this.', level: 3, tag: 'work' },
-  { text: '재택근무 날에는 아침 출근 시간을 공부에 쓰고 있어요.', en: 'On work-from-home days I use my morning commute time to study.', level: 3, tag: 'work' },
-  { text: '고객 문의에는 가능한 한 빨리 대응합시다.', en: 'Let\'s respond to customer inquiries as quickly as possible.', level: 3, tag: 'work' },
-  { text: '팀이 목표를 공유하면 일하는 방식이 달라져요.', en: 'When a team shares goals, the way of working changes.', level: 3, tag: 'work' },
 
   // ---- 음식 (food) ----------------------------------------------------
   { text: '비빔밥 하나 주세요.', en: 'One bibimbap, please.', level: 1, tag: 'food' },
@@ -111,7 +93,6 @@ const KO_SENTENCES = [
   { text: '갓 구운 빵 냄새가 나서 나도 모르게 가게에 들어갔어요.', en: 'I smelled freshly baked bread and went into the shop without thinking.', level: 3, tag: 'food' },
   { text: '한국의 음식 문화는 계절과 아주 깊이 연결되어 있다고 생각해요.', en: 'I think Korean food culture is deeply connected to the seasons.', level: 3, tag: 'food' },
 
-  // ---- 일상 (daily) ---------------------------------------------------
   { text: '지금 몇 시예요?', en: 'What time is it now?', level: 1, tag: 'daily' },
   { text: '조금 쉬어요.', en: 'Let\'s rest a little.', level: 1, tag: 'daily' },
   { text: '일기 예보에서는 내일 비가 온대요.', en: 'The weather forecast says it will rain tomorrow.', level: 2, tag: 'daily' },
@@ -125,7 +106,6 @@ const KO_SENTENCES = [
   { text: '가족과 보내는 시간이 무엇보다 소중하다고 느껴요.', en: 'I feel that time spent with family is more precious than anything.', level: 3, tag: 'daily' },
   { text: '하루를 마칠 때 감사한 일 세 가지를 적고 있어요.', en: 'At the end of the day I write down three things I\'m grateful for.', level: 3, tag: 'daily' },
 
-  // ---- 일상 (daily) 추가 -------------------------------------------
   { text: '아침 먹었어요?', en: 'Did you eat breakfast?', level: 1, tag: 'daily' },
   { text: '오늘은 조금 춥네요.', en: 'It\'s a little cold today.', level: 1, tag: 'daily' },
   { text: '불 끄는 거 잊지 마세요.', en: 'Don\'t forget to turn off the lights.', level: 1, tag: 'daily' },
@@ -153,19 +133,6 @@ const KO_SENTENCES = [
   { text: '계획을 너무 세우지 않는 여행이 뜻밖의 발견이 많아요.', en: 'Trips that aren\'t overplanned bring more unexpected discoveries.', level: 3, tag: 'travel' },
   { text: '세계유산으로 등록된 궁궐을 한 번은 꼭 보고 싶어요.', en: 'I\'d like to see the palace registered as a World Heritage site at least once.', level: 3, tag: 'travel' },
 
-  // ---- 일 (work) 추가 ----------------------------------------------
-  { text: '수고하셨습니다.', en: 'Thank you for your hard work.', level: 1, tag: 'work' },
-  { text: '잠시만 기다려 주세요.', en: 'Please wait a moment.', level: 1, tag: 'work' },
-  { text: '다음 주 일정을 확인할게요.', en: 'I\'ll check next week\'s schedule.', level: 1, tag: 'work' },
-  { text: '회의실을 오후 두 시부터 예약했어요.', en: 'I booked the meeting room from 2 p.m.', level: 2, tag: 'work' },
-  { text: '신입 사원 교육을 맡게 되었어요.', en: 'I\'ve been put in charge of new employee training.', level: 2, tag: 'work' },
-  { text: '발표 자료를 오늘 밤 안에 마무리할게요.', en: 'I\'ll finish the presentation materials tonight.', level: 2, tag: 'work' },
-  { text: '상사와 상의한 후에 답변드리겠습니다.', en: 'I\'ll reply after consulting my boss.', level: 2, tag: 'work' },
-  { text: '아까 보낸 메일에 자료를 첨부하는 걸 깜빡했어요.', en: 'I forgot to attach the file to the email I sent earlier.', level: 2, tag: 'work' },
-  { text: '이번 분기 매출 목표를 달성하기 위해 새로운 방안을 생각하고 있어요.', en: 'To reach this quarter\'s sales target, we\'re considering new measures.', level: 3, tag: 'work' },
-  { text: '무리한 일정은 결국 팀 전체의 부담이 돼요.', en: 'An unreasonable schedule ends up burdening the whole team.', level: 3, tag: 'work' },
-  { text: '회의에서는 결론을 먼저 말하면 이야기가 잘 전달돼요.', en: 'In meetings, saying the conclusion first gets the point across.', level: 3, tag: 'work' },
-  { text: '휴식을 제대로 취해야 오후에도 집중력이 이어져요.', en: 'Taking proper breaks keeps your concentration going in the afternoon.', level: 3, tag: 'work' },
 
   // ---- 음식 (food) 추가 --------------------------------------------
   { text: '물 한 잔 더 주세요.', en: 'Another glass of water, please.', level: 1, tag: 'food' },
@@ -180,6 +147,48 @@ const KO_SENTENCES = [
   { text: '가족과 함께 찌개를 나눠 먹는 시간이 겨울의 즐거움 중 하나예요.', en: 'Sharing a stew with family is one of winter\'s pleasures.', level: 3, tag: 'food' },
   { text: '채소를 넉넉히 넣은 요리를 매일 한 가지는 만들려고 해요.', en: 'I try to make at least one vegetable-rich dish every day.', level: 3, tag: 'food' },
   { text: '음식을 남기지 않는 것은 만든 사람에 대한 감사이기도 해요.', en: 'Not leaving food is also gratitude toward the person who made it.', level: 3, tag: 'food' },
+
+  // ---- 일 (work): everyday office phrases and business email language --------
+  { text: '수고하십니다.', en: 'Thank you for your hard work. (greeting)', level: 1, tag: 'work' },
+  { text: '늘 신세 많이 지고 있습니다.', en: 'Thank you for your continued support.', level: 1, tag: 'work' },
+  { text: '잘 부탁드립니다.', en: 'Thank you in advance.', level: 1, tag: 'work' },
+  { text: '알겠습니다.', en: 'Understood.', level: 1, tag: 'work' },
+  { text: '먼저 퇴근하겠습니다.', en: 'I will be leaving first.', level: 1, tag: 'work' },
+  { text: '잠시만 기다려 주세요.', en: 'Please wait a moment.', level: 1, tag: 'work' },
+  { text: '확인하겠습니다.', en: 'I will check.', level: 1, tag: 'work' },
+  { text: '자리를 비웠습니다.', en: 'I am away from my desk.', level: 1, tag: 'work' },
+  { text: '지금 돌아왔습니다.', en: 'I am back now.', level: 1, tag: 'work' },
+  { text: '감사합니다. 큰 도움이 됐습니다.', en: 'Thank you, that helps a lot.', level: 1, tag: 'work' },
+  { text: '회의는 열 시부터예요.', en: 'The meeting starts at ten.', level: 1, tag: 'work' },
+  { text: '자료를 보내 주세요.', en: 'Please send me the documents.', level: 1, tag: 'work' },
+  { text: '안녕하세요, 김민수입니다. 늘 신세 많이 지고 있습니다.', en: 'Hello, this is Kim Minsu. Thank you for your continued support.', level: 2, tag: 'work' },
+  { text: '좋은 아침입니다. 오늘도 잘 부탁드립니다.', en: 'Good morning. Looking forward to working with you today.', level: 2, tag: 'work' },
+  { text: '오늘 회의 시간을 내주셔서 감사합니다.', en: 'Thank you for taking the time to meet today.', level: 2, tag: 'work' },
+  { text: '자료를 첨부하니 확인 부탁드립니다.', en: 'Please find the document attached.', level: 2, tag: 'work' },
+  { text: '회신 기다리겠습니다.', en: 'I look forward to your reply.', level: 2, tag: 'work' },
+  { text: '다음 주 회의 일정을 조율하겠습니다.', en: 'I will arrange the schedule for next week\'s meeting.', level: 2, tag: 'work' },
+  { text: '죄송하지만 내일까지 답변해 주실 수 있을까요?', en: 'Sorry to trouble you, but could you reply by tomorrow?', level: 2, tag: 'work' },
+  { text: '담당자에게 확인한 후 다시 연락드리겠습니다.', en: 'I will confirm with the person in charge and get back to you.', level: 2, tag: 'work' },
+  { text: '지난번에는 감사했습니다.', en: 'Thank you for the other day.', level: 2, tag: 'work' },
+  { text: '번거로우시겠지만 잘 부탁드립니다.', en: 'Sorry for the trouble, and thank you in advance.', level: 2, tag: 'work' },
+  { text: '회의실 예약을 부탁드려도 될까요?', en: 'Could you book the meeting room?', level: 2, tag: 'work' },
+  { text: '오늘은 재택근무입니다. 필요하시면 메신저로 연락 주세요.', en: 'I am working from home today. Please message me if anything comes up.', level: 2, tag: 'work' },
+  { text: '몸이 안 좋아서 오늘은 휴가를 쓰겠습니다.', en: 'I am not feeling well, so I will take today off.', level: 2, tag: 'work' },
+  { text: '회의록을 공유드립니다.', en: 'Here are the minutes from the meeting.', level: 2, tag: 'work' },
+  { text: '내일 오전에는 외근입니다.', en: 'I will be out of the office tomorrow morning.', level: 2, tag: 'work' },
+  { text: '우선 보고드립니다.', en: 'Just a quick report for now.', level: 2, tag: 'work' },
+  { text: '바쁘신 중에 죄송하지만 확인 부탁드립니다.', en: 'Sorry to bother you while you are busy, but please check this.', level: 3, tag: 'work' },
+  { text: '바쁘신 와중에 죄송하지만 대응 부탁드리겠습니다.', en: 'I apologize for asking while you are busy, but I would appreciate your handling this.', level: 3, tag: 'work' },
+  { text: '납기에 대해 한 번 회의 시간을 내주시면 감사하겠습니다.', en: 'I would appreciate a meeting to discuss the delivery date.', level: 3, tag: 'work' },
+  { text: '지적해 주신 부분을 수정해서 다시 보내드리겠습니다.', en: 'I have corrected the points you raised and will send it again.', level: 3, tag: 'work' },
+  { text: '바쁘신 와중에 대단히 죄송하지만 확인해 주시면 감사하겠습니다.', en: 'I am very sorry to trouble you, but I would appreciate your checking this.', level: 3, tag: 'work' },
+  { text: '아까 보낸 메일에 오류가 있어 정정해서 다시 보내드립니다.', en: 'There was an error in my previous email, so I am sending a corrected version.', level: 3, tag: 'work' },
+  { text: '오늘 안에 대응이 어려우시면 내일 오전이라도 괜찮습니다.', en: 'If today is not possible, tomorrow morning is fine as well.', level: 3, tag: 'work' },
+  { text: '앞으로도 잘 부탁드립니다.', en: 'I look forward to continuing to work with you.', level: 3, tag: 'work' },
+  { text: '바쁘신 중에 참석해 주셔서 진심으로 감사드립니다.', en: 'Thank you very much for attending despite your busy schedule.', level: 3, tag: 'work' },
+  { text: '죄송하지만 첨부 파일이 열리지 않습니다. 다시 보내 주실 수 있을까요?', en: 'I am sorry, but the attachment would not open. Could you resend it?', level: 3, tag: 'work' },
+  { text: '확인 부탁드립니다. 감사합니다.', en: 'Please confirm. Thank you.', level: 3, tag: 'work' },
+  { text: '오늘 시간 내주셔서 감사합니다. 앞으로도 잘 부탁드립니다.', en: 'Thank you for your time today. I look forward to working with you.', level: 3, tag: 'work' },
 ];
 
 // Easter egg: rarely slipped into any Korean round (귀가 = a maid-café "visit").
@@ -222,10 +231,11 @@ const KO_PARAGRAPHS = [
   { text: '여름 방학에 제주도에 갔어요. 바다가 정말 예뻤어요. 매일 수영하고 사진을 많이 찍었어요.', en: 'I went to Jeju for summer vacation. The sea was really beautiful. I swam every day and took lots of photos.', level: 1, tag: 'travel' },
   { text: '경주 여행은 둘째 날이 가장 즐거웠어요. 아침 일찍 불국사에 가서 사람이 적고 조용하게 둘러볼 수 있었어요. 점심에는 쌈밥을 먹고 저녁에는 첨성대 근처를 걸었어요.', en: 'The second day of my Gyeongju trip was the most fun. I went to Bulguksa early, so there were few people and I could look around quietly. I had ssambap for lunch and walked near Cheomseongdae in the evening.', level: 2, tag: 'travel' },
   { text: '처음 혼자 해외여행을 갔을 때는 언어의 벽에 여러 번 당황했어요. 그래도 지도를 가리키며 길을 물으면 지나가던 사람들이 친절하게 안내해 줬어요. 완벽하게 말하지 못해도 전하려는 마음이 있으면 여행은 계속될 수 있다는 걸 배웠어요.', en: 'On my first solo trip abroad, the language barrier confused me many times. Still, when I asked for directions while pointing at a map, passers-by kindly showed me the way. I learned that even without perfect language, the will to communicate keeps a journey going.', level: 3, tag: 'travel' },
-  { text: '우리 회사는 아홉 시에 시작해요. 오전에는 메일을 읽고 오후에는 회의가 있어요. 여섯 시에 일이 끝나요.', en: 'My company starts at nine. In the morning I read emails and in the afternoon there are meetings. Work ends at six.', level: 1, tag: 'work' },
-  { text: '이번 주는 새 프로젝트 준비로 바빠요. 먼저 고객의 요청을 정리하고 팀에서 역할을 정했어요. 금요일까지 간단한 계획서를 만들 예정이에요.', en: 'This week I am busy preparing a new project. First we organized the client\'s requests and decided roles as a team. We plan to make a simple plan document by Friday.', level: 2, tag: 'work' },
-  { text: '재택근무가 늘어나면서 일과 생활의 경계가 흐려지기 쉬워요. 그래서 시작과 종료 시간을 정하고, 끝나면 노트북을 닫고 산책을 나가기로 했어요. 작은 구분을 만드는 것만으로도 집중력과 기분 전환이 놀랄 만큼 좋아졌어요.', en: 'Since working from home more, the line between work and life blurs easily. So I set start and end times, and when I am done I close the laptop and go for a walk. Just creating small boundaries improved both my focus and my ability to switch off remarkably.', level: 3, tag: 'work' },
   { text: '오늘 점심은 라면이었어요. 국물이 뜨겁고 맛있었어요. 디저트로 아이스크림도 먹었어요.', en: 'Today\'s lunch was ramen. The broth was hot and delicious. I also had ice cream for dessert.', level: 1, tag: 'food' },
   { text: '주말에 처음으로 카레를 처음부터 만들어 봤어요. 양파를 천천히 볶는 데 시간이 걸렸지만 단맛이 나면서 맛이 깊어졌어요. 가족들도 좋아해서 또 만들고 싶어요.', en: 'On the weekend I tried making curry from scratch for the first time. Slowly frying the onions took time, but it brought out sweetness and deepened the flavor. My family liked it too, so I want to make it again.', level: 2, tag: 'food' },
   { text: '한국의 가정식은 제철 재료를 낭비 없이 쓰는 지혜로 가득해요. 봄에는 나물, 여름에는 오이와 가지, 가을에는 버섯, 겨울에는 뿌리채소처럼 제철 음식을 맛보면 자연의 변화를 느낄 수 있어요. 바쁜 날에도 한 가지 반찬만은 제철 재료로 만들면 식탁이 조금 더 풍성해져요.', en: 'Korean home cooking is full of wisdom for using seasonal ingredients without waste. Tasting seasonal foods, like wild greens in spring, cucumbers and eggplant in summer, mushrooms in autumn and root vegetables in winter, lets you feel nature\'s changes. Even on busy days, making just one side dish with seasonal ingredients makes the table a little richer.', level: 3, tag: 'food' },
+
+  { text: '수고하십니다. 김민수입니다. 내일 회의 자료를 보내드립니다. 확인 부탁드립니다.', en: 'Hello, this is Kim Minsu. I am sending the materials for tomorrow\'s meeting. Please take a look.', level: 1, tag: 'work' },
+  { text: '늘 신세 많이 지고 있습니다. 지난번에는 회의 시간을 내주셔서 감사했습니다. 상의드린 건에 대해 자료를 정리했으니 첨부해 드립니다. 확인 부탁드립니다.', en: 'Thank you for your continued support, and for your time at our meeting the other day. I have put together materials on the matter we discussed and attached them. I would appreciate your review.', level: 2, tag: 'work' },
+  { text: '안녕하세요. 요청하신 견적서에 대해 사내에서 확인한 결과, 일부 항목에 수정이 필요하게 되었습니다. 수정본은 내일 중으로 보내드릴 예정이니, 번거로우시겠지만 조금만 더 기다려 주시면 감사하겠습니다. 앞으로도 잘 부탁드립니다.', en: 'Hello. Regarding the quotation you requested, an internal check found that some items need correction. I will send the revised version by tomorrow, so I would appreciate your patience a little longer. Thank you again.', level: 3, tag: 'work' },
 ];

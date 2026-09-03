@@ -1,4 +1,4 @@
-# Kotoba Type — Japanese, Korean & English typing game
+# もじねこ！ (Mojineko) — Japanese, Korean & English typing game
 
 A cute, pixel-art typing game for practising **Japanese**, **Korean** and **English**.
 No build step, no server, no accounts: open `index.html` and play. Everything
@@ -15,12 +15,26 @@ open index.html        # or double-click it, or serve the folder with any static
 Works offline. The default font is Noto Sans for readability; the settings offer 丸ゴシック (Zen Maru Gothic / Gowun Dodum), 明朝 (Noto Serif), ピクセル (Galmuri / DotGothic16 / Press Start 2P) and your system font, plus three sentence sizes. Web fonts load from CDNs when available and fall back to your system CJK fonts. A GitHub Pages workflow deploys `main`
 automatically once Pages is set to "GitHub Actions" in the repository settings.
 
+## SEO / sharing
+
+`index.html` carries a descriptive title and meta description, Open Graph and Twitter card tags
+with a 1200×630 preview image (`assets/og.png`), a web app manifest with pixel-cat icons, and
+schema.org `WebApplication` structured data. `robots.txt` and `sitemap.xml` sit at the root.
+The absolute URLs point at `https://type.muratodesu.com/`; if the app moves to another
+domain, replace that address in `index.html` (canonical, `og:url`, `og:image`, `twitter:image`,
+JSON-LD), `robots.txt` and `sitemap.xml`.
+
 ## Features
 
+The `?` button in the header opens an **About / How to use** panel in the selected language:
+what the app is, the five steps to a round, and tips (IME on/off, packs, settings, streaks, backup).
+
 **Practice**
-- Japanese and Korean with 156 sentences each (with English translations) and English with 60,
+- Japanese and Korean with about 170 sentences each (with English translations) and English with 75,
   three difficulty tiers, themed packs: 日常 / 旅行 / 仕事 / 食べ物 (daily, travel, work, food),
-  plus hand-written paragraphs per language for paragraph mode.
+  plus hand-written paragraphs per language for paragraph mode. The 仕事 pack is everyday
+  office language (お疲れ様です。いつもお世話になっております。, business-email phrases) rather than
+  sentences *about* work, so what you practise is what you type at your desk.
 - **Japanese** is typed through your IME. Choose ひらがな (kana reading only) or 混合 (kanji,
   katakana, hiragana as written), with an optional reading hint under kanji sentences.
 - **Korean**: 2-set (두벌식) keys on a regular keyboard with live syllable composition, an
@@ -48,7 +62,7 @@ automatically once Pages is set to "GitHub Actions" in the repository settings.
 - Result share card saved as a PNG.
 
 **Interface**
-- Menu and HUD in Japanese, Korean or English, following the selected language. Light and dark themes.
+- Menu and HUD in Japanese, Korean or English, following the selected language. Light theme by default, dark theme via the header toggle.
 - Settings behind the gear icon: five font sets, three text sizes, input options, volume, and data export / import / reset. The home page fits a desktop screen without scrolling; stats, records, goals, rankings and achievements live in tabs.
 - Arrow keys move between options on the menu; everything is keyboard-accessible.
 - Export / import all local data as a JSON file.

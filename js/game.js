@@ -103,6 +103,7 @@
     moon: '<svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>',
     soundOn: '<svg viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4zM15.5 8.5a5 5 0 0 1 0 7M19 5.5a9 9 0 0 1 0 13"/></svg>',
     soundOff: '<svg viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4zM22 9l-6 6M16 9l6 6"/></svg>',
+    help: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.6 2.2c-.8.5-1.1 1-1.1 1.8M12 17h.01"/></svg>',
     gear: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>',
   };
 
@@ -136,6 +137,7 @@
     btnStart: $('#btn-start'), btnRetry: $('#btn-retry'), btnHome: $('#btn-home'), btnReset: $('#btn-reset'), btnShare: $('#btn-share'),
     btnExport: $('#btn-export'), btnImport: $('#btn-import'), importFile: $('#import-file'),
     btnSound: $('#btn-sound'), btnTheme: $('#btn-theme'), btnSettings: $('#btn-settings'), btnSettingsClose: $('#btn-settings-close'), settingsModal: $('#settings-modal'),
+    btnHelp: $('#btn-help'), btnAboutClose: $('#btn-about-close'), aboutModal: $('#about-modal'), aboutBody: $('#about-body'), brandMark: $('#brand-mark'),
     sideTabs: $('#side-tabs'),
     goals: $('#goals'), mascotHome: $('#mascot-home'), mascotPlay: $('#mascot-play'), mascotPreview: $('#mascot-preview'), mascotNext: $('#mascot-next'),
     homeStats: $('#home-stats'), homeBoard: $('#home-board'), boardLabel: $('#board-label'), achGrid: $('#ach-grid'), achCount: $('#ach-count'),
@@ -159,8 +161,8 @@
   // Theme & i18n
   // ---------------------------------------------------------------------
   function resolvedTheme() {
-    if (set.theme === 'light' || set.theme === 'dark') return set.theme;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    // Light is the default; dark only when the user chose it with the toggle.
+    return set.theme === 'dark' ? 'dark' : 'light';
   }
   function applyTheme() {
     const th = resolvedTheme();
@@ -175,6 +177,7 @@
   function applyI18n() {
     el.root.dataset.lang = set.lang;
     el.root.lang = set.lang;
+    document.title = t('pageTitle');
     applyDisplay();
     $$('[data-t]').forEach(n => { n.textContent = t(n.dataset.t); });
     el.playHint.innerHTML = t('quitHint').replace('Esc', '<kbd>Esc</kbd>');
@@ -184,7 +187,23 @@
     el.customHelp.textContent = t('customHelp');
     el.btnSettings.innerHTML = ICONS.gear;
     el.btnSettings.title = t('settingsTitle');
+    el.btnHelp.innerHTML = ICONS.help;
+    el.btnHelp.title = t('aboutTitle');
+    el.brandMark.innerHTML = Sprite.cat('idle', 2);
     applyTheme();
+  }
+
+  // About / how-to dialog: built from the i18n text of the current language.
+  function renderAbout() {
+    const a = t('about');
+    const esc = x => String(x).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+    const rich = x => esc(x).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+    const list = (tag, items) => `<${tag}>${items.map(i => `<li>${rich(i)}</li>`).join('')}</${tag}>`;
+    el.aboutBody.innerHTML = `
+      <section><h3>${Sprite.cat('happy', 2)}${esc(a.whatTitle)}</h3>${a.what.map(x => `<p>${rich(x)}</p>`).join('')}</section>
+      <section><h3>${Sprite.star(2)}${esc(a.howTitle)}</h3>${list('ol', a.how)}</section>
+      <section><h3>${Sprite.heart(2)}${esc(a.tipsTitle)}</h3>${list('ul', a.tips)}</section>
+      <p class="about-foot">${esc(a.foot)}</p>`;
   }
 
   // ---------------------------------------------------------------------
@@ -1215,7 +1234,7 @@
     const pixel = col('--font-num') || 'sans-serif';
     const text = col('--font-ui') || 'sans-serif';
     ctx.fillStyle = col('--text');
-    ctx.font = `bold 20px ${text}`; ctx.fillText('Kotoba Type', 44, 60);
+    ctx.font = `bold 20px ${text}`; ctx.fillText('もじねこ！', 44, 60);
     ctx.font = `14px ${text}`; ctx.fillStyle = col('--muted');
     ctx.fillText(`${t('langNames')[r.lang]} · ${t('inputs')[r.lang][r.input].name} · ${t('boardLen')[r.mode](r.mode === 'time' ? r.duration : r.mode === 'daily' ? r.date : r.count)}`, 44, 84);
     ctx.fillStyle = col('--accent'); ctx.font = `72px ${pixel}`; ctx.fillText(r.rank, 44, 180);
@@ -1233,7 +1252,7 @@
     c.toBlob(blob => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = url; a.download = `kotoba-type-${r.date}-${r.rank}.png`;
+      a.href = url; a.download = `mojineko-${r.date}-${r.rank}.png`;
       document.body.appendChild(a); a.click(); a.remove();
       setTimeout(() => URL.revokeObjectURL(url), 2000);
     }, 'image/png');
@@ -1246,7 +1265,7 @@
     const blob = new Blob([Store.exportJson()], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = `kotoba-type-backup-${todayStr()}.json`;
+    a.href = url; a.download = `mojineko-backup-${todayStr()}.json`;
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 2000);
   }
@@ -1255,7 +1274,7 @@
     reader.onload = () => {
       try {
         const obj = JSON.parse(reader.result);
-        const data = obj && obj.app === 'kotoba-type' && obj.data ? obj.data : obj;
+        const data = obj && (obj.app === 'mojineko' || obj.app === 'kotoba-type') && obj.data ? obj.data : obj;
         if (!data || typeof data !== 'object' || !data.settings || !data.stats) throw new Error('bad');
         Store.replace(data);
         toast('📥', t('importOk'), '');
@@ -1315,6 +1334,9 @@
   chipHandler('#side-tabs', 'tab', v => { set.sideTab = v; });
   el.btnSettings.addEventListener('click', () => { renderHome(); el.settingsModal.showModal(); });
   el.btnSettingsClose.addEventListener('click', () => el.settingsModal.close());
+  el.btnHelp.addEventListener('click', () => { renderAbout(); el.aboutModal.showModal(); });
+  el.btnAboutClose.addEventListener('click', () => el.aboutModal.close());
+  el.aboutModal.addEventListener('click', e => { if (e.target === el.aboutModal) el.aboutModal.close(); });
   el.settingsModal.addEventListener('click', e => { if (e.target === el.settingsModal) el.settingsModal.close(); });
   chipHandler('#size-chips', 'size', v => { set.textSize = v; });
   el.btnCustomSave.addEventListener('click', () => {
@@ -1336,7 +1358,6 @@
     el.btnSound.innerHTML = set.sound ? ICONS.soundOn : ICONS.soundOff;
   });
   el.btnTheme.addEventListener('click', () => { set.theme = resolvedTheme() === 'dark' ? 'light' : 'dark'; Store.save(); applyTheme(); });
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if (set.theme === 'system') applyTheme(); });
 
   el.btnStart.addEventListener('click', startGame);
   el.btnRetry.addEventListener('click', startGame);
@@ -1392,7 +1413,6 @@
   if (location.hash === '#debug') window.__kotoba = { buildPool };
 
   // Boot.
-  $('.brand-heart').innerHTML = Sprite.heart(2);
   renderHome();
   showScreen('home');
 })();

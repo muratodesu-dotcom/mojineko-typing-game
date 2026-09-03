@@ -35,22 +35,6 @@ const EN_SENTENCES = [
   { text: 'Asking locals for their favorite restaurants is the best part of any journey.', level: 3, tag: 'travel' },
   { text: 'Even without perfect language skills, the will to communicate keeps a journey going.', level: 3, tag: 'travel' },
 
-  // ---- work ------------------------------------------------------------
-  { text: 'The meeting starts at ten.', level: 1, tag: 'work' },
-  { text: 'Please send me the file.', level: 1, tag: 'work' },
-  { text: 'I have overtime today.', level: 1, tag: 'work' },
-  { text: 'Thank you for your hard work.', level: 1, tag: 'work' },
-  { text: 'Let me check next week\'s schedule.', level: 1, tag: 'work' },
-  { text: 'I booked the meeting room from two in the afternoon.', level: 2, tag: 'work' },
-  { text: 'Please reply to the client\'s email by tomorrow morning.', level: 2, tag: 'work' },
-  { text: 'I forgot to attach the report to my earlier message.', level: 2, tag: 'work' },
-  { text: 'We are arranging the schedule for next week\'s business trip.', level: 2, tag: 'work' },
-  { text: 'I will finish the presentation slides tonight.', level: 2, tag: 'work' },
-  { text: 'Stating the conclusion first makes a meeting much easier to follow.', level: 3, tag: 'work' },
-  { text: 'An unreasonable schedule ends up becoming a burden for the whole team.', level: 3, tag: 'work' },
-  { text: 'Taking proper breaks keeps your concentration going through the afternoon.', level: 3, tag: 'work' },
-  { text: 'On work-from-home days, I use my old commute time to study.', level: 3, tag: 'work' },
-  { text: 'When a team shares its goals, the way people work together changes.', level: 3, tag: 'work' },
 
   // ---- food ------------------------------------------------------------
   { text: 'One coffee, please.', level: 1, tag: 'food' },
@@ -68,6 +52,38 @@ const EN_SENTENCES = [
   { text: 'Gathering around a hot pot with family is one of the joys of winter.', level: 3, tag: 'food' },
   { text: 'I try to cook at least one vegetable-heavy dish every single day.', level: 3, tag: 'food' },
   { text: 'Not leaving food on your plate is a way of thanking the person who cooked it.', level: 3, tag: 'food' },
+
+  // ---- work: everyday office phrases and business email language --------------
+  { text: 'Good morning. I hope you had a nice weekend.', level: 1, tag: 'work' },
+  { text: 'Thank you for your hard work.', level: 1, tag: 'work' },
+  { text: 'Thank you for your continued support.', level: 1, tag: 'work' },
+  { text: 'Understood, will do.', level: 1, tag: 'work' },
+  { text: 'Please hold on a moment.', level: 1, tag: 'work' },
+  { text: 'I will check and get back to you.', level: 1, tag: 'work' },
+  { text: 'I am away from my desk.', level: 1, tag: 'work' },
+  { text: 'I am heading out. Have a good evening.', level: 1, tag: 'work' },
+  { text: 'The meeting starts at ten.', level: 1, tag: 'work' },
+  { text: 'Please send me the file.', level: 1, tag: 'work' },
+  { text: 'Thank you for taking the time to meet with us today.', level: 2, tag: 'work' },
+  { text: 'Please find the document attached.', level: 2, tag: 'work' },
+  { text: 'I look forward to your reply.', level: 2, tag: 'work' },
+  { text: 'Could you reply by tomorrow if possible?', level: 2, tag: 'work' },
+  { text: 'I will confirm with the person in charge and get back to you.', level: 2, tag: 'work' },
+  { text: 'Sorry for the trouble, and thank you in advance.', level: 2, tag: 'work' },
+  { text: 'Could you book the meeting room for me?', level: 2, tag: 'work' },
+  { text: 'I am working from home today, so please message me on chat.', level: 2, tag: 'work' },
+  { text: 'I am not feeling well, so I will take the day off.', level: 2, tag: 'work' },
+  { text: 'Here are the minutes from today\'s meeting.', level: 2, tag: 'work' },
+  { text: 'I will be out of the office tomorrow morning.', level: 2, tag: 'work' },
+  { text: 'Just a quick update for now.', level: 2, tag: 'work' },
+  { text: 'I apologize for the inconvenience, but could you take a look when you have a moment?', level: 3, tag: 'work' },
+  { text: 'Could we find a time to discuss the delivery schedule?', level: 3, tag: 'work' },
+  { text: 'I have corrected the points you raised and attached the revised version.', level: 3, tag: 'work' },
+  { text: 'There was an error in my previous email, so I am sending a corrected version.', level: 3, tag: 'work' },
+  { text: 'If today is not possible, tomorrow morning is fine as well.', level: 3, tag: 'work' },
+  { text: 'Thank you for attending despite your busy schedule.', level: 3, tag: 'work' },
+  { text: 'The attachment did not open on my end. Could you resend it?', level: 3, tag: 'work' },
+  { text: 'Thank you for your time today, and I look forward to working with you.', level: 3, tag: 'work' },
 ];
 
 // Curated paragraphs for paragraph mode.
@@ -76,10 +92,11 @@ const EN_PARAGRAPHS = [
   { text: 'Half a year after moving, I have finally gotten used to the new town. The shopkeepers on the main street are friendly, and we chat a little every time I go shopping. Even in an unfamiliar place, life becomes rich when you have people to talk to.', level: 3, tag: 'daily' },
   { text: 'The second day of my trip to Kyoto was the best. I visited the temple early in the morning, so it was quiet and almost empty. For lunch I had tofu, and in the evening I walked along the river.', level: 2, tag: 'travel' },
   { text: 'On my first solo trip abroad, the language barrier confused me many times. Still, whenever I pointed at a map and asked for directions, strangers kindly showed me the way. I learned that the will to communicate matters more than perfect grammar.', level: 3, tag: 'travel' },
-  { text: 'My office opens at nine. In the morning I read emails, and in the afternoon we have meetings. Work ends at six.', level: 1, tag: 'work' },
-  { text: 'Since I started working from home, the line between work and life has blurred. So I set fixed start and end times, and when the day is over I close my laptop and go for a walk. Those small boundaries improved both my focus and my mood.', level: 3, tag: 'work' },
   { text: 'Last weekend I made curry from scratch for the first time. Frying the onions slowly took a while, but it made the sauce sweet and rich. My family loved it, so I want to make it again.', level: 2, tag: 'food' },
   { text: 'Home cooking is full of small wisdom about using seasonal ingredients. Tasting what is in season lets you feel the changing of the year, from spring greens to winter root vegetables. Even on busy days, adding one seasonal ingredient makes the table a little richer.', level: 3, tag: 'food' },
+
+  { text: 'Hello, this is Tanaka. I am sending the materials for tomorrow\'s meeting. Please take a look when you have a moment.', level: 1, tag: 'work' },
+  { text: 'Thank you for your continued support, and for your time at our meeting the other day. I have put together materials on the matter we discussed and attached them. I would appreciate your review, and I look forward to working with you.', level: 3, tag: 'work' },
 ];
 
 // Warm-up drill items: key rows and short words.
