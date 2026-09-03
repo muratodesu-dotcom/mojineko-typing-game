@@ -193,6 +193,8 @@ const KO_SENTENCES = [
 
 // Easter egg: rarely slipped into any Korean round (귀가 = a maid-café "visit").
 const KO_EGG = { text: '유리가 오늘도 스이리에게 귀가했습니다.', en: 'Yuri came home to Suiri again today.', level: 1, tag: 'egg' };
+// Business-email flavour of the same egg, used when the 일 (work) pack is selected.
+const KO_EGG_WORK = { text: '수고하십니다. 유리가 오늘도 스이리에게 귀가했음을 우선 보고드립니다.', en: 'Hello. Just a quick report that Yuri came home to Suiri again today.', level: 1, tag: 'egg' };
 
 // Warm-up drill items: syllable rows and short words.
 const KO_DRILLS = [

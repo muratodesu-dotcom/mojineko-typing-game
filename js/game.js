@@ -49,7 +49,8 @@
   const PARAGRAPH_SENTENCES = 4;
   const EGG_RATE = 1 / 12; // chance per round that the easter-egg sentence appears (Japanese and Korean)
   const EGG_MAX_PER_DAY = 2;
-  const EGGS = { ja: () => JA_EGG, ko: () => KO_EGG };
+  // The 仕事 pack gets a business-email flavoured version of the same sentence.
+  const EGGS = { ja: pack => pack === 'work' ? JA_EGG_WORK : JA_EGG, ko: pack => pack === 'work' ? KO_EGG_WORK : KO_EGG };
 
   const RANKS = [
     { r: 'S', min: 8000 }, { r: 'A', min: 5500 }, { r: 'B', min: 3500 },
@@ -289,7 +290,7 @@
     if (eggState.day !== todayStr()) { eggState.day = todayStr(); eggState.count = 0; }
     let hasEgg = false;
     if (EGGS[lang] && !eggState.last && eggState.count < EGG_MAX_PER_DAY && rnd() < EGG_RATE) {
-      const egg = { ...EGGS[lang](), parts: [1] };
+      const egg = { ...EGGS[lang](pack), parts: [1] };
       const reach = Math.min(pool.length, mode === 'time' ? 8 : Math.max(1, count || pool.length));
       pool.splice(Math.floor(rnd() * reach), 0, egg);
       hasEgg = true;
@@ -1421,7 +1422,7 @@
 
   window.addEventListener('resize', () => { el.confetti.width = window.innerWidth; el.confetti.height = window.innerHeight; });
 
-  if (location.hash === '#debug') window.__kotoba = { buildPool };
+  if (location.hash === '#debug') window.__kotoba = { buildPool, resetEgg: () => { S.egg.last = false; S.egg.count = 0; } };
 
   // Boot.
   renderHome();

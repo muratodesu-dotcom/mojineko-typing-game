@@ -197,6 +197,8 @@ const JA_SENTENCES = [
 
 // Easter egg: rarely slipped into any Japanese round.
 const JA_EGG = { text: '有利が今日もすいりにご帰宅しました。', reading: 'ゆりがきょうもすいりにごきたくしました。', en: 'Yuri came home to Suiri again today.', level: 1, tag: 'egg' };
+// Business-email flavour of the same egg, used when the 仕事 pack is selected.
+const JA_EGG_WORK = { text: 'お疲れ様です。有利が本日もすいりにご帰宅しましたので、取り急ぎご報告まで。', reading: 'おつかれさまです。ゆりがほんじつもすいりにごきたくしましたので、とりいそぎごほうこくまで。', en: 'Hello. Just a quick report that Yuri came home to Suiri again today.', level: 1, tag: 'egg' };
 
 // Warm-up drill items: kana rows and short words.
 const JA_DRILLS = [
