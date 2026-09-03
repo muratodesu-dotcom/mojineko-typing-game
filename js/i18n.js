@@ -50,6 +50,7 @@ const I18N = {
     levelNames: { 1: 'やさしい', 2: 'ふつう', 3: 'むずかしい' },
     xpBonus: '難易度ボーナス', madeBy: 'Made by ムラト',
     petsStat: 'なでた回数',
+    pageTitle: 'もじねこ！ – 日本語・韓国語・英語のタイピング練習ゲーム',
     aboutTitle: 'このアプリについて',
     about: {
       whatTitle: 'もじねこ！とは',
@@ -177,6 +178,7 @@ const I18N = {
     levelNames: { 1: '쉬움', 2: '보통', 3: '어려움' },
     xpBonus: '난이도 보너스', madeBy: 'Made by ムラト',
     petsStat: '쓰다듬은 횟수',
+    pageTitle: '모지네코! – 일본어·한국어·영어 타자 연습 게임',
     aboutTitle: '이 앱에 대해',
     about: {
       whatTitle: '모지네코!란',
@@ -306,6 +308,7 @@ const I18N = {
     levelNames: { 1: 'Easy', 2: 'Normal', 3: 'Hard' },
     xpBonus: 'Difficulty bonus', madeBy: 'Made by ムラト',
     petsStat: 'Times petted',
+    pageTitle: 'もじねこ！ – Japanese, Korean & English typing game',
     aboutTitle: 'About',
     about: {
       whatTitle: 'What is もじねこ！?',

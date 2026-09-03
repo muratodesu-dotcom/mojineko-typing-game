@@ -15,6 +15,15 @@ open index.html        # or double-click it, or serve the folder with any static
 Works offline. The default font is Noto Sans for readability; the settings offer 丸ゴシック (Zen Maru Gothic / Gowun Dodum), 明朝 (Noto Serif), ピクセル (Galmuri / DotGothic16 / Press Start 2P) and your system font, plus three sentence sizes. Web fonts load from CDNs when available and fall back to your system CJK fonts. A GitHub Pages workflow deploys `main`
 automatically once Pages is set to "GitHub Actions" in the repository settings.
 
+## SEO / sharing
+
+`index.html` carries a descriptive title and meta description, Open Graph and Twitter card tags
+with a 1200×630 preview image (`assets/og.png`), a web app manifest with pixel-cat icons, and
+schema.org `WebApplication` structured data. `robots.txt` and `sitemap.xml` sit at the root.
+The absolute URLs point at `https://jp-kr-typing-game.vercel.app/`; if the app moves to another
+domain, replace that address in `index.html` (canonical, `og:url`, `og:image`, `twitter:image`,
+JSON-LD), `robots.txt` and `sitemap.xml`.
+
 ## Features
 
 The `?` button in the header opens an **About / How to use** panel in the selected language:

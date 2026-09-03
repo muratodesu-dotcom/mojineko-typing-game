@@ -177,6 +177,7 @@
   function applyI18n() {
     el.root.dataset.lang = set.lang;
     el.root.lang = set.lang;
+    document.title = t('pageTitle');
     applyDisplay();
     $$('[data-t]').forEach(n => { n.textContent = t(n.dataset.t); });
     el.playHint.innerHTML = t('quitHint').replace('Esc', '<kbd>Esc</kbd>');
