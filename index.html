@@ -22,7 +22,7 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <!-- Fonts are optional: loaded without blocking render, falling back to system CJK fonts. -->
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&family=Zen+Maru+Gothic:wght@400;500;700&family=Gowun+Dodum&family=Noto+Serif+JP:wght@400;700&family=Noto+Serif+KR:wght@400;700&family=DotGothic16&family=Press+Start+2P&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700&family=Noto+Serif:wght@400;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&family=Zen+Maru+Gothic:wght@400;500;700&family=Gowun+Dodum&family=Noto+Serif+JP:wght@400;700&family=Noto+Serif+KR:wght@400;700&family=DotGothic16&family=Press+Start+2P&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
   <link href="https://cdn.jsdelivr.net/npm/galmuri/dist/galmuri.css" rel="stylesheet" media="print" onload="this.media='all'">
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -63,6 +63,7 @@
             <div class="lang-cards" data-nav>
               <button class="lang-card" data-lang="ja"><span class="lang-glyph">あ</span><span class="lang-name">日本語</span></button>
               <button class="lang-card" data-lang="ko"><span class="lang-glyph">한</span><span class="lang-name">한국어</span></button>
+              <button class="lang-card" data-lang="en"><span class="lang-glyph">A</span><span class="lang-name">English</span></button>
             </div>
           </div>
 
@@ -164,6 +165,11 @@
           </div>
         </aside>
       </div>
+      <div class="cheer" id="cheer-home">
+        <span class="cheer-avatar" aria-hidden="true">ム</span>
+        <span class="balloon" id="cheer-home-text"></span>
+        <span class="cheer-from" data-t="cheerFrom"></span>
+      </div>
     </section>
 
     <!-- ================= PLAY ================= -->
@@ -225,6 +231,11 @@
             <button class="btn-text" id="btn-home" data-t="home"></button>
           </div>
         </div>
+        <div class="cheer" id="cheer-result">
+          <span class="cheer-avatar" aria-hidden="true">ム</span>
+          <span class="balloon" id="cheer-result-text"></span>
+          <span class="cheer-from" data-t="cheerFrom"></span>
+        </div>
       </div>
       <canvas id="share-canvas" width="640" height="360" hidden></canvas>
     </section>
@@ -236,6 +247,10 @@
       <button class="icon-btn" id="btn-settings-close" aria-label="close">✕</button>
     </div>
     <div class="settings-body">
+      <div class="field">
+        <label data-t="pet"></label>
+        <div class="chips pet-chips" id="pet-chips" data-nav></div>
+      </div>
       <div class="field">
         <label data-t="font"></label>
         <div class="chips" id="font-chips" data-nav></div>
@@ -275,6 +290,7 @@
 
   <script src="js/data/ja.js"></script>
   <script src="js/data/ko.js"></script>
+  <script src="js/data/en.js"></script>
   <script src="js/i18n.js"></script>
   <script src="js/hangul.js"></script>
   <script src="js/sprite.js"></script>

@@ -21,6 +21,7 @@
   /* Font set "clean" (default): readable sans. Other sets are selected with data-font on <html>. */
   --font-ja: 'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic', 'Meiryo', system-ui, sans-serif;
   --font-ko: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif;
+  --font-en: 'Noto Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-num: 'Noto Sans JP', 'Noto Sans KR', system-ui, sans-serif;
   --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
   --font-ui: var(--font-ja);
@@ -45,31 +46,38 @@
   --dot: #2a2238;
 }
 :root[data-lang="ko"] { --font-ui: var(--font-ko); }
+:root[data-lang="en"] { --font-ui: var(--font-en); }
 :root[data-font="pixel"] {
   --font-ja: 'DotGothic16', 'Galmuri11', 'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic', 'Meiryo', sans-serif;
   --font-ko: 'Galmuri11', 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
   --font-num: 'Press Start 2P', 'Galmuri11', 'DotGothic16', monospace;
   --font-mono: 'Galmuri11', ui-monospace, Menlo, Consolas, monospace;
+  --font-en: 'Galmuri11', 'DotGothic16', monospace;
   --num-scale: 1;
 }
 :root[data-font="round"] {
   --font-ja: 'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', 'Noto Sans JP', sans-serif;
   --font-ko: 'Gowun Dodum', 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
   --font-num: 'Zen Maru Gothic', 'Gowun Dodum', system-ui, sans-serif;
+  --font-en: 'Zen Maru Gothic', 'Nunito', system-ui, sans-serif;
 }
 :root[data-font="serif"] {
   --font-ja: 'Noto Serif JP', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
   --font-ko: 'Noto Serif KR', 'Apple Myungjo', 'Batang', serif;
   --font-num: 'Noto Serif JP', 'Noto Serif KR', serif;
+  --font-en: 'Noto Serif', Georgia, serif;
 }
 :root[data-font="system"] {
   --font-ja: system-ui, -apple-system, 'Segoe UI', Roboto, 'Hiragino Sans', 'Yu Gothic', 'Meiryo', sans-serif;
   --font-ko: system-ui, -apple-system, 'Segoe UI', Roboto, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
   --font-num: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-en: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
 :root[data-size="s"] { --text-scale: 0.85; }
 :root[data-size="l"] { --text-scale: 1.25; }
 :root[data-lang="ko"] { --bg: #eef6ff; --surface-2: #e9f2ff; --accent: #7cc0ff; --accent-soft: #d6e9ff; --dot: #d6e4f3; }
+:root[data-lang="en"] { --bg: #eefaf3; --surface-2: #e8f6ee; --accent: #3fbf8a; --accent-soft: #d3f2e2; --dot: #d3e9dc; }
+:root[data-lang="en"][data-theme="dark"] { --bg: #16221c; --surface: #1f2d26; --surface-2: #27382f; --accent: #5fd6a8; --accent-soft: #2b4a3c; --dot: #1f2d26; }
 :root[data-lang="ko"][data-theme="dark"] { --bg: #171d2a; --surface: #222a3a; --surface-2: #2b3446; --accent: #86c5ff; --accent-soft: #2e4460; --dot: #222a3a; }
 
 * { box-sizing: border-box; }
@@ -120,7 +128,7 @@ h2 small { font-weight: 400; color: var(--muted); font-size: 0.78rem; }
 .brand-name { font-weight: 700; font-size: 1.05rem; letter-spacing: 0.02em; }
 .brand-heart { display: inline-flex; }
 .topbar-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.pill { padding: 6px 12px; font-size: 0.82rem; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.pill { height: 36px; padding: 0 12px; font-size: 0.82rem; color: var(--muted); display: flex; align-items: center; gap: 6px; }
 .pill b { color: var(--text); font-weight: 700; }
 .pill .dot { width: 8px; height: 8px; background: var(--accent); border: 2px solid var(--ink); }
 .xp-bar { width: 70px; height: 8px; border: 2px solid var(--ink); background: var(--surface-2); overflow: hidden; margin-left: 4px; }
@@ -129,15 +137,15 @@ h2 small { font-weight: 400; color: var(--muted); font-size: 0.78rem; }
 .icon-btn:hover { background: var(--accent-soft); }
 .icon-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: square; stroke-linejoin: miter; }
 
-main { padding: 18px 28px 28px; max-width: 1160px; margin: 0 auto; width: 100%; flex: 1; }
+main { padding: 14px 28px 14px; max-width: 1160px; margin: 0 auto; width: 100%; flex: 1; }
 .screen { display: none; }
 .screen.active { display: block; }
 .panel { padding: 20px; }
 
 /* ---------- home ---------- */
 .home-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(300px, 0.9fr); gap: 26px; align-items: start; }
-.setup { padding: 20px 24px; }
-.hero { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
+.setup { padding: 16px 22px; }
+.hero { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 8px; }
 .hero-title { font-size: 1.55rem; font-weight: 700; line-height: 1.3; }
 .hero-sub { color: var(--muted); margin: 4px 0 0; font-size: 0.88rem; }
 .mascot { position: relative; display: inline-block; line-height: 0; animation: bob 2.4s steps(2) infinite; cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent; }
@@ -151,14 +159,14 @@ main { padding: 18px 28px 28px; max-width: 1160px; margin: 0 auto; width: 100%; 
 @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
 @keyframes hop { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 @keyframes shiver { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-4px); } }
-.field { margin-bottom: 14px; }
+.field { margin-bottom: 11px; }
 .field > label { display: block; font-size: 0.78rem; color: var(--muted); margin-bottom: 6px; }
 .field > label:not(.toggle)::before { content: '▸ '; color: var(--accent); }
 .field-row { display: flex; gap: 24px; flex-wrap: wrap; }
 .hint { color: var(--muted); font-size: 0.78rem; margin: 6px 0 0; min-height: 1.2em; }
 
-.lang-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.lang-card { display: flex; align-items: center; gap: 12px; padding: 9px 14px; text-align: left; }
+.lang-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.lang-card { display: flex; align-items: center; gap: 12px; padding: 7px 12px; text-align: left; }
 .lang-card:hover { background: var(--surface-2); }
 .lang-card.active { background: var(--accent-soft); }
 .lang-glyph {
@@ -169,7 +177,7 @@ main { padding: 18px 28px 28px; max-width: 1160px; margin: 0 auto; width: 100%; 
 .lang-name { font-weight: 700; font-size: 1rem; }
 
 .chips { display: flex; gap: 10px; flex-wrap: wrap; }
-.chip { padding: 7px 12px; font-size: 0.86rem; }
+.chip { padding: 6px 12px; font-size: 0.86rem; }
 .chip small { font-size: 0.75em; margin-left: 2px; opacity: 0.85; }
 .chip:hover { background: var(--surface-2); }
 .chip.active { background: var(--accent); color: var(--on-accent); }
@@ -272,6 +280,7 @@ main { padding: 18px 28px 28px; max-width: 1160px; margin: 0 auto; width: 100%; 
   word-break: keep-all; overflow-wrap: anywhere;
 }
 :root[data-lang="ko"] .sentence-main { font-family: var(--font-ko); }
+:root[data-lang="en"] .sentence-main { font-family: var(--font-en); letter-spacing: 0.01em; }
 .sentence-main ruby { ruby-position: over; ruby-align: center; }
 .sentence-main rt { font-size: 0.42em; color: var(--muted); letter-spacing: 0; font-weight: 400; line-height: 1; }
 .sentence-main.furi { line-height: 2.1; }
@@ -430,7 +439,7 @@ main { padding: 18px 28px 28px; max-width: 1160px; margin: 0 auto; width: 100%; 
 /* ---------- side tabs ---------- */
 .side-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
 .side-tabs .chip { padding: 6px 10px; font-size: 0.82rem; }
-.side-panel { max-height: calc(100vh - 190px); overflow-y: auto; }
+.side-panel { max-height: calc(100vh - 240px); overflow-y: auto; }
 h2.mt { margin-top: 18px; }
 
 /* ---------- settings dialog ---------- */
@@ -448,3 +457,21 @@ h2.mt { margin-top: 18px; }
 
 .font-preview { display: flex; gap: 8px; flex-wrap: wrap; }
 .font-preview .chip { font-family: var(--preview-font); }
+
+/* ---------- cheer balloon from ムラト ---------- */
+.cheer { display: flex; align-items: center; gap: 12px; margin: 10px auto 0; max-width: 1160px; }
+.cheer-avatar {
+  flex: none; width: 36px; height: 36px; display: grid; place-items: center; border: 2px solid var(--ink); box-shadow: 2px 2px 0 var(--ink);
+  background: var(--accent); color: var(--on-accent); font-weight: 700; font-family: var(--font-ja);
+}
+.balloon {
+  position: relative; padding: 8px 14px; border: 2px solid var(--ink); background: var(--surface); box-shadow: 3px 3px 0 var(--ink);
+  font-size: 0.95rem; color: var(--text); animation: balloonin 0.2s steps(2) both;
+}
+.balloon::before { content: ''; position: absolute; left: -8px; top: 12px; width: 6px; height: 6px; background: var(--surface); border-left: 2px solid var(--ink); border-bottom: 2px solid var(--ink); transform: rotate(45deg); }
+.cheer-from { color: var(--muted); font-size: 0.78rem; white-space: nowrap; }
+@keyframes balloonin { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+.result-wrap .cheer { justify-content: center; margin-top: 6px; }
+.pet-chips .chip { display: inline-flex; align-items: center; gap: 8px; }
+.pet-chips .chip .px { display: inline-block; }
+@media (max-width: 900px) { .cheer { margin: 14px 0 0; } .cheer-from { display: none; } }

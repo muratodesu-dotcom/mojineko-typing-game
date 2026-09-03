@@ -9,7 +9,8 @@ const Store = (() => {
       font: 'clean',     // 'clean' | 'round' | 'serif' | 'pixel' | 'system'
       textSize: 'm',     // sentence size: 's' | 'm' | 'l'
       sideTab: 'overview',
-      input: { ja: 'hiragana', ko: 'jamo' },  // ja: script to type (via IME); ko: input method
+      pet: 'cat',        // 'cat' | 'dog' | 'rabbit' | 'bear' | 'chick'
+      input: { ja: 'hiragana', ko: 'jamo', en: 'keys' },  // ja: script to type (via IME); ko: input method
       mode: 'time',      // 'time' | 'sprint' | 'daily' | 'drill'
       duration: 60,      // seconds, for time mode
       sprintCount: 10,   // sentences, for sprint mode
@@ -20,13 +21,13 @@ const Store = (() => {
       guide: true,
       keyboard: true,
       translation: true,
-      furigana: false,   // reading hint under kanji sentences (Japanese 混合)
+      furigana: true,    // furigana above kanji (Japanese 混合)
       hideInput: false,  // inline IME composition, input box visually hidden
       strict: false,     // 2-set mode: wrong keys must be erased with Backspace
     },
     stats: {
       games: 0, chars: 0, keys: 0, seconds: 0, bestCombo: 0, xp: 0, pets: 0,
-      langs: { ja: 0, ko: 0 },
+      langs: { ja: 0, ko: 0, en: 0 },
       // Per-difficulty progress (mixed games credit each sentence to its own level).
       levels: {
         1: { games: 0, sentences: 0, bestRank: '', bestScore: 0 },
@@ -38,8 +39,8 @@ const Store = (() => {
     ghosts: {},        // boardKey -> score sampled each second of the best run
     daily: {},         // "YYYY-MM-DD:lang:input" -> best entry that day
     history: [],       // recent rounds: {t, lang, input, mode, level, score, speed, acc, rank}
-    weak: { ja: {}, ko: {} },  // character -> miss count
-    custom: { ja: [], ko: [] }, // user sentences: {text, reading, en}
+    weak: { ja: {}, ko: {}, en: {} },  // character -> miss count
+    custom: { ja: [], ko: [], en: [] }, // user sentences: {text, reading, en}
     achievements: {},  // id -> ISO date unlocked
     streak: { last: '', count: 0, best: 0, freezeUsed: '' },
   });

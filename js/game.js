@@ -36,10 +36,14 @@
   const LANGS = {
     ja: { sentences: () => JA_SENTENCES, drills: () => JA_DRILLS, paragraphs: () => JA_PARAGRAPHS, inputs: ['hiragana', 'mixed'] },   // both typed through the IME
     ko: { sentences: () => KO_SENTENCES, drills: () => KO_DRILLS, paragraphs: () => KO_PARAGRAPHS, inputs: ['jamo', 'direct'] },
+    en: { sentences: () => EN_SENTENCES, drills: () => EN_DRILLS, paragraphs: () => EN_PARAGRAPHS, inputs: ['keys'] },
   };
+  const plainUnits = text => [...text].map(ch => ({ text: ch, alts: [ch], canon: ch, typed: '', partial: p => p }));
+  const speedUnitFor = (lang, direct) => (direct ? 'cpm' : lang === 'en' ? 'wpm' : 'kpm');
   const isDirectInput = (lang, input) => lang === 'ja' || input === 'direct';
   const PACKS = ['all', 'daily', 'travel', 'work', 'food', 'weak', 'custom'];
   const FONTS = ['clean', 'round', 'serif', 'pixel', 'system'];
+  const PETS = ['cat', 'dog', 'rabbit', 'bear', 'chick'];
   const SIZES = ['s', 'm', 'l'];
   const COUNT_MODES = { sprint: null, daily: 10, drill: 15, paragraph: 3 }; // null = user-selected
   const PARAGRAPH_SENTENCES = 4;
@@ -62,6 +66,7 @@
     { id: 'games10', ico: '🎮', test: (r, s) => s.stats.games >= 10 },
     { id: 'games50', ico: '🏅', test: (r, s) => s.stats.games >= 50 },
     { id: 'bilingual', ico: '🌏', test: (r, s) => s.stats.langs.ja > 0 && s.stats.langs.ko > 0 },
+    { id: 'trilingual', ico: '🌐', test: (r, s) => s.stats.langs.ja > 0 && s.stats.langs.ko > 0 && (s.stats.langs.en || 0) > 0 },
     { id: 'streak3', ico: '📅', test: (r, s) => s.streak.count >= 3 },
     { id: 'streak7', ico: '🗓️', test: (r, s) => s.streak.count >= 7 },
     { id: 'chars10k', ico: '📚', test: (r, s) => s.stats.chars >= 10000 },
@@ -119,7 +124,8 @@
     screens: { home: $('#screen-home'), play: $('#screen-play'), result: $('#screen-result') },
     inputLabel: $('#input-label'), inputChips: $('#input-chips'), inputHint: $('#input-hint'), modeHint: $('#mode-hint'),
     fieldDuration: $('#field-duration'), fieldSprint: $('#field-sprint'), fieldPack: $('#field-pack'), fieldLevel: $('#field-level'),
-    fontChips: $('#font-chips'), sizeChips: $('#size-chips'),
+    fontChips: $('#font-chips'), sizeChips: $('#size-chips'), petChips: $('#pet-chips'),
+    cheerHome: $('#cheer-home-text'), cheerResult: $('#cheer-result-text'),
     packChips: $('#pack-chips'), packHint: $('#pack-hint'), customEditor: $('#custom-editor'), customText: $('#custom-text'), customHelp: $('#custom-help'), btnCustomSave: $('#btn-custom-save'),
     toggleGuide: $('#toggle-guide'), toggleKeyboard: $('#toggle-keyboard'), toggleStrict: $('#toggle-strict'), toggleFurigana: $('#toggle-furigana'), toggleHideInput: $('#toggle-hide-input'),
     optGuide: $('#opt-guide'), optKeyboard: $('#opt-keyboard'), optStrict: $('#opt-strict'), optFurigana: $('#opt-furigana'), optHideInput: $('#opt-hide-input'), optTranslation: $('#opt-translation'), optVolume: $('#opt-volume'),
@@ -274,7 +280,7 @@
       if (level !== 'mixed') curated = curated.filter(p => p.level === +level);
       paras.push(...shuffle(curated, rnd).slice(0, COUNT_MODES.paragraph).map(p => ({ ...p, parts: [p.level, p.level, p.level] })));
     }
-    const joiner = lang === 'ko' ? ' ' : '';
+    const joiner = lang === 'ja' ? '' : ' ';
     for (let i = 0; i + 1 < pool.length && paras.length < COUNT_MODES.paragraph; i += PARAGRAPH_SENTENCES) {
       const group = pool.slice(i, i + PARAGRAPH_SENTENCES);
       paras.push({
@@ -298,6 +304,7 @@
     if (!inputs.includes(set.input[set.lang])) set.input[set.lang] = inputs[0];
     const names = t('inputs')[set.lang];
     el.inputLabel.textContent = set.lang === 'ja' ? t('script') : t('inputMethod');
+    el.inputChips.parentElement.hidden = set.lang === 'en';
     el.inputChips.innerHTML = inputs.map(id =>
       `<button class="chip${id === set.input[set.lang] ? ' active' : ''}" data-input="${id}">${names[id].name}</button>`).join('');
     el.inputHint.textContent = names[set.input[set.lang]].hint;
@@ -319,18 +326,19 @@
     el.customEditor.hidden = set.pack !== 'custom';
     if (set.pack === 'custom') {
       el.customText.value = (S.custom[set.lang] || []).map(c => c.reading ? `${c.text}｜${c.reading}` : c.text).join('\n');
-      el.customText.placeholder = set.lang === 'ja' ? '今日はいい天気ですね。｜きょうはいいてんきですね。' : '오늘 날씨가 좋네요.';
+      el.customText.placeholder = set.lang === 'ja' ? '今日はいい天気ですね。｜きょうはいいてんきですね。' : set.lang === 'ko' ? '오늘 날씨가 좋네요.' : 'The weather is nice today.';
     }
 
     const previewFonts = {
       clean: "'Noto Sans JP', 'Noto Sans KR', sans-serif", round: "'Zen Maru Gothic', 'Gowun Dodum', sans-serif", serif: "'Noto Serif JP', 'Noto Serif KR', serif",
       pixel: "'Galmuri11', 'DotGothic16', monospace", system: 'system-ui, sans-serif',
     };
+    el.petChips.innerHTML = PETS.map(p => `<button class="chip${p === set.pet ? ' active' : ''}" data-pet="${p}">${Sprite.pet(p, 'idle', 2, currentLook())}${t('pets')[p]}</button>`).join('');
     el.fontChips.innerHTML = FONTS.map(f => `<button class="chip${f === set.font ? ' active' : ''}" data-font="${f}" style="font-family:${previewFonts[f]}">${t('fonts')[f]}</button>`).join('');
     el.sizeChips.innerHTML = SIZES.map(z => `<button class="chip${z === set.textSize ? ' active' : ''}" data-size="${z}">${t('sizes')[z]}</button>`).join('');
 
     const builtin = !isDirectInput(set.lang, set.input[set.lang]);
-    el.toggleGuide.hidden = !builtin;
+    el.toggleGuide.hidden = !builtin || set.lang === 'en';
     el.toggleKeyboard.hidden = !builtin;
     el.toggleStrict.hidden = !builtin;
     el.toggleFurigana.hidden = !(set.lang === 'ja' && set.input[set.lang] === 'mixed');
@@ -357,7 +365,24 @@
     renderAchievements();
     renderMascotPanel();
     setMascot(el.mascotHome, 'idle');
+    showCheer(el.cheerHome);
   }
+
+  // Encouragement from ムラト: random line, rank-aware on the result screen.
+  function showCheer(node, rank) {
+    const lines = t('cheers');
+    let text = lines[Math.floor(Math.random() * lines.length)];
+    if (rank) {
+      const byRank = t('cheerRank');
+      text = 'SA'.includes(rank) ? byRank.high : 'BC'.includes(rank) ? byRank.mid : byRank.low;
+      if (Math.random() < 0.5) text = lines[Math.floor(Math.random() * lines.length)];
+    }
+    node.textContent = text;
+    node.style.animation = 'none';
+    void node.offsetWidth;
+    node.style.animation = '';
+  }
+  setInterval(() => { if (el.screens.home.classList.contains('active') && !el.settingsModal.open) showCheer(el.cheerHome); }, 15000);
 
   function renderTopbar() {
     el.streak.textContent = currentStreak();
@@ -383,7 +408,7 @@
       statCard(t('timePlayed'), mins < 60 ? fmt(mins) : (st.seconds / 3600).toFixed(1), mins < 60 ? t('min') : t('hour')),
       statCard(t('xp'), fmt(st.xp)),
       statCard(t('bestStreak'), fmt(S.streak.best), t('days')),
-      statCard(t('pets'), fmt(st.pets || 0)),
+      statCard(t('petsStat'), fmt(st.pets || 0)),
     ].join('');
   }
 
@@ -400,7 +425,7 @@
     const W = 300, H = 90, padL = 28, padB = 14, padT = 6;
     const max = Math.max(...rows.map(r => r.speed), 1);
     const slot = (W - padL) / 20, bw = Math.max(4, slot - 2);
-    const unit = t(rows[0].speedUnit || (isDirectInput(set.lang, input) ? 'cpm' : 'kpm'));
+    const unit = t(rows[0].speedUnit || speedUnitFor(set.lang, isDirectInput(set.lang, input)));
     const bars = rows.map((r, i) => {
       const h = Math.max(2, ((H - padB - padT) * r.speed) / max);
       const x = padL + i * slot, y = H - padB - h;
@@ -485,7 +510,7 @@
   const currentLook = () => Sprite.lookFor(levelFromXp(S.stats.xp));
   function setMascot(node, frame) {
     if (!node) return;
-    node.innerHTML = Sprite.cat(frame, node === el.mascotPlay ? 4 : 5, currentLook());
+    node.innerHTML = Sprite.pet(set.pet, frame, node === el.mascotPlay ? 4 : 5, currentLook());
   }
   function renderMascotPanel() {
     setMascot(el.mascotPreview, 'idle');
@@ -566,7 +591,7 @@
     G.pool = buildPool(G.lang, G.input, mode, G.level, G.pack, rnd);
     G.ghost = S.ghosts[boardKeyFor(G.lang, G.input, G.mode, G.duration, G.count)] || null;
 
-    el.hudSpeedLabel.textContent = t(G.direct ? 'cpm' : 'kpm');
+    el.hudSpeedLabel.textContent = t(speedUnitFor(G.lang, G.direct));
     el.hudTimeLabel.textContent = G.mode === 'time' ? t('hudTime') : G.mode === 'drill' ? t('hudItems') : G.mode === 'paragraph' ? t('hudParagraphs') : t('hudSentences');
     el.hudGhostBox.hidden = !G.ghost;
     el.hudGhost.textContent = '±0';
@@ -640,9 +665,15 @@
         el.ghostMarker.style.left = `${clamp((gs / finalBest) * 100, 0, 100)}%`;
       }
     }
-    const mins = Math.max(G.elapsed, 1) / 60;
-    el.hudSpeed.textContent = Math.round((G.direct ? G.chars : G.keys) / mins);
+    el.hudSpeed.textContent = speedNow();
     G.raf = requestAnimationFrame(tick);
+  }
+
+  function speedNow() {
+    const mins = Math.max(G.elapsed, 1) / 60;
+    if (G.direct) return Math.round(G.chars / mins);
+    if (G.lang === 'en') return Math.round(G.keys / 5 / mins);
+    return Math.round(G.keys / mins);
   }
 
   function quitGame() {
@@ -673,7 +704,7 @@
 
     if (G.lang === 'ja') G.target = G.input === 'hiragana' ? kataToHira(G.sentence.reading || G.sentence.text) : G.sentence.text;
     else G.target = G.sentence.text;
-    G.units = G.direct ? [] : Hangul.buildUnits(G.target);
+    G.units = G.direct ? [] : G.lang === 'en' ? plainUnits(G.target) : Hangul.buildUnits(G.target);
 
     G.furi = (G.lang === 'ja' && G.input === 'mixed' && set.furigana) ? alignFurigana(G.sentence.text, G.sentence.reading) : null;
     el.reading.textContent = '';
@@ -703,7 +734,7 @@
       return unitSpan(i < cur ? 'done' : i === cur ? 'cur' : 'pend', u.text);
     }).join('');
 
-    if (set.guide) {
+    if (set.guide && G.lang !== 'en') {
       el.guide.innerHTML = G.units.map((u, i) => {
         if (u.text === ' ') return '<span class="g sp"></span>';
         if (i < cur) return `<span class="g done">${escapeHtml(u.typed)}</span>`;
@@ -910,11 +941,11 @@
   const KEY_ROWS = [
     ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', 'backspace'],
     ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
-    ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
+    ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', "'"],
     ['shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/'],
     [' '],
   ];
-  const SHIFT_MAP = { '?': '/', '!': '1', '~': '`', '_': '-' };
+  const SHIFT_MAP = { '?': '/', '!': '1', '~': '`', '_': '-', '"': "'", ':': ';', '<': ',', '>': '.' };
 
   function buildKeyboard() {
     if (!set.keyboard || G.direct) { el.keyboard.innerHTML = ''; return; }
@@ -922,7 +953,7 @@
       if (k === 'shift') return '<div class="key wide" data-key="shift">⇧</div>';
       if (k === 'backspace') return '<div class="key wide" data-key="Backspace">⌫</div>';
       if (k === ' ') return '<div class="key space" data-key=" ">space</div>';
-      if (Hangul.KEY_LABELS[k]) {
+      if (G.lang === 'ko' && Hangul.KEY_LABELS[k]) {
         const sh = Hangul.SHIFT_LABELS[k] ? `<span class="shifted">${Hangul.SHIFT_LABELS[k]}</span>` : '';
         return `<div class="key" data-key="${k}">${sh}<span class="jamo">${Hangul.KEY_LABELS[k]}</span></div>`;
       }
@@ -969,8 +1000,8 @@
     const r = {
       lang: G.lang, input: G.input, mode: G.mode, duration: G.duration, count: G.count, level: G.level, pack: G.pack,
       score: Math.round(G.score),
-      speed: Math.round((G.direct ? G.chars : G.keys) / minutes),
-      speedUnit: G.direct ? 'cpm' : 'kpm',
+      speed: speedNow(),
+      speedUnit: speedUnitFor(G.lang, G.direct),
       acc: total ? Math.round((G.hits / total) * 100) : 100,
       maxCombo: G.maxCombo, misses: G.misses, sentences: G.sentences, perfect: G.perfect,
       chars: G.chars, seconds: Math.round(G.elapsed), hour: new Date().getHours(), date: todayStr(),
@@ -1044,6 +1075,7 @@
     }).join('');
     renderBoard(el.resultBoard, el.resultBoardLabel, key, myIdx);
     renderTopbar();
+    showCheer(el.cheerResult, r.rank);
     showScreen('result');
 
     Sfx.finish();
@@ -1092,7 +1124,7 @@
     });
     ctx.fillStyle = col('--muted'); ctx.font = `12px ${text}`; ctx.fillText(r.date, 44, H - 40);
     const look = currentLook();
-    Sprite.drawCat(ctx, r.rank === 'S' || r.rank === 'A' ? 'happy' : 'idle', W - 210, 90, 11, { k: col('--ink'), w: col('--sprite-body'), p: col('--accent'), b: col('--accent'), y: col('--warn'), r: col('--bad') }, look);
+    Sprite.drawPet(ctx, set.pet, r.rank === 'S' || r.rank === 'A' ? 'happy' : 'idle', W - 210, 90, 11, { k: col('--ink'), w: col('--sprite-body'), p: col('--accent'), b: col('--accent'), y: col('--warn'), r: col('--bad') }, look);
     c.toBlob(blob => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -1174,6 +1206,7 @@
   chipHandler('#level-chips', 'level', v => { set.level = v === 'mixed' ? 'mixed' : +v; });
   chipHandler('#pack-chips', 'pack', v => { set.pack = v; });
   chipHandler('#font-chips', 'font', v => { set.font = v; });
+  chipHandler('#pet-chips', 'pet', v => { set.pet = v; });
   chipHandler('#side-tabs', 'tab', v => { set.sideTab = v; });
   el.btnSettings.addEventListener('click', () => { renderHome(); el.settingsModal.showModal(); });
   el.btnSettingsClose.addEventListener('click', () => el.settingsModal.close());
