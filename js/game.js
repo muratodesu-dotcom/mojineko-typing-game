@@ -98,6 +98,9 @@
     { id: 'rank', tiers: ['B', 'A', 'S'] },
   ];
 
+  const UI_LANGS = ['ja', 'ko', 'en'];
+  const UI_LANG_NAMES = { ja: '日本語', ko: '한국어', en: 'English' };
+
   const ICONS = {
     sun: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',
     moon: '<svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>',
@@ -112,7 +115,7 @@
   // ---------------------------------------------------------------------
   const S = Store.load();
   const set = S.settings;
-  const t = key => I18N[set.lang][key];
+  const t = key => I18N[set.uiLang][key];  // UI strings follow the display language, not the practice language
 
   const G = {
     active: false, phase: 'idle', // idle | countdown | play | done
@@ -129,7 +132,7 @@
     screens: { home: $('#screen-home'), play: $('#screen-play'), result: $('#screen-result') },
     inputLabel: $('#input-label'), inputChips: $('#input-chips'), inputHint: $('#input-hint'), modeHint: $('#mode-hint'),
     fieldDuration: $('#field-duration'), fieldSprint: $('#field-sprint'), fieldPack: $('#field-pack'), fieldLevel: $('#field-level'),
-    fontChips: $('#font-chips'), sizeChips: $('#size-chips'), petChips: $('#pet-chips'),
+    fontChips: $('#font-chips'), sizeChips: $('#size-chips'), petChips: $('#pet-chips'), uiLangChips: $('#ui-lang-chips'),
     cheerHome: $('#cheer-home-text'), cheerResult: $('#cheer-result-text'),
     packChips: $('#pack-chips'), packHint: $('#pack-hint'), customEditor: $('#custom-editor'), customText: $('#custom-text'), customHelp: $('#custom-help'), btnCustomSave: $('#btn-custom-save'),
     toggleGuide: $('#toggle-guide'), toggleKeyboard: $('#toggle-keyboard'), toggleStrict: $('#toggle-strict'), toggleFurigana: $('#toggle-furigana'), toggleHideInput: $('#toggle-hide-input'),
@@ -175,8 +178,11 @@
     el.root.dataset.size = set.textSize;
   }
   function applyI18n() {
-    el.root.dataset.lang = set.lang;
-    el.root.lang = set.lang;
+    el.root.dataset.lang = set.lang;   // accent colour and sentence font follow the practice language
+    el.root.dataset.ui = set.uiLang;   // menu font follows the display language
+    el.root.lang = set.uiLang;
+    // Sentences, weak-spot characters and the custom editor are in the practice language (correct CJK glyphs).
+    el.screens.play.lang = set.lang; el.screens.result.lang = set.lang; el.customText.lang = set.lang;
     document.title = t('pageTitle');
     applyDisplay();
     $$('[data-t]').forEach(n => { n.textContent = t(n.dataset.t); });
@@ -373,6 +379,7 @@
       clean: "'Noto Sans JP', 'Noto Sans KR', sans-serif", round: "'Zen Maru Gothic', 'Gowun Dodum', sans-serif", serif: "'Noto Serif JP', 'Noto Serif KR', serif",
       pixel: "'Galmuri11', 'DotGothic16', monospace", system: 'system-ui, sans-serif',
     };
+    el.uiLangChips.innerHTML = UI_LANGS.map(l => `<button class="chip${l === set.uiLang ? ' active' : ''}" data-ui-lang="${l}" lang="${l}">${UI_LANG_NAMES[l]}</button>`).join('');
     el.petChips.innerHTML = PETS.map(p => `<button class="chip${p === set.pet ? ' active' : ''}" data-pet="${p}">${Sprite.pet(p, 'idle', 2, currentLook())}${t('pets')[p]}</button>`).join('');
     el.fontChips.innerHTML = FONTS.map(f => `<button class="chip${f === set.font ? ' active' : ''}" data-font="${f}" style="font-family:${previewFonts[f]}">${t('fonts')[f]}</button>`).join('');
     el.sizeChips.innerHTML = SIZES.map(z => `<button class="chip${z === set.textSize ? ' active' : ''}" data-size="${z}">${t('sizes')[z]}</button>`).join('');
@@ -1331,6 +1338,10 @@
   chipHandler('#pack-chips', 'pack', v => { set.pack = v; });
   chipHandler('#font-chips', 'font', v => { set.font = v; });
   chipHandler('#pet-chips', 'pet', v => { set.pet = v; });
+  el.uiLangChips.addEventListener('click', e => {
+    const b = e.target.closest('[data-ui-lang]'); if (!b) return;
+    set.uiLang = b.dataset.uiLang; Store.save(); applyI18n(); renderHome();
+  });
   chipHandler('#side-tabs', 'tab', v => { set.sideTab = v; });
   el.btnSettings.addEventListener('click', () => { renderHome(); el.settingsModal.showModal(); });
   el.btnSettingsClose.addEventListener('click', () => el.settingsModal.close());

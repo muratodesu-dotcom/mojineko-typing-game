@@ -45,8 +45,8 @@
   --sprite-body: #f6ecf5;
   --dot: #2a2238;
 }
-:root[data-lang="ko"] { --font-ui: var(--font-ko); }
-:root[data-lang="en"] { --font-ui: var(--font-en); }
+:root[data-ui="ko"] { --font-ui: var(--font-ko); }
+:root[data-ui="en"] { --font-ui: var(--font-en); }
 :root[data-font="pixel"] {
   --font-ja: 'DotGothic16', 'Galmuri11', 'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic', 'Meiryo', sans-serif;
   --font-ko: 'Galmuri11', 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;

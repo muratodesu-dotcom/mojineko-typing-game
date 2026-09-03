@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-lang="ja">
+<html lang="ja" data-lang="ja" data-ui="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -58,7 +58,9 @@
         var t = s.settings && s.settings.theme;
         if (t !== 'dark') t = 'light';  // light by default, regardless of the OS setting
         document.documentElement.dataset.theme = t;
-        if (s.settings && s.settings.lang) { document.documentElement.dataset.lang = s.settings.lang; document.documentElement.lang = s.settings.lang; }
+        if (s.settings && s.settings.lang) document.documentElement.dataset.lang = s.settings.lang;
+        var ui = (s.settings && s.settings.uiLang) || 'ja';
+        document.documentElement.dataset.ui = ui; document.documentElement.lang = ui;
         if (s.settings && s.settings.font) document.documentElement.dataset.font = s.settings.font;
         if (s.settings && s.settings.textSize) document.documentElement.dataset.size = s.settings.textSize;
       } catch (e) {}
@@ -293,6 +295,10 @@
       <button class="icon-btn" id="btn-settings-close" aria-label="close">✕</button>
     </div>
     <div class="settings-body">
+      <div class="field">
+        <label data-t="uiLang"></label>
+        <div class="chips" id="ui-lang-chips" data-nav></div>
+      </div>
       <div class="field">
         <label data-t="pet"></label>
         <div class="chips pet-chips" id="pet-chips" data-nav></div>
