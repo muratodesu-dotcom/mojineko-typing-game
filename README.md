@@ -20,7 +20,7 @@ automatically once Pages is set to "GitHub Actions" in the repository settings.
 `index.html` carries a descriptive title and meta description, Open Graph and Twitter card tags
 with a 1200×630 preview image (`assets/og.png`), a web app manifest with pixel-cat icons, and
 schema.org `WebApplication` structured data. `robots.txt` and `sitemap.xml` sit at the root.
-The absolute URLs point at `https://jp-kr-typing-game.vercel.app/`; if the app moves to another
+The absolute URLs point at `https://type.muratodesu.com/`; if the app moves to another
 domain, replace that address in `index.html` (canonical, `og:url`, `og:image`, `twitter:image`,
 JSON-LD), `robots.txt` and `sitemap.xml`.
 
