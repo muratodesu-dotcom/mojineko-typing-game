@@ -245,7 +245,9 @@ main { padding: 14px 28px 14px; max-width: 1160px; margin: 0 auto; width: 100%; 
 .hud-item { min-width: 112px; padding: 8px 14px; display: flex; flex-direction: column; align-items: center; }
 .hud-label { font-size: 0.72rem; color: var(--muted); }
 .hud-value { font-size: calc(1rem * var(--num-scale)); font-weight: 700; font-family: var(--font-num); line-height: 1.6; font-variant-numeric: tabular-nums; }
-.hud-item.combo .hud-value { transition: transform 0.08s; }
+.hud-item.combo .hud-value { transition: transform 0.06s; }
+.sentence-main.swap { animation: swapin 0.16s steps(3) both; }
+@keyframes swapin { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: none; } }
 .hud-item.combo.pop .hud-value { transform: scale(1.25); }
 .hud-item.combo.hot { background: var(--accent-soft); }
 .hud-item.combo.hot .hud-value { color: var(--accent); }
@@ -266,9 +268,9 @@ main { padding: 14px 28px 14px; max-width: 1160px; margin: 0 auto; width: 100%; 
   display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; transition: opacity 0.2s;
 }
 .sentence-card.blur { opacity: 0.3; }
-.sentence-card.shake { animation: shake 0.25s steps(3); }
+.sentence-card.shake { animation: shake 0.18s steps(3); }
 @keyframes shake { 0%,100% { transform: translateX(0); } 33% { transform: translateX(-6px); } 66% { transform: translateX(6px); } }
-.sentence-card.flash { animation: flash 0.35s steps(2); }
+.sentence-card.flash { animation: flash 0.2s steps(2); }
 @keyframes flash { 0% { background: var(--accent-soft); } 100% { background: var(--surface); } }
 .card-mascot { position: absolute; top: -26px; right: 18px; }
 
@@ -314,12 +316,12 @@ main { padding: 14px 28px 14px; max-width: 1160px; margin: 0 auto; width: 100%; 
 .float-layer { position: absolute; inset: 0; pointer-events: none; }
 .floater {
   position: absolute; left: 50%; top: 18%; transform: translateX(-50%); font-family: var(--font-num);
-  font-weight: 700; font-size: calc(0.85rem * var(--num-scale)); color: var(--accent); text-shadow: 2px 2px 0 var(--ink); animation: floatup 0.9s steps(6) forwards; white-space: nowrap;
+  font-weight: 700; font-size: calc(0.85rem * var(--num-scale)); color: var(--accent); text-shadow: 2px 2px 0 var(--ink); animation: floatup 0.6s steps(5) forwards; white-space: nowrap;
 }
 .floater.big { font-size: calc(1.2rem * var(--num-scale)); }
 .floater.ok { color: var(--ok); }
 .floater.lost { color: var(--muted); }
-@keyframes floatup { 0% { opacity: 0; transform: translate(-50%, 6px); } 15% { opacity: 1; transform: translate(-50%, 0); } 100% { opacity: 0; transform: translate(-50%, -50px); } }
+@keyframes floatup { 0% { opacity: 0; transform: translate(-50%, 4px); } 15% { opacity: 1; transform: translate(-50%, 0); } 100% { opacity: 0; transform: translate(-50%, -40px); } }
 
 .keyboard { max-width: 720px; margin: 26px auto 0; display: flex; flex-direction: column; gap: 6px; user-select: none; }
 .keyboard:empty { display: none; }
@@ -375,7 +377,7 @@ main { padding: 14px 28px 14px; max-width: 1160px; margin: 0 auto; width: 100%; 
 @keyframes toastin { from { transform: translateY(8px); opacity: 0; } to { transform: none; opacity: 1; } }
 
 @media (prefers-reduced-motion: reduce) {
-  .sentence-card.shake, .floater, .countdown, .result-rank, .mascot { animation: none; }
+  .sentence-card.shake, .floater, .countdown, .result-rank, .mascot, .sentence-main.swap { animation: none; }
 }
 @media (max-width: 900px) {
   .home-grid { grid-template-columns: 1fr; }
@@ -474,3 +476,11 @@ h2.mt { margin-top: 18px; }
 .pet-chips .chip { display: inline-flex; align-items: center; gap: 8px; }
 .pet-chips .chip .px { display: inline-block; }
 @media (max-width: 900px) { .cheer { margin: 14px 0 0; } }
+
+/* ---------- sleepy pet ---------- */
+.mascot.sleep { animation: breathe 3s steps(2) infinite; }
+@keyframes breathe { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(2px); } }
+.mascot .zzz { position: absolute; right: -16px; top: -18px; pointer-events: none; animation: zz 2.4s steps(6) infinite; }
+@keyframes zz { 0% { opacity: 0; transform: translateY(6px); } 20% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; transform: translateY(-10px); } }
+.mascot.wake { animation: stretch 0.6s steps(4) 1; }
+@keyframes stretch { 0% { transform: scale(1, 1); } 30% { transform: scale(0.92, 1.18) translateY(-4px); } 60% { transform: scale(1.1, 0.9); } 100% { transform: scale(1, 1); } }

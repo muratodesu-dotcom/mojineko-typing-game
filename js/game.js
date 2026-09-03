@@ -67,6 +67,7 @@
     { id: 'games50', ico: '🏅', test: (r, s) => s.stats.games >= 50 },
     { id: 'bilingual', ico: '🌏', test: (r, s) => s.stats.langs.ja > 0 && s.stats.langs.ko > 0 },
     { id: 'trilingual', ico: '🌐', test: (r, s) => s.stats.langs.ja > 0 && s.stats.langs.ko > 0 && (s.stats.langs.en || 0) > 0 },
+    { id: 'lucky', ico: '🍀', test: r => r.lucky },
     { id: 'streak3', ico: '📅', test: (r, s) => s.streak.count >= 3 },
     { id: 'streak7', ico: '🗓️', test: (r, s) => s.streak.count >= 7 },
     { id: 'chars10k', ico: '📚', test: (r, s) => s.stats.chars >= 10000 },
@@ -369,9 +370,18 @@
   }
 
   // Encouragement from ムラト: random line, rank-aware on the result screen.
+  function timeOfDay() {
+    const h = new Date().getHours();
+    if (h >= 5 && h < 11) return 'morning';
+    if (h >= 18 && h < 23) return 'evening';
+    if (h >= 23 || h < 4) return 'night';
+    return null;
+  }
   function showCheer(node, rank) {
     const lines = t('cheers');
     let text = lines[Math.floor(Math.random() * lines.length)];
+    const tod = timeOfDay();
+    if (tod && Math.random() < 0.5) { const tl = t('cheerTime')[tod]; text = tl[Math.floor(Math.random() * tl.length)]; }
     if (rank) {
       const byRank = t('cheerRank');
       text = 'SA'.includes(rank) ? byRank.high : 'BC'.includes(rank) ? byRank.mid : byRank.low;
@@ -510,7 +520,9 @@
   const currentLook = () => Sprite.lookFor(levelFromXp(S.stats.xp));
   function setMascot(node, frame) {
     if (!node) return;
+    const zzz = node.querySelector('.zzz');
     node.innerHTML = Sprite.pet(set.pet, frame, node === el.mascotPlay ? 4 : 5, currentLook());
+    if (zzz && frame === 'sleep') node.appendChild(zzz);
   }
   function renderMascotPanel() {
     setMascot(el.mascotPreview, 'idle');
@@ -527,6 +539,36 @@
     node.classList.add(frame);
     mascotTimer = setTimeout(() => { setMascot(node, 'idle'); node.classList.remove('happy', 'sad'); }, ms);
   }
+  // Sleepy pet: doze off after a minute without input on the menu, wake with a stretch.
+  const IDLE_MS = 60000;
+  let idleTimer = 0, asleep = false;
+  function sleepPet() {
+    if (!el.screens.home.classList.contains('active') || el.settingsModal.open || asleep) return;
+    asleep = true;
+    setMascot(el.mascotHome, 'sleep');
+    el.mascotHome.classList.remove('wake', 'pet', 'happy', 'sad');
+    el.mascotHome.classList.add('sleep');
+    const z = document.createElement('div');
+    z.className = 'zzz';
+    z.innerHTML = Sprite.zzz(2);
+    el.mascotHome.appendChild(z);
+  }
+  function wakePet() {
+    if (!asleep) return;
+    asleep = false;
+    el.mascotHome.classList.remove('sleep');
+    setMascot(el.mascotHome, 'idle');
+    el.mascotHome.classList.add('wake');
+    setTimeout(() => el.mascotHome.classList.remove('wake'), 650);
+  }
+  function resetIdle() {
+    wakePet();
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(sleepPet, IDLE_MS);
+  }
+  ['mousemove', 'mousedown', 'keydown', 'touchstart', 'wheel'].forEach(ev => document.addEventListener(ev, resetIdle, { passive: true }));
+  resetIdle();
+
   const petTimers = new Map();
   function petCat(node) {
     Sfx.unlock();
@@ -709,6 +751,9 @@
     G.furi = (G.lang === 'ja' && G.input === 'mixed' && set.furigana) ? alignFurigana(G.sentence.text, G.sentence.reading) : null;
     el.reading.textContent = '';
     el.en.textContent = set.translation && G.mode !== 'paragraph' ? (G.sentence.en || '') : '';
+    el.main.classList.remove('swap');
+    void el.main.offsetWidth;
+    el.main.classList.add('swap');
     el.main.classList.toggle('long', G.target.length > 60);
     el.main.classList.toggle('furi', !!G.furi);
     renderSentence();
@@ -838,6 +883,15 @@
     el.main.innerHTML = html;
     el.guide.innerHTML = '';
     el.directInput.classList.toggle('bad', mismatch && !composing);
+    if (composing) {
+      // Provisional score and combo while the IME composition is still open, so the HUD moves as you type.
+      let correct = 0;
+      while (correct < typed.length && correct < target.length && typed[correct] === target[correct]) correct++;
+      const prov = Math.max(0, correct - G.ime.scored);
+      el.hudScore.textContent = fmt(G.score + prov * unitValue() * multiplier());
+      el.hudCombo.textContent = G.combo + prov;
+      el.hudComboBox.classList.toggle('hot', G.combo + prov >= 25);
+    }
   }
 
   function evaluateDirect() {
@@ -874,6 +928,7 @@
     if (playSound) Sfx.hit(G.combo);
     el.hudComboBox.classList.add('pop');
     setTimeout(() => el.hudComboBox.classList.remove('pop'), 90);
+    if (G.combo === 77) floatText('77 🍀', 'ok');
     if (G.combo === 25 || (G.combo >= 50 && G.combo % 50 === 0)) {
       floatText(`${G.combo} ${t('comboHit')}`, 'big');
       Sfx.milestone();
@@ -932,7 +987,7 @@
     d.textContent = text;
     d.style.left = `${40 + Math.random() * 20}%`;
     el.floatLayer.appendChild(d);
-    setTimeout(() => d.remove(), 900);
+    setTimeout(() => d.remove(), 650);
   }
 
   // ---------------------------------------------------------------------
@@ -1007,6 +1062,7 @@
       chars: G.chars, seconds: Math.round(G.elapsed), hour: new Date().getHours(), date: todayStr(),
     };
     r.rank = RANKS.find(x => r.score / minutes >= x.min).r;
+    r.lucky = r.score % 1000 === 777 || r.maxCombo === 77;
 
     // Persist.
     const st = S.stats;
@@ -1083,6 +1139,7 @@
     const newLevel = levelFromXp(st.xp);
     if (newLevel > prevLevel) setTimeout(() => { Sfx.levelUp(); toast('⬆', `${t('levelUp')} ${t('lv')}${newLevel}`, levelTitle(newLevel)); }, 600);
     if (frozen) setTimeout(() => toast('🧊', t('streakFreeze'), ''), 1200);
+    if (r.lucky) setTimeout(() => { Sfx.milestone(); toast('🍀', t('lucky'), `${fmt(r.score)} · ${r.maxCombo}x`); }, 900);
   }
 
   function toast(ico, title, desc) {

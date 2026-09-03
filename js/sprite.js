@@ -41,7 +41,33 @@ const Sprite = (() => {
       'kwwwwkwwwkwwwk',
       '.kkkkkkkkkkkk.',
     ],
+    sleep: [
+      '.kk........kk.',
+      'kppk......kppk',
+      'kpppk....kpppk',
+      'kwwwkkkkkkwwwk',
+      'kwwwwwwwwwwwwk',
+      'kwwwwwwwwwwwwk',
+      'kwwkkwwwwkkwwk',
+      'kwwwwwwkwwwwwk',
+      'kpwwwwwwwwwwpk',
+      'kwwwwwwwwwwwwk',
+      '.kkkkkkkkkkkk.',
+    ],
   };
+
+  // Floating "zzz" for the sleeping pet.
+  const ZZZ = [
+    '......kkk',
+    '.......k.',
+    '......kkk',
+    '...kkk...',
+    '....k....',
+    '...kkk...',
+    'kkk......',
+    '.k.......',
+    'kkk......',
+  ];
 
   // Other pets share the 14x11 grid. d = dog-ear brown, o = beak orange. Happy / sad frames
   // are derived from the idle map by redrawing the 2x2 eyes.
@@ -120,6 +146,8 @@ const Sprite = (() => {
       for (let y = ey - 0; y <= ey + 1; y++) for (let x = ex; x <= ex + 1; x++) set(x, y, 'w');
       if (frame === 'happy') {
         set(ex - 1, ey, 'k'); set(ex + 2, ey, 'k'); set(ex, ey + 1, 'k'); set(ex + 1, ey + 1, 'k');
+      } else if (frame === 'sleep') {
+        set(ex, ey + 1, 'k'); set(ex + 1, ey + 1, 'k');
       } else if (frame === 'sad') {
         const cx = ex, cy = ey + 1;
         set(cx - 1, cy - 1, 'k'); set(cx + 1, cy - 1, 'k'); set(cx, cy, 'k'); set(cx - 1, cy + 1, 'k'); set(cx + 1, cy + 1, 'k');
@@ -214,6 +242,7 @@ const Sprite = (() => {
     pet: (name = 'cat', frame = 'idle', scale = 4, look = null) => render(petMap(name, frame), scale, {}, look, petBody(name)),
     PET_NAMES,
     heart: (scale = 3) => render(HEART, scale),
+    zzz: (scale = 2) => render(ZZZ, scale, { k: 'var(--muted)' }),
     star: (scale = 3, on = true) => render(STAR, scale, on ? {} : { y: 'var(--surface-2)' }),
     lookFor, drawPet, LOOKS,
   };
