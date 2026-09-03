@@ -1013,7 +1013,13 @@
   }
 
   function updateHud() {
-    el.hudScore.textContent = fmt(G.score);
+    const scoreText = fmt(G.score);
+    if (el.hudScore.textContent !== scoreText) {
+      el.hudScore.textContent = scoreText;
+      el.hudScore.classList.remove('bump');
+      void el.hudScore.offsetWidth;
+      el.hudScore.classList.add('bump');
+    }
     el.hudCombo.textContent = G.combo;
     el.hudComboBox.classList.toggle('hot', G.combo >= 25);
     const total = G.hits + G.misses;
@@ -1025,7 +1031,8 @@
     const d = document.createElement('div');
     d.className = `floater ${cls}`;
     d.textContent = text;
-    d.style.left = `${40 + Math.random() * 20}%`;
+    d.style.left = `${42 + Math.random() * 16}%`;
+    d.style.top = `${-34 - el.floatLayer.children.length * 22}px`; // in the gap above the card; stack if several are on screen
     el.floatLayer.appendChild(d);
     setTimeout(() => d.remove(), 650);
   }
@@ -1165,9 +1172,9 @@
     el.resultWeak.hidden = !weak.length;
     el.weakChips.innerHTML = weak.map(([ch, n]) => `<span class="weak-chip">${escapeHtml(ch)}<small>×${n}</small></span>`).join('');
     el.resultAch.hidden = !unlocked.length;
-    el.resultAch.innerHTML = unlocked.map(a => {
+    el.resultAch.innerHTML = unlocked.map((a, i) => {
       const [name, desc] = t('ach')[a.id];
-      return `<div class="unlock"><span class="ico">${a.ico}</span><div><b>${t('achUnlocked')}: ${name}</b><span>${desc}</span></div></div>`;
+      return `<div class="unlock" style="animation-delay:${0.15 + i * 0.1}s"><span class="ico">${a.ico}</span><div><b>${t('achUnlocked')}: ${name}</b><span>${desc}</span></div></div>`;
     }).join('');
     renderBoard(el.resultBoard, el.resultBoardLabel, key, myIdx);
     renderTopbar();
