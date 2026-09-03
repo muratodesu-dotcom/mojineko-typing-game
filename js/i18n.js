@@ -32,7 +32,6 @@ const I18N = {
     hudItems: 'お題',
     settingsTitle: '設定', dataTitle: 'データ', tabOverview: '概要', tabRecords: '記録',
     pet: 'ペット', pets: { cat: 'ねこ', dog: 'いぬ', rabbit: 'うさぎ', bear: 'くま', chick: 'ひよこ' },
-    cheerFrom: 'ムラトより',
     cheers: [
       'できるよ！！頑張って！', '今日もコツコツ、えらい！', '昨日の自分より一歩前へ。', 'ミスしても大丈夫。続けることが一番！',
       '指が覚えるまで、あと少し！', '休憩も大事。無理しないでね。', 'タイピングは毎日の積み重ね。応援してるよ！', '速さより正確さ。焦らなくていい！',
@@ -126,7 +125,6 @@ const I18N = {
     hudItems: '문제',
     settingsTitle: '설정', dataTitle: '데이터', tabOverview: '개요', tabRecords: '기록',
     pet: '펫', pets: { cat: '고양이', dog: '강아지', rabbit: '토끼', bear: '곰', chick: '병아리' },
-    cheerFrom: '무라토가',
     cheers: [
       '할 수 있어!! 힘내!', '오늘도 꾸준히, 대단해!', '어제의 나보다 한 걸음 앞으로.', '틀려도 괜찮아. 계속하는 게 제일 중요해!',
       '손가락이 기억할 때까지 조금만 더!', '쉬는 것도 중요해. 무리하지 마.', '타자는 매일의 쌓임. 응원할게!', '속도보다 정확하게. 서두르지 않아도 돼!',
@@ -222,7 +220,6 @@ const I18N = {
     streakFreeze: 'Streak protected (once a week)',
     settingsTitle: 'Settings', dataTitle: 'Data', tabOverview: 'Overview', tabRecords: 'Records',
     pet: 'Pet', pets: { cat: 'Cat', dog: 'Dog', rabbit: 'Rabbit', bear: 'Bear', chick: 'Chick' },
-    cheerFrom: 'from Murat',
     cheers: [
       'You can do it!! Keep going!', 'Steady practice every day. Well done!', 'One step ahead of yesterday.', 'Mistakes are fine. Continuing is what counts!',
       'Just a little more until your fingers remember!', 'Breaks matter too. Don\'t overdo it.', 'Typing is built day by day. I\'m rooting for you!', 'Accuracy over speed. No need to rush!',
