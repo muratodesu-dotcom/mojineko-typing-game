@@ -18,8 +18,9 @@ automatically once Pages is set to "GitHub Actions" in the repository settings.
 ## Features
 
 **Practice**
-- Two languages, 108 sentences each with English translations, three difficulty tiers, and
-  themed packs: 日常 / 旅行 / 仕事 / 食べ物 (daily, travel, work, food).
+- Two languages, 156 sentences each with English translations, three difficulty tiers, and
+  themed packs: 日常 / 旅行 / 仕事 / 食べ物 (daily, travel, work, food), plus 12 hand-written
+  paragraphs per language for paragraph mode.
 - **Japanese** is typed through your IME. Choose ひらがな (kana reading only) or 混合 (kanji,
   katakana, hiragana as written), with an optional reading hint under kanji sentences.
 - **Korean**: 2-set (두벌식) keys on a regular keyboard with live syllable composition, an
@@ -27,7 +28,8 @@ automatically once Pages is set to "GitHub Actions" in the repository settings.
   keys must be erased with Backspace.
 - **Modes**: Time attack (30 / 60 / 120 s), Sprint (5 / 10 / 20 sentences), Daily challenge
   (the same 10 sentences for everyone that day, with a per-day leaderboard), Warm-up (kana or
-  syllable rows and short words), Paragraph (three passages of four sentences each).
+  syllable rows and short words), Paragraph (three passages: curated paragraphs matching the
+  theme and difficulty, filled up with joined sentences when needed).
 - **Weak-spot tracking**: misses are recorded per character, shown after each round, and the
   苦手 pack builds rounds from the sentences you struggle with most.
 - **Custom pack**: paste your own sentences (Japanese as `文｜よみ`).
@@ -78,6 +80,7 @@ js/data/ko.js             Korean sentences and warm-up drills
 
 Append to `js/data/ja.js` or `js/data/ko.js` with a `tag` (`daily`, `travel`, `work`, `food`)
 and a `level` (1–3). Japanese entries need a full kana `reading` so ひらがな mode can use them.
+Paragraphs live in `JA_PARAGRAPHS` / `KO_PARAGRAPHS` in the same files with the same fields.
 
 ## Not included
 

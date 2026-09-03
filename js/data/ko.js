@@ -124,6 +124,62 @@ const KO_SENTENCES = [
   { text: '휴대폰만 보지 말고 가끔은 밖에 나가요.', en: 'Don\'t just look at your phone, go outside sometimes.', level: 3, tag: 'daily' },
   { text: '가족과 보내는 시간이 무엇보다 소중하다고 느껴요.', en: 'I feel that time spent with family is more precious than anything.', level: 3, tag: 'daily' },
   { text: '하루를 마칠 때 감사한 일 세 가지를 적고 있어요.', en: 'At the end of the day I write down three things I\'m grateful for.', level: 3, tag: 'daily' },
+
+  // ---- 일상 (daily) 추가 -------------------------------------------
+  { text: '아침 먹었어요?', en: 'Did you eat breakfast?', level: 1, tag: 'daily' },
+  { text: '오늘은 조금 춥네요.', en: 'It\'s a little cold today.', level: 1, tag: 'daily' },
+  { text: '불 끄는 거 잊지 마세요.', en: 'Don\'t forget to turn off the lights.', level: 1, tag: 'daily' },
+  { text: '열쇠를 어디에 뒀는지 잊어버렸어요.', en: 'I forgot where I put my keys.', level: 2, tag: 'daily' },
+  { text: '내일 아침 일곱 시에 깨워 주세요.', en: 'Please wake me at seven tomorrow morning.', level: 2, tag: 'daily' },
+  { text: '빨래를 널고 나서 나갈게요.', en: 'I\'ll hang the laundry and then go out.', level: 2, tag: 'daily' },
+  { text: '오랜만에 부모님 댁에 가서 푹 쉬었어요.', en: 'I went to my parents\' place for the first time in a while and rested well.', level: 2, tag: 'daily' },
+  { text: '옆집에 새 이웃이 이사 와서 인사하러 갔어요.', en: 'New neighbors moved in next door, so I went to say hello.', level: 2, tag: 'daily' },
+  { text: '일주일에 한 번은 방을 정리하려고 해요.', en: 'I try to tidy my room once a week.', level: 2, tag: 'daily' },
+  { text: '잠이 안 오는 밤에는 따뜻한 우유를 마시면 마음이 편해져요.', en: 'On sleepless nights, warm milk makes me feel calm.', level: 3, tag: 'daily' },
+  { text: '작은 습관이 쌓여서 큰 변화로 이어져요.', en: 'Small habits add up to big changes.', level: 3, tag: 'daily' },
+  { text: '시간이 있을 때 옛날 사진을 정리하려고 생각 중이에요.', en: 'I\'m thinking of organizing old photos when I have time.', level: 3, tag: 'daily' },
+
+  // ---- 여행 (travel) 추가 ------------------------------------------
+  { text: '다음 역에서 내려요.', en: 'I\'ll get off at the next station.', level: 1, tag: 'travel' },
+  { text: '화장실이 어디예요?', en: 'Where is the restroom?', level: 1, tag: 'travel' },
+  { text: '사진을 찍어도 돼요?', en: 'May I take a photo?', level: 1, tag: 'travel' },
+  { text: '이 근처에 싼 호텔이 있어요?', en: 'Is there a cheap hotel near here?', level: 2, tag: 'travel' },
+  { text: '막차를 놓치지 않으려고 일찍 가게에서 나왔어요.', en: 'I left the shop early so as not to miss the last train.', level: 2, tag: 'travel' },
+  { text: '제주도 바다는 믿을 수 없을 만큼 파랬어요.', en: 'The sea in Jeju was unbelievably blue.', level: 2, tag: 'travel' },
+  { text: '숙소의 저녁 식사는 지역 식재료를 듬뿍 사용했어요.', en: 'The lodging\'s dinner used plenty of local ingredients.', level: 2, tag: 'travel' },
+  { text: '렌터카를 빌려서 해안 도로를 드라이브했어요.', en: 'I rented a car and drove along the coastal road.', level: 2, tag: 'travel' },
+  { text: '공항에서 환승하는 데 세 시간이나 걸렸어요.', en: 'The transfer at the airport took three whole hours.', level: 2, tag: 'travel' },
+  { text: '여행지에서 만난 사람과 지금도 연락하고 지내요.', en: 'I still keep in touch with people I met while traveling.', level: 3, tag: 'travel' },
+  { text: '계획을 너무 세우지 않는 여행이 뜻밖의 발견이 많아요.', en: 'Trips that aren\'t overplanned bring more unexpected discoveries.', level: 3, tag: 'travel' },
+  { text: '세계유산으로 등록된 궁궐을 한 번은 꼭 보고 싶어요.', en: 'I\'d like to see the palace registered as a World Heritage site at least once.', level: 3, tag: 'travel' },
+
+  // ---- 일 (work) 추가 ----------------------------------------------
+  { text: '수고하셨습니다.', en: 'Thank you for your hard work.', level: 1, tag: 'work' },
+  { text: '잠시만 기다려 주세요.', en: 'Please wait a moment.', level: 1, tag: 'work' },
+  { text: '다음 주 일정을 확인할게요.', en: 'I\'ll check next week\'s schedule.', level: 1, tag: 'work' },
+  { text: '회의실을 오후 두 시부터 예약했어요.', en: 'I booked the meeting room from 2 p.m.', level: 2, tag: 'work' },
+  { text: '신입 사원 교육을 맡게 되었어요.', en: 'I\'ve been put in charge of new employee training.', level: 2, tag: 'work' },
+  { text: '발표 자료를 오늘 밤 안에 마무리할게요.', en: 'I\'ll finish the presentation materials tonight.', level: 2, tag: 'work' },
+  { text: '상사와 상의한 후에 답변드리겠습니다.', en: 'I\'ll reply after consulting my boss.', level: 2, tag: 'work' },
+  { text: '아까 보낸 메일에 자료를 첨부하는 걸 깜빡했어요.', en: 'I forgot to attach the file to the email I sent earlier.', level: 2, tag: 'work' },
+  { text: '이번 분기 매출 목표를 달성하기 위해 새로운 방안을 생각하고 있어요.', en: 'To reach this quarter\'s sales target, we\'re considering new measures.', level: 3, tag: 'work' },
+  { text: '무리한 일정은 결국 팀 전체의 부담이 돼요.', en: 'An unreasonable schedule ends up burdening the whole team.', level: 3, tag: 'work' },
+  { text: '회의에서는 결론을 먼저 말하면 이야기가 잘 전달돼요.', en: 'In meetings, saying the conclusion first gets the point across.', level: 3, tag: 'work' },
+  { text: '휴식을 제대로 취해야 오후에도 집중력이 이어져요.', en: 'Taking proper breaks keeps your concentration going in the afternoon.', level: 3, tag: 'work' },
+
+  // ---- 음식 (food) 추가 --------------------------------------------
+  { text: '물 한 잔 더 주세요.', en: 'Another glass of water, please.', level: 1, tag: 'food' },
+  { text: '이건 무슨 요리예요?', en: 'What dish is this?', level: 1, tag: 'food' },
+  { text: '오늘 저녁은 카레예요.', en: 'Tonight\'s dinner is curry.', level: 1, tag: 'food' },
+  { text: '생선구이와 흰밥만 있으면 충분해요.', en: 'Grilled fish and white rice are enough.', level: 2, tag: 'food' },
+  { text: '역 앞 빵집의 크루아상이 인기예요.', en: 'The croissants at the bakery in front of the station are popular.', level: 2, tag: 'food' },
+  { text: '추운 날에 어묵탕을 먹으면 몸이 따뜻해져요.', en: 'Eating fish cake soup on a cold day warms you up.', level: 2, tag: 'food' },
+  { text: '처음으로 직접 만두를 빚어 봤어요.', en: 'I tried making dumplings by hand for the first time.', level: 2, tag: 'food' },
+  { text: '육수를 제대로 내면 된장국 맛이 달라져요.', en: 'Making proper broth changes the taste of soybean paste soup.', level: 2, tag: 'food' },
+  { text: '디저트 배는 따로 있다면서 자꾸 과식하게 돼요.', en: 'Saying there\'s a separate stomach for dessert, I keep overeating.', level: 3, tag: 'food' },
+  { text: '가족과 함께 찌개를 나눠 먹는 시간이 겨울의 즐거움 중 하나예요.', en: 'Sharing a stew with family is one of winter\'s pleasures.', level: 3, tag: 'food' },
+  { text: '채소를 넉넉히 넣은 요리를 매일 한 가지는 만들려고 해요.', en: 'I try to make at least one vegetable-rich dish every day.', level: 3, tag: 'food' },
+  { text: '음식을 남기지 않는 것은 만든 사람에 대한 감사이기도 해요.', en: 'Not leaving food is also gratitude toward the person who made it.', level: 3, tag: 'food' },
 ];
 
 // Warm-up drill items: syllable rows and short words.
@@ -153,4 +209,20 @@ const KO_DRILLS = [
   { text: '사랑', en: 'love' },
   { text: '행복', en: 'happiness' },
   { text: '고맙습니다', en: 'thank you' },
+];
+
+// Curated paragraphs for 문단 mode: coherent 3-sentence passages per theme and level.
+const KO_PARAGRAPHS = [
+  { text: '오늘은 일요일이에요. 아침에 늦게 일어나서 커피를 마셨어요. 오후에는 친구와 공원을 산책할 예정이에요.', en: 'Today is Sunday. I got up late and had coffee. In the afternoon I plan to walk in the park with a friend.', level: 1, tag: 'daily' },
+  { text: '요즘 아침 시간을 쓰는 방법을 다시 생각해 봤어요. 일찍 일어나서 삼십 분만 책을 읽으면 하루가 차분하게 시작돼요. 밤에는 휴대폰을 일찍 내려놓고 잘 준비를 해요.', en: 'Recently I rethought how I use my mornings. Getting up early and reading for just thirty minutes starts the day calmly. At night I put my phone down early and get ready to sleep.', level: 2, tag: 'daily' },
+  { text: '이사한 지 반년이 지나서 드디어 새 동네에 익숙해졌어요. 근처 시장에는 친절한 가게 주인이 많아서 장을 볼 때마다 잠깐 이야기를 나눠요. 낯선 곳이라도 사람과의 인연이 있으면 생활이 풍요로워진다고 느껴요.', en: 'Half a year after moving, I have finally gotten used to the new neighborhood. The nearby market has many kind shopkeepers, so we chat a little every time I shop. Even in an unfamiliar place, life becomes rich when you have connections with people.', level: 3, tag: 'daily' },
+  { text: '여름 방학에 제주도에 갔어요. 바다가 정말 예뻤어요. 매일 수영하고 사진을 많이 찍었어요.', en: 'I went to Jeju for summer vacation. The sea was really beautiful. I swam every day and took lots of photos.', level: 1, tag: 'travel' },
+  { text: '경주 여행은 둘째 날이 가장 즐거웠어요. 아침 일찍 불국사에 가서 사람이 적고 조용하게 둘러볼 수 있었어요. 점심에는 쌈밥을 먹고 저녁에는 첨성대 근처를 걸었어요.', en: 'The second day of my Gyeongju trip was the most fun. I went to Bulguksa early, so there were few people and I could look around quietly. I had ssambap for lunch and walked near Cheomseongdae in the evening.', level: 2, tag: 'travel' },
+  { text: '처음 혼자 해외여행을 갔을 때는 언어의 벽에 여러 번 당황했어요. 그래도 지도를 가리키며 길을 물으면 지나가던 사람들이 친절하게 안내해 줬어요. 완벽하게 말하지 못해도 전하려는 마음이 있으면 여행은 계속될 수 있다는 걸 배웠어요.', en: 'On my first solo trip abroad, the language barrier confused me many times. Still, when I asked for directions while pointing at a map, passers-by kindly showed me the way. I learned that even without perfect language, the will to communicate keeps a journey going.', level: 3, tag: 'travel' },
+  { text: '우리 회사는 아홉 시에 시작해요. 오전에는 메일을 읽고 오후에는 회의가 있어요. 여섯 시에 일이 끝나요.', en: 'My company starts at nine. In the morning I read emails and in the afternoon there are meetings. Work ends at six.', level: 1, tag: 'work' },
+  { text: '이번 주는 새 프로젝트 준비로 바빠요. 먼저 고객의 요청을 정리하고 팀에서 역할을 정했어요. 금요일까지 간단한 계획서를 만들 예정이에요.', en: 'This week I am busy preparing a new project. First we organized the client\'s requests and decided roles as a team. We plan to make a simple plan document by Friday.', level: 2, tag: 'work' },
+  { text: '재택근무가 늘어나면서 일과 생활의 경계가 흐려지기 쉬워요. 그래서 시작과 종료 시간을 정하고, 끝나면 노트북을 닫고 산책을 나가기로 했어요. 작은 구분을 만드는 것만으로도 집중력과 기분 전환이 놀랄 만큼 좋아졌어요.', en: 'Since working from home more, the line between work and life blurs easily. So I set start and end times, and when I am done I close the laptop and go for a walk. Just creating small boundaries improved both my focus and my ability to switch off remarkably.', level: 3, tag: 'work' },
+  { text: '오늘 점심은 라면이었어요. 국물이 뜨겁고 맛있었어요. 디저트로 아이스크림도 먹었어요.', en: 'Today\'s lunch was ramen. The broth was hot and delicious. I also had ice cream for dessert.', level: 1, tag: 'food' },
+  { text: '주말에 처음으로 카레를 처음부터 만들어 봤어요. 양파를 천천히 볶는 데 시간이 걸렸지만 단맛이 나면서 맛이 깊어졌어요. 가족들도 좋아해서 또 만들고 싶어요.', en: 'On the weekend I tried making curry from scratch for the first time. Slowly frying the onions took time, but it brought out sweetness and deepened the flavor. My family liked it too, so I want to make it again.', level: 2, tag: 'food' },
+  { text: '한국의 가정식은 제철 재료를 낭비 없이 쓰는 지혜로 가득해요. 봄에는 나물, 여름에는 오이와 가지, 가을에는 버섯, 겨울에는 뿌리채소처럼 제철 음식을 맛보면 자연의 변화를 느낄 수 있어요. 바쁜 날에도 한 가지 반찬만은 제철 재료로 만들면 식탁이 조금 더 풍성해져요.', en: 'Korean home cooking is full of wisdom for using seasonal ingredients without waste. Tasting seasonal foods, like wild greens in spring, cucumbers and eggplant in summer, mushrooms in autumn and root vegetables in winter, lets you feel nature\'s changes. Even on busy days, making just one side dish with seasonal ingredients makes the table a little richer.', level: 3, tag: 'food' },
 ];

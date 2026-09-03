@@ -13,8 +13,8 @@
   // Static config
   // ---------------------------------------------------------------------
   const LANGS = {
-    ja: { sentences: () => JA_SENTENCES, drills: () => JA_DRILLS, inputs: ['hiragana', 'mixed'] },   // both typed through the IME
-    ko: { sentences: () => KO_SENTENCES, drills: () => KO_DRILLS, inputs: ['jamo', 'direct'] },
+    ja: { sentences: () => JA_SENTENCES, drills: () => JA_DRILLS, paragraphs: () => JA_PARAGRAPHS, inputs: ['hiragana', 'mixed'] },   // both typed through the IME
+    ko: { sentences: () => KO_SENTENCES, drills: () => KO_DRILLS, paragraphs: () => KO_PARAGRAPHS, inputs: ['jamo', 'direct'] },
   };
   const isDirectInput = (lang, input) => lang === 'ja' || input === 'direct';
   const PACKS = ['all', 'daily', 'travel', 'work', 'food', 'weak', 'custom'];
@@ -246,9 +246,14 @@
     }
     const pool = shuffle(list.length ? list : all, rnd);
     if (mode !== 'paragraph') return pool;
-    // Paragraph mode: join several sentences into one passage.
-    const joiner = lang === 'ko' ? ' ' : '';
+    // Paragraph mode: curated passages first (matching theme and difficulty), then joined sentences to fill up.
     const paras = [];
+    if (pack !== 'custom' && pack !== 'weak') {
+      let curated = LANGS[lang].paragraphs().filter(p => pack === 'all' || p.tag === pack);
+      if (level !== 'mixed') curated = curated.filter(p => p.level === +level);
+      paras.push(...shuffle(curated, rnd).slice(0, COUNT_MODES.paragraph).map(p => ({ ...p, parts: [p.level, p.level, p.level] })));
+    }
+    const joiner = lang === 'ko' ? ' ' : '';
     for (let i = 0; i + 1 < pool.length && paras.length < COUNT_MODES.paragraph; i += PARAGRAPH_SENTENCES) {
       const group = pool.slice(i, i + PARAGRAPH_SENTENCES);
       paras.push({
