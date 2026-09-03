@@ -47,6 +47,9 @@
   const SIZES = ['s', 'm', 'l'];
   const COUNT_MODES = { sprint: null, daily: 10, drill: 15, paragraph: 3 }; // null = user-selected
   const PARAGRAPH_SENTENCES = 4;
+  const EGG_RATE = 1 / 12; // chance per round that the easter-egg sentence appears (Japanese and Korean)
+  const EGG_MAX_PER_DAY = 2;
+  const EGGS = { ja: () => JA_EGG, ko: () => KO_EGG };
 
   const RANKS = [
     { r: 'S', min: 8000 }, { r: 'A', min: 5500 }, { r: 'B', min: 3500 },
@@ -254,7 +257,24 @@
     if (s.reading) for (const ch of kataToHira(s.reading)) score += w[ch] || 0;
     return score;
   }
-  function buildPool(lang, input, mode, level, pack, rnd) {
+  function buildPool(lang, input, mode, level, pack, rnd, count) {
+    const pool = buildPoolInner(lang, input, mode, level, pack, rnd);
+    // Easter egg: never two rounds in a row, at most twice a day, and always within the part of the round that gets played.
+    const eggState = S.egg;
+    if (eggState.day !== todayStr()) { eggState.day = todayStr(); eggState.count = 0; }
+    let hasEgg = false;
+    if (EGGS[lang] && !eggState.last && eggState.count < EGG_MAX_PER_DAY && rnd() < EGG_RATE) {
+      const egg = { ...EGGS[lang](), parts: [1] };
+      const reach = Math.min(pool.length, mode === 'time' ? 8 : Math.max(1, count || pool.length));
+      pool.splice(Math.floor(rnd() * reach), 0, egg);
+      hasEgg = true;
+      eggState.count++;
+    }
+    eggState.last = hasEgg;
+    Store.save();
+    return pool;
+  }
+  function buildPoolInner(lang, input, mode, level, pack, rnd) {
     const all = LANGS[lang].sentences();
     if (mode === 'drill') return shuffle(LANGS[lang].drills().map(d => ({ ...d, level: 1, tag: 'drill' })), rnd).slice(0, COUNT_MODES.drill);
     if (mode === 'daily') return shuffle(all, rnd).slice(0, COUNT_MODES.daily);
@@ -366,7 +386,7 @@
     renderAchievements();
     renderMascotPanel();
     setMascot(el.mascotHome, 'idle');
-    showCheer(el.cheerHome);
+    scheduleCheer();
   }
 
   // Encouragement from ムラト: random line, rank-aware on the result screen.
@@ -392,7 +412,26 @@
     void node.offsetWidth;
     node.style.animation = '';
   }
-  setInterval(() => { if (el.screens.home.classList.contains('active') && !el.settingsModal.open) showCheer(el.cheerHome); }, 15000);
+  // Menu balloon: nothing at first, then occasionally. First after ~45 s, visible 8 s, then every 2-3 minutes.
+  const CHEER_FIRST_MS = 45000, CHEER_SHOW_MS = 8000, CHEER_GAP_MIN = 120000, CHEER_GAP_MAX = 180000;
+  let cheerTimer = 0, cheerHideTimer = 0, cheerArmed = false;
+  const cheerBox = () => el.cheerHome.closest('.cheer');
+  function hideCheer() { cheerBox().classList.remove('show'); }
+  function scheduleCheer(delay) {
+    if (cheerArmed && delay === undefined) return; // already scheduled; a re-render should not reset it
+    clearTimeout(cheerTimer);
+    cheerArmed = true;
+    cheerTimer = setTimeout(() => {
+      cheerArmed = false;
+      if (!el.screens.home.classList.contains('active') || el.settingsModal.open) { scheduleCheer(CHEER_FIRST_MS); return; }
+      showCheer(el.cheerHome);
+      cheerBox().classList.add('show');
+      clearTimeout(cheerHideTimer);
+      cheerHideTimer = setTimeout(hideCheer, CHEER_SHOW_MS);
+      scheduleCheer(CHEER_GAP_MIN + Math.random() * (CHEER_GAP_MAX - CHEER_GAP_MIN));
+    }, delay === undefined ? CHEER_FIRST_MS : delay);
+  }
+  function cancelCheer() { clearTimeout(cheerTimer); clearTimeout(cheerHideTimer); cheerArmed = false; hideCheer(); }
 
   function renderTopbar() {
     el.streak.textContent = currentStreak();
@@ -630,7 +669,7 @@
     });
     if (G.pack === 'custom') G.level = 'mixed';
     const rnd = mode === 'daily' ? seededRandom(`${todayStr()}:${G.lang}`) : Math.random;
-    G.pool = buildPool(G.lang, G.input, mode, G.level, G.pack, rnd);
+    G.pool = buildPool(G.lang, G.input, mode, G.level, G.pack, rnd, count);
     G.ghost = S.ghosts[boardKeyFor(G.lang, G.input, G.mode, G.duration, G.count)] || null;
 
     el.hudSpeedLabel.textContent = t(speedUnitFor(G.lang, G.direct));
@@ -649,6 +688,7 @@
     buildKeyboard();
     updateHud();
     setMascot(el.mascotPlay, 'idle');
+    cancelCheer();
     showScreen('play');
 
     loadSentence();
@@ -1132,6 +1172,7 @@
     renderBoard(el.resultBoard, el.resultBoardLabel, key, myIdx);
     renderTopbar();
     showCheer(el.cheerResult, r.rank);
+    el.cheerResult.closest('.cheer').classList.add('show');
     showScreen('result');
 
     Sfx.finish();
@@ -1340,6 +1381,8 @@
   el.card.addEventListener('click', () => { if (G.phase === 'play' && G.direct) el.directInput.focus(); });
 
   window.addEventListener('resize', () => { el.confetti.width = window.innerWidth; el.confetti.height = window.innerHeight; });
+
+  if (location.hash === '#debug') window.__kotoba = { buildPool };
 
   // Boot.
   $('.brand-heart').innerHTML = Sprite.heart(2);

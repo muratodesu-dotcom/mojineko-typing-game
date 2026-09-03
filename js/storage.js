@@ -43,6 +43,7 @@ const Store = (() => {
     custom: { ja: [], ko: [], en: [] }, // user sentences: {text, reading, en}
     achievements: {},  // id -> ISO date unlocked
     streak: { last: '', count: 0, best: 0, freezeUsed: '' },
+    egg: { last: false, day: '', count: 0 },  // easter-egg sentence: shown last round? how many times today?
   });
 
   let state = null;

@@ -183,6 +183,9 @@ const JA_SENTENCES = [
   { text: '食べ物を残さないことは、作った人への感謝でもあります。', reading: 'たべものをのこさないことは、つくったひとへのかんしゃでもあります。', en: 'Not leaving food is also a way of thanking the person who made it.', level: 3, tag: 'food' },
 ];
 
+// Easter egg: rarely slipped into any Japanese round.
+const JA_EGG = { text: '有利が今日もすいりにご帰宅しました。', reading: 'ゆりがきょうもすいりにごきたくしました。', en: 'Yuri came home to Suiri again today.', level: 1, tag: 'egg' };
+
 // Warm-up drill items: kana rows and short words.
 const JA_DRILLS = [
   { text: 'あいうえお', reading: 'あいうえお', en: 'a i u e o' },
