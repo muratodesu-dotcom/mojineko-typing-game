@@ -262,7 +262,7 @@ main { padding: 18px 28px 28px; max-width: 1160px; margin: 0 auto; width: 100%; 
 @keyframes shake { 0%,100% { transform: translateX(0); } 33% { transform: translateX(-6px); } 66% { transform: translateX(6px); } }
 .sentence-card.flash { animation: flash 0.35s steps(2); }
 @keyframes flash { 0% { background: var(--accent-soft); } 100% { background: var(--surface); } }
-.card-mascot { position: absolute; top: -26px; right: 18px; }
+.card-mascot { position: absolute; top: -30px; right: 16px; }
 
 .progress-dots { display: flex; gap: 4px; margin-bottom: 2px; }
 .progress-dots .px { display: inline-block; }

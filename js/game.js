@@ -464,7 +464,7 @@
   const currentLook = () => Sprite.lookFor(levelFromXp(S.stats.xp));
   function setMascot(node, frame) {
     if (!node) return;
-    node.innerHTML = Sprite.cat(frame, node === el.mascotPlay ? 4 : 5, currentLook());
+    node.innerHTML = Sprite.cat(frame, node === el.mascotPlay ? 3 : 4, currentLook());
   }
   function renderMascotPanel() {
     setMascot(el.mascotPreview, 'idle');
@@ -1057,7 +1057,7 @@
     });
     ctx.fillStyle = col('--muted'); ctx.font = `12px ${text}`; ctx.fillText(r.date, 44, H - 40);
     const look = currentLook();
-    Sprite.drawCat(ctx, r.rank === 'S' || r.rank === 'A' ? 'happy' : 'idle', W - 210, 90, 11, { k: col('--ink'), w: col('--sprite-body'), p: col('--accent'), b: col('--accent'), y: col('--warn'), r: col('--bad') }, look);
+    Sprite.drawCat(ctx, r.rank === 'S' || r.rank === 'A' ? 'happy' : 'idle', W - 200, 96, 8, { k: col('--ink'), w: col('--sprite-body'), p: col('--accent'), b: col('--accent'), y: col('--warn'), r: col('--bad') }, look);
     c.toBlob(blob => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
