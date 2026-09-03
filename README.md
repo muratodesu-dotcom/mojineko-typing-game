@@ -1,4 +1,4 @@
-# Kotoba Type — Japanese, Korean & English typing game
+# もじねこ！ (Mojineko) — Japanese, Korean & English typing game
 
 A cute, pixel-art typing game for practising **Japanese**, **Korean** and **English**.
 No build step, no server, no accounts: open `index.html` and play. Everything
@@ -17,10 +17,15 @@ automatically once Pages is set to "GitHub Actions" in the repository settings.
 
 ## Features
 
+The `?` button in the header opens an **About / How to use** panel in the selected language:
+what the app is, the five steps to a round, and tips (IME on/off, packs, settings, streaks, backup).
+
 **Practice**
-- Japanese and Korean with 156 sentences each (with English translations) and English with 60,
+- Japanese and Korean with about 170 sentences each (with English translations) and English with 75,
   three difficulty tiers, themed packs: 日常 / 旅行 / 仕事 / 食べ物 (daily, travel, work, food),
-  plus hand-written paragraphs per language for paragraph mode.
+  plus hand-written paragraphs per language for paragraph mode. The 仕事 pack is everyday
+  office language (お疲れ様です。いつもお世話になっております。, business-email phrases) rather than
+  sentences *about* work, so what you practise is what you type at your desk.
 - **Japanese** is typed through your IME. Choose ひらがな (kana reading only) or 混合 (kanji,
   katakana, hiragana as written), with an optional reading hint under kanji sentences.
 - **Korean**: 2-set (두벌식) keys on a regular keyboard with live syllable composition, an

@@ -74,7 +74,7 @@ const Store = (() => {
   }
 
   function exportJson() {
-    return JSON.stringify({ app: 'kotoba-type', version: 2, exportedAt: new Date().toISOString(), data: state }, null, 2);
+    return JSON.stringify({ app: 'mojineko', version: 2, exportedAt: new Date().toISOString(), data: state }, null, 2);
   }
 
   function deepMerge(base, extra) {

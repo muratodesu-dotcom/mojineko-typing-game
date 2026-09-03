@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="light dark">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2712%27 fill=%27%23ff85a1%27/%3E%3Ctext x=%2732%27 y=%2745%27 font-size=%2738%27 text-anchor=%27middle%27 font-family=%27sans-serif%27 font-weight=%27700%27 fill=%27%233b2f45%27%3E言%3C/text%3E%3C/svg%3E">
-  <title>Kotoba Type</title>
+  <title>もじねこ！</title>
   <script>
     // Apply the saved theme before first paint to avoid a flash.
     (function () {
@@ -29,8 +29,8 @@
 <body>
   <header class="topbar">
     <div class="brand" id="brand-home" role="button" tabindex="0">
-      <span class="brand-mark">言</span>
-      <span class="brand-name">Kotoba Type</span><span class="brand-heart" aria-hidden="true"></span>
+      <span class="brand-mark" id="brand-mark" aria-hidden="true"></span>
+      <span class="brand-name">もじねこ！</span><span class="brand-heart" aria-hidden="true"></span>
     </div>
     <div class="topbar-right">
       <div class="pill" id="pill-streak"><span class="dot"></span><b id="streak-count">0</b><span id="streak-label"></span></div>
@@ -39,6 +39,7 @@
         <span id="level-title"></span>
         <span class="xp-bar"><span id="xp-fill"></span></span>
       </div>
+      <button class="icon-btn" id="btn-help" aria-label="about"></button>
       <button class="icon-btn" id="btn-settings" aria-label="settings"></button>
       <button class="icon-btn" id="btn-theme" aria-label="theme"></button>
       <button class="icon-btn" id="btn-sound" aria-label="sound"></button>
@@ -279,6 +280,14 @@
         </div>
       </div>
     </div>
+  </dialog>
+
+  <dialog class="settings about" id="about-modal">
+    <div class="settings-head">
+      <h2 data-t="aboutTitle"></h2>
+      <button class="icon-btn" id="btn-about-close" aria-label="close">✕</button>
+    </div>
+    <div class="settings-body about-body" id="about-body"></div>
   </dialog>
 
   <footer class="footer"><span data-t="madeBy"></span></footer>
