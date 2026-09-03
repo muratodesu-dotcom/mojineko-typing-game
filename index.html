@@ -15,12 +15,14 @@
         if (t !== 'light' && t !== 'dark') t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         document.documentElement.dataset.theme = t;
         if (s.settings && s.settings.lang) { document.documentElement.dataset.lang = s.settings.lang; document.documentElement.lang = s.settings.lang; }
+        if (s.settings && s.settings.font) document.documentElement.dataset.font = s.settings.font;
+        if (s.settings && s.settings.textSize) document.documentElement.dataset.size = s.settings.textSize;
       } catch (e) {}
     })();
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <!-- Fonts are optional: loaded without blocking render, falling back to system CJK fonts. -->
-  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Press+Start+2P&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&family=Zen+Maru+Gothic:wght@400;500;700&family=Gowun+Dodum&family=Noto+Serif+JP:wght@400;700&family=Noto+Serif+KR:wght@400;700&family=DotGothic16&family=Press+Start+2P&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
   <link href="https://cdn.jsdelivr.net/npm/galmuri/dist/galmuri.css" rel="stylesheet" media="print" onload="this.media='all'">
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -37,6 +39,7 @@
         <span id="level-title"></span>
         <span class="xp-bar"><span id="xp-fill"></span></span>
       </div>
+      <button class="icon-btn" id="btn-settings" aria-label="settings"></button>
       <button class="icon-btn" id="btn-theme" aria-label="theme"></button>
       <button class="icon-btn" id="btn-sound" aria-label="sound"></button>
     </div>
@@ -76,6 +79,7 @@
               <button class="chip" data-mode="sprint" data-t="modeSprint"></button>
               <button class="chip" data-mode="daily" data-t="modeDaily"></button>
               <button class="chip" data-mode="drill" data-t="modeDrill"></button>
+              <button class="chip" data-mode="paragraph" data-t="modeParagraph"></button>
             </div>
             <p class="hint" id="mode-hint"></p>
           </div>
@@ -122,54 +126,41 @@
             </div>
           </div>
 
-          <div class="field toggles">
-            <label class="toggle" id="toggle-guide"><input type="checkbox" id="opt-guide"> <span data-t="optGuide"></span></label>
-            <label class="toggle" id="toggle-keyboard"><input type="checkbox" id="opt-keyboard"> <span data-t="optKeyboard"></span></label>
-            <label class="toggle" id="toggle-strict"><input type="checkbox" id="opt-strict"> <span data-t="optStrict"></span></label>
-            <label class="toggle" id="toggle-furigana"><input type="checkbox" id="opt-furigana"> <span data-t="optFurigana"></span></label>
-            <label class="toggle" id="toggle-hide-input"><input type="checkbox" id="opt-hide-input"> <span data-t="optHideInput"></span></label>
-            <label class="toggle"><input type="checkbox" id="opt-translation"> <span data-t="optTranslation"></span></label>
-            <label class="toggle volume"><span data-t="volume"></span> <input type="range" id="opt-volume" min="0" max="100" step="5"></label>
-          </div>
-
           <button class="btn-primary" id="btn-start"><span data-t="start"></span><kbd>Enter</kbd></button>
         </div>
 
         <aside class="side">
-          <div class="panel">
+          <div class="side-tabs" id="side-tabs" data-nav>
+            <button class="chip" data-tab="overview" data-t="tabOverview"></button>
+            <button class="chip" data-tab="records" data-t="tabRecords"></button>
+            <button class="chip" data-tab="goals" data-t="goals"></button>
+            <button class="chip" data-tab="board" data-t="leaderboard"></button>
+            <button class="chip" data-tab="ach" data-t="achievements"></button>
+          </div>
+          <div class="panel side-panel" data-panel="overview">
             <h2 data-t="stats"></h2>
             <div class="stat-grid" id="home-stats"></div>
+            <h2 class="mt" data-t="mascotTitle"></h2>
+            <div class="mascot-growth"><div class="mascot" id="mascot-preview"></div><div class="hint" id="mascot-next"></div></div>
           </div>
-          <div class="panel">
+          <div class="panel side-panel" data-panel="records" hidden>
             <h2><span data-t="history"></span><small id="history-label"></small></h2>
             <div class="history" id="history-chart"></div>
             <ol class="board history-list" id="history-list"></ol>
-          </div>
-          <div class="panel">
-            <h2><span data-t="dailyTitle"></span><small id="daily-label"></small></h2>
+            <h2 class="mt"><span data-t="dailyTitle"></span><small id="daily-label"></small></h2>
             <ol class="board" id="daily-list"></ol>
           </div>
-          <div class="panel">
+          <div class="panel side-panel" data-panel="goals" hidden>
             <h2 data-t="goals"></h2>
             <div class="goals" id="goals"></div>
           </div>
-          <div class="panel">
+          <div class="panel side-panel" data-panel="board" hidden>
             <h2><span data-t="leaderboard"></span><small id="board-label"></small></h2>
             <ol class="board" id="home-board"></ol>
           </div>
-          <div class="panel">
+          <div class="panel side-panel" data-panel="ach" hidden>
             <h2><span data-t="achievements"></span><small id="ach-count"></small></h2>
             <div class="ach-grid" id="ach-grid"></div>
-          </div>
-          <div class="panel mascot-panel">
-            <h2 data-t="mascotTitle"></h2>
-            <div class="mascot-growth"><div class="mascot" id="mascot-preview"></div><div class="hint" id="mascot-next"></div></div>
-          </div>
-          <div class="data-actions">
-            <button class="btn-text" id="btn-export" data-t="exportData"></button>
-            <button class="btn-text" id="btn-import" data-t="importData"></button>
-            <input type="file" id="import-file" accept="application/json" hidden>
-            <button class="btn-text danger" id="btn-reset" data-t="reset"></button>
           </div>
         </aside>
       </div>
@@ -238,6 +229,44 @@
       <canvas id="share-canvas" width="640" height="360" hidden></canvas>
     </section>
   </main>
+
+  <dialog class="settings" id="settings-modal">
+    <div class="settings-head">
+      <h2 data-t="settingsTitle"></h2>
+      <button class="icon-btn" id="btn-settings-close" aria-label="close">✕</button>
+    </div>
+    <div class="settings-body">
+      <div class="field">
+        <label data-t="font"></label>
+        <div class="chips" id="font-chips" data-nav></div>
+      </div>
+      <div class="field">
+        <label data-t="textSize"></label>
+        <div class="chips" id="size-chips" data-nav></div>
+      </div>
+      <div class="field toggles">
+        <label class="toggle" id="toggle-guide"><input type="checkbox" id="opt-guide"> <span data-t="optGuide"></span></label>
+        <label class="toggle" id="toggle-keyboard"><input type="checkbox" id="opt-keyboard"> <span data-t="optKeyboard"></span></label>
+        <label class="toggle" id="toggle-strict"><input type="checkbox" id="opt-strict"> <span data-t="optStrict"></span></label>
+        <label class="toggle" id="toggle-furigana"><input type="checkbox" id="opt-furigana"> <span data-t="optFurigana"></span></label>
+        <label class="toggle" id="toggle-hide-input"><input type="checkbox" id="opt-hide-input"> <span data-t="optHideInput"></span></label>
+        <label class="toggle"><input type="checkbox" id="opt-translation"> <span data-t="optTranslation"></span></label>
+      </div>
+      <div class="field">
+        <label data-t="volume"></label>
+        <label class="toggle volume"><input type="range" id="opt-volume" min="0" max="100" step="5"></label>
+      </div>
+      <div class="field">
+        <label data-t="dataTitle"></label>
+        <div class="data-actions">
+          <button class="chip" id="btn-export" data-t="exportData"></button>
+          <button class="chip" id="btn-import" data-t="importData"></button>
+          <input type="file" id="import-file" accept="application/json" hidden>
+          <button class="chip danger" id="btn-reset" data-t="reset"></button>
+        </div>
+      </div>
+    </div>
+  </dialog>
 
   <footer class="footer"><span data-t="madeBy"></span></footer>
 

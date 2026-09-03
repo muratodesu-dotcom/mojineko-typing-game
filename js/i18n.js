@@ -18,7 +18,8 @@ const I18N = {
     pack: 'テーマ', packs: { all: 'すべて', daily: '日常', travel: '旅行', work: '仕事', food: '食べ物', weak: '苦手', custom: 'カスタム' },
     packWeakHint: 'ミスが多い文字を含む文を集めます。', packWeakEmpty: 'まだ苦手データがありません。まずは何回かプレイしてみましょう。',
     packCustomHint: '自分の文を追加できます。', customHelp: '1行に1文。日本語は「文｜よみ」の形式で書くと、ひらがなモードでも使えます。', customSave: '保存', customSaved: 'カスタム文を保存しました', customEmpty: 'カスタム文がまだありません。',
-    modeDaily: 'デイリー', modeDrill: 'ウォームアップ',
+    modeDaily: 'デイリー', modeDrill: 'ウォームアップ', modeParagraph: '段落',
+    modeHintParagraph: '4文つなげた長文を3つ入力します。テーマと難易度が使えます。', hudParagraphs: '段落',
     modeHintTime: '制限時間内にできるだけ多く入力します。', modeHintSprint: '決めた数の文をできるだけ速く入力します。',
     modeHintDaily: '毎日同じ10文に挑戦。日ごとのランキングがあります。', modeHintDrill: 'かな行と短い単語15個で指慣らし。',
     dailyTitle: 'デイリー', dailyDone: 'クリア', dailyNotYet: '未挑戦', dailyToday: '今日',
@@ -29,6 +30,9 @@ const I18N = {
     mascotTitle: 'ねこの成長', mascotNext: lv => `次の見た目は Lv.${lv} で解放`, mascotMax: 'すべての見た目を解放しました！',
     streakFreeze: '連続記録を保護しました（週1回）',
     hudItems: 'お題',
+    settingsTitle: '設定', dataTitle: 'データ', tabOverview: '概要', tabRecords: '記録',
+    font: 'フォント', fonts: { clean: '標準', round: '丸ゴシック', serif: '明朝', pixel: 'ピクセル', system: 'システム' },
+    textSize: '文字サイズ', sizes: { s: '小', m: '中', l: '大' },
     goals: '目標', goalGames: 'プレイ回数', goalSentences: '完了した文', goalRank: '最高ランク', goalDone: '達成', goalNext: '次',
     levelNames: { 1: 'やさしい', 2: 'ふつう', 3: 'むずかしい' },
     xpBonus: '難易度ボーナス', madeBy: 'Made by ムラト',
@@ -36,7 +40,7 @@ const I18N = {
     ranks: { S: '伝説級！', A: 'すばらしい', B: 'いいね', C: 'まずまず', D: 'その調子', E: 'ウォームアップ' },
     titles: ['見習い', '初心者', 'タイピスト', 'スピードスター', 'エキスパート', 'マスター', 'グランドマスター', 'レジェンド'],
     perfectFloat: 'パーフェクト +200', bonusFloat: '+100', comboLost: 'コンボ切れ', comboHit: 'コンボ！',
-    boardLen: { time: s => `${s}秒`, sprint: n => `${n}文`, daily: d => d, drill: n => `${n}問` },
+    boardLen: { time: s => `${s}秒`, sprint: n => `${n}文`, daily: d => d, drill: n => `${n}問`, paragraph: n => `${n}段落` },
     inputs: {
       ja: {
         hiragana: { name: 'ひらがな', hint: 'IMEでひらがなのまま入力します。漢字変換は不要です。' },
@@ -77,6 +81,7 @@ const I18N = {
       dailyOne: ['日課', 'デイリーを1回クリアする。'],
       drillOne: ['準備運動', 'ウォームアップを1回完了する。'],
       revenge: ['リベンジ', '苦手テーマで3文以上入力してゲームを終える。'],
+      paragraph: ['長文マスター', '段落モードを1回完走する。'],
     },
   },
   ko: {
@@ -97,7 +102,8 @@ const I18N = {
     pack: '테마', packs: { all: '전체', daily: '일상', travel: '여행', work: '일', food: '음식', weak: '취약', custom: '커스텀' },
     packWeakHint: '자주 틀리는 글자가 들어간 문장을 모읍니다.', packWeakEmpty: '아직 취약 데이터가 없어요. 먼저 몇 판 플레이해 보세요.',
     packCustomHint: '나만의 문장을 추가할 수 있어요.', customHelp: '한 줄에 한 문장.', customSave: '저장', customSaved: '커스텀 문장을 저장했어요', customEmpty: '커스텀 문장이 아직 없어요.',
-    modeDaily: '데일리', modeDrill: '워밍업',
+    modeDaily: '데일리', modeDrill: '워밍업', modeParagraph: '문단',
+    modeHintParagraph: '4문장을 이어 붙인 긴 글 3개를 입력합니다. 테마와 난이도를 쓸 수 있어요.', hudParagraphs: '문단',
     modeHintTime: '제한 시간 안에 최대한 많이 입력합니다.', modeHintSprint: '정해진 수의 문장을 최대한 빨리 입력합니다.',
     modeHintDaily: '매일 같은 10문장에 도전. 날짜별 랭킹이 있어요.', modeHintDrill: '글자 행과 짧은 단어 15개로 손풀기.',
     dailyTitle: '데일리', dailyDone: '클리어', dailyNotYet: '미도전', dailyToday: '오늘',
@@ -108,6 +114,9 @@ const I18N = {
     mascotTitle: '고양이 성장', mascotNext: lv => `다음 모습은 Lv.${lv}에서 해금`, mascotMax: '모든 모습을 해금했어요!',
     streakFreeze: '연속 기록을 보호했어요 (주 1회)',
     hudItems: '문제',
+    settingsTitle: '설정', dataTitle: '데이터', tabOverview: '개요', tabRecords: '기록',
+    font: '폰트', fonts: { clean: '기본', round: '둥근 고딕', serif: '명조', pixel: '픽셀', system: '시스템' },
+    textSize: '글자 크기', sizes: { s: '작게', m: '보통', l: '크게' },
     goals: '목표', goalGames: '플레이 횟수', goalSentences: '완료한 문장', goalRank: '최고 랭크', goalDone: '달성', goalNext: '다음',
     levelNames: { 1: '쉬움', 2: '보통', 3: '어려움' },
     xpBonus: '난이도 보너스', madeBy: 'Made by ムラト',
@@ -115,7 +124,7 @@ const I18N = {
     ranks: { S: '전설급!', A: '훌륭해요', B: '좋아요', C: '괜찮아요', D: '계속 해봐요', E: '워밍업' },
     titles: ['견습생', '초보자', '타이피스트', '스피드스터', '전문가', '마스터', '그랜드마스터', '레전드'],
     perfectFloat: '퍼펙트 +200', bonusFloat: '+100', comboLost: '콤보 끊김', comboHit: '콤보!',
-    boardLen: { time: s => `${s}초`, sprint: n => `${n}문장`, daily: d => d, drill: n => `${n}문제` },
+    boardLen: { time: s => `${s}초`, sprint: n => `${n}문장`, daily: d => d, drill: n => `${n}문제`, paragraph: n => `${n}문단` },
     inputs: {
       ja: {
         hiragana: { name: '히라가나', hint: 'IME로 히라가나만 입력합니다. 한자 변환은 필요 없습니다.' },
@@ -155,6 +164,7 @@ const I18N = {
       dailyOne: ['일과', '데일리를 1회 클리어하세요.'],
       drillOne: ['준비 운동', '워밍업을 1회 완료하세요.'],
       revenge: ['리벤지', '취약 테마에서 3문장 이상 입력하고 게임을 끝내세요.'],
+      paragraph: ['장문 마스터', '문단 모드를 1회 완주하세요.'],
     },
   },
 };

@@ -12,8 +12,7 @@ git clone <this repo>
 open index.html        # or double-click it, or serve the folder with any static server
 ```
 
-Works offline. Pixel fonts (Galmuri, DotGothic16, Press Start 2P) load from CDNs when
-available and fall back to your system CJK fonts. A GitHub Pages workflow deploys `main`
+Works offline. The default font is Noto Sans for readability; the settings offer 丸ゴシック (Zen Maru Gothic / Gowun Dodum), 明朝 (Noto Serif), ピクセル (Galmuri / DotGothic16 / Press Start 2P) and your system font, plus three sentence sizes. Web fonts load from CDNs when available and fall back to your system CJK fonts. A GitHub Pages workflow deploys `main`
 automatically once Pages is set to "GitHub Actions" in the repository settings.
 
 ## Features
@@ -28,7 +27,7 @@ automatically once Pages is set to "GitHub Actions" in the repository settings.
   keys must be erased with Backspace.
 - **Modes**: Time attack (30 / 60 / 120 s), Sprint (5 / 10 / 20 sentences), Daily challenge
   (the same 10 sentences for everyone that day, with a per-day leaderboard), Warm-up (kana or
-  syllable rows and short words).
+  syllable rows and short words), Paragraph (three passages of four sentences each).
 - **Weak-spot tracking**: misses are recorded per character, shown after each round, and the
   苦手 pack builds rounds from the sentences you struggle with most.
 - **Custom pack**: paste your own sentences (Japanese as `文｜よみ`).
@@ -37,7 +36,7 @@ automatically once Pages is set to "GitHub Actions" in the repository settings.
 - Combo multiplier up to 3×, perfect-sentence bonuses, S–E ranks, chiptune sound effects
   with a volume slider, screen shake, confetti on a new record.
 - XP and levels with an XP multiplier by difficulty (×1 / ×1.25 / ×1.5, mixed ×1.2), 27
-  achievements, a goals panel with tiered targets per difficulty, per-mode top-10 leaderboards,
+  achievements (28), a goals panel with tiered targets per difficulty, per-mode top-10 leaderboards,
   a history chart of your recent rounds, and a ghost pace marker comparing you to your best run.
 - Daily streak with one automatic freeze per week.
 - A pixel cat mascot that reacts to your typing, can be petted, and gains new looks as you
@@ -46,6 +45,7 @@ automatically once Pages is set to "GitHub Actions" in the repository settings.
 
 **Interface**
 - Menu and HUD in Japanese or Korean, following the selected language. Light and dark themes.
+- Settings behind the gear icon: five font sets, three text sizes, input options, volume, and data export / import / reset. The home page fits a desktop screen without scrolling; stats, records, goals, rankings and achievements live in tabs.
 - Arrow keys move between options on the menu; everything is keyboard-accessible.
 - Export / import all local data as a JSON file.
 

@@ -6,6 +6,9 @@ const Store = (() => {
     settings: {
       lang: 'ja',
       theme: 'system',   // 'system' | 'light' | 'dark'
+      font: 'clean',     // 'clean' | 'round' | 'serif' | 'pixel' | 'system'
+      textSize: 'm',     // sentence size: 's' | 'm' | 'l'
+      sideTab: 'overview',
       input: { ja: 'hiragana', ko: 'jamo' },  // ja: script to type (via IME); ko: input method
       mode: 'time',      // 'time' | 'sprint' | 'daily' | 'drill'
       duration: 60,      // seconds, for time mode

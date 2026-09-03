@@ -18,7 +18,10 @@
   };
   const isDirectInput = (lang, input) => lang === 'ja' || input === 'direct';
   const PACKS = ['all', 'daily', 'travel', 'work', 'food', 'weak', 'custom'];
-  const COUNT_MODES = { sprint: null, daily: 10, drill: 15 }; // null = user-selected
+  const FONTS = ['clean', 'round', 'serif', 'pixel', 'system'];
+  const SIZES = ['s', 'm', 'l'];
+  const COUNT_MODES = { sprint: null, daily: 10, drill: 15, paragraph: 3 }; // null = user-selected
+  const PARAGRAPH_SENTENCES = 4;
 
   const RANKS = [
     { r: 'S', min: 8000 }, { r: 'A', min: 5500 }, { r: 'B', min: 3500 },
@@ -47,6 +50,7 @@
     { id: 'dailyOne', ico: '📆', test: r => r.mode === 'daily' && r.sentences >= 10 },
     { id: 'drillOne', ico: '🧘', test: r => r.mode === 'drill' && r.sentences >= 15 },
     { id: 'revenge', ico: '⚔️', test: r => r.pack === 'weak' && r.sentences >= 3 },
+    { id: 'paragraph', ico: '📜', test: r => r.mode === 'paragraph' && r.sentences >= 3 },
     // Difficulty-based
     { id: 'easyClear', ico: '🌱', test: r => r.level === '1' && r.sentences >= 3 },
     { id: 'normalClear', ico: '🌿', test: r => r.level === '2' && r.sentences >= 3 },
@@ -69,6 +73,7 @@
     moon: '<svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>',
     soundOn: '<svg viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4zM15.5 8.5a5 5 0 0 1 0 7M19 5.5a9 9 0 0 1 0 13"/></svg>',
     soundOff: '<svg viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4zM22 9l-6 6M16 9l6 6"/></svg>',
+    gear: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>',
   };
 
   // ---------------------------------------------------------------------
@@ -93,12 +98,14 @@
     screens: { home: $('#screen-home'), play: $('#screen-play'), result: $('#screen-result') },
     inputLabel: $('#input-label'), inputChips: $('#input-chips'), inputHint: $('#input-hint'), modeHint: $('#mode-hint'),
     fieldDuration: $('#field-duration'), fieldSprint: $('#field-sprint'), fieldPack: $('#field-pack'), fieldLevel: $('#field-level'),
+    fontChips: $('#font-chips'), sizeChips: $('#size-chips'),
     packChips: $('#pack-chips'), packHint: $('#pack-hint'), customEditor: $('#custom-editor'), customText: $('#custom-text'), customHelp: $('#custom-help'), btnCustomSave: $('#btn-custom-save'),
     toggleGuide: $('#toggle-guide'), toggleKeyboard: $('#toggle-keyboard'), toggleStrict: $('#toggle-strict'), toggleFurigana: $('#toggle-furigana'), toggleHideInput: $('#toggle-hide-input'),
     optGuide: $('#opt-guide'), optKeyboard: $('#opt-keyboard'), optStrict: $('#opt-strict'), optFurigana: $('#opt-furigana'), optHideInput: $('#opt-hide-input'), optTranslation: $('#opt-translation'), optVolume: $('#opt-volume'),
     btnStart: $('#btn-start'), btnRetry: $('#btn-retry'), btnHome: $('#btn-home'), btnReset: $('#btn-reset'), btnShare: $('#btn-share'),
     btnExport: $('#btn-export'), btnImport: $('#btn-import'), importFile: $('#import-file'),
-    btnSound: $('#btn-sound'), btnTheme: $('#btn-theme'),
+    btnSound: $('#btn-sound'), btnTheme: $('#btn-theme'), btnSettings: $('#btn-settings'), btnSettingsClose: $('#btn-settings-close'), settingsModal: $('#settings-modal'),
+    sideTabs: $('#side-tabs'),
     goals: $('#goals'), mascotHome: $('#mascot-home'), mascotPlay: $('#mascot-play'), mascotPreview: $('#mascot-preview'), mascotNext: $('#mascot-next'),
     homeStats: $('#home-stats'), homeBoard: $('#home-board'), boardLabel: $('#board-label'), achGrid: $('#ach-grid'), achCount: $('#ach-count'),
     historyChart: $('#history-chart'), historyList: $('#history-list'), historyLabel: $('#history-label'), dailyList: $('#daily-list'), dailyLabel: $('#daily-label'),
@@ -130,15 +137,22 @@
     el.btnTheme.innerHTML = th === 'dark' ? ICONS.sun : ICONS.moon;
     el.btnTheme.title = t('theme');
   }
+  function applyDisplay() {
+    el.root.dataset.font = set.font;
+    el.root.dataset.size = set.textSize;
+  }
   function applyI18n() {
     el.root.dataset.lang = set.lang;
     el.root.lang = set.lang;
+    applyDisplay();
     $$('[data-t]').forEach(n => { n.textContent = t(n.dataset.t); });
     el.playHint.innerHTML = t('quitHint').replace('Esc', '<kbd>Esc</kbd>');
     el.newRecord.textContent = t('newRecord');
     el.btnSound.innerHTML = set.sound ? ICONS.soundOn : ICONS.soundOff;
     el.btnSound.title = t('sound');
     el.customHelp.textContent = t('customHelp');
+    el.btnSettings.innerHTML = ICONS.gear;
+    el.btnSettings.title = t('settingsTitle');
     applyTheme();
   }
 
@@ -230,7 +244,21 @@
       const f = list.filter(s => s.level === +level);
       if (f.length >= 5) list = f;
     }
-    return shuffle(list.length ? list : all, rnd);
+    const pool = shuffle(list.length ? list : all, rnd);
+    if (mode !== 'paragraph') return pool;
+    // Paragraph mode: join several sentences into one passage.
+    const joiner = lang === 'ko' ? ' ' : '';
+    const paras = [];
+    for (let i = 0; i + 1 < pool.length && paras.length < COUNT_MODES.paragraph; i += PARAGRAPH_SENTENCES) {
+      const group = pool.slice(i, i + PARAGRAPH_SENTENCES);
+      paras.push({
+        text: group.map(s => s.text).join(joiner),
+        reading: lang === 'ja' ? group.map(s => s.reading || s.text).join(joiner) : undefined,
+        en: group.map(s => s.en).join(' '),
+        level: 'para', parts: group.map(s => s.level), tag: 'paragraph',
+      });
+    }
+    return paras;
   }
 
   // ---------------------------------------------------------------------
@@ -249,13 +277,13 @@
     el.inputHint.textContent = names[set.input[set.lang]].hint;
 
     $$('#mode-chips .chip').forEach(b => b.classList.toggle('active', b.dataset.mode === set.mode));
-    el.modeHint.textContent = t({ time: 'modeHintTime', sprint: 'modeHintSprint', daily: 'modeHintDaily', drill: 'modeHintDrill' }[set.mode]);
+    el.modeHint.textContent = t({ time: 'modeHintTime', sprint: 'modeHintSprint', daily: 'modeHintDaily', drill: 'modeHintDrill', paragraph: 'modeHintParagraph' }[set.mode]);
     $$('#duration-chips .chip').forEach(b => b.classList.toggle('active', +b.dataset.duration === set.duration));
     $$('#sprint-chips .chip').forEach(b => b.classList.toggle('active', +b.dataset.sprint === set.sprintCount));
     $$('#level-chips .chip').forEach(b => b.classList.toggle('active', b.dataset.level === String(set.level)));
     el.fieldDuration.hidden = set.mode !== 'time';
     el.fieldSprint.hidden = set.mode !== 'sprint';
-    const freeMode = set.mode === 'time' || set.mode === 'sprint';
+    const freeMode = set.mode === 'time' || set.mode === 'sprint' || set.mode === 'paragraph';
     el.fieldPack.hidden = !freeMode;
     el.fieldLevel.hidden = !freeMode || set.pack === 'custom';
 
@@ -267,6 +295,13 @@
       el.customText.value = (S.custom[set.lang] || []).map(c => c.reading ? `${c.text}｜${c.reading}` : c.text).join('\n');
       el.customText.placeholder = set.lang === 'ja' ? '今日はいい天気ですね。｜きょうはいいてんきですね。' : '오늘 날씨가 좋네요.';
     }
+
+    const previewFonts = {
+      clean: "'Noto Sans JP', 'Noto Sans KR', sans-serif", round: "'Zen Maru Gothic', 'Gowun Dodum', sans-serif", serif: "'Noto Serif JP', 'Noto Serif KR', serif",
+      pixel: "'Galmuri11', 'DotGothic16', monospace", system: 'system-ui, sans-serif',
+    };
+    el.fontChips.innerHTML = FONTS.map(f => `<button class="chip${f === set.font ? ' active' : ''}" data-font="${f}" style="font-family:${previewFonts[f]}">${t('fonts')[f]}</button>`).join('');
+    el.sizeChips.innerHTML = SIZES.map(z => `<button class="chip${z === set.textSize ? ' active' : ''}" data-size="${z}">${t('sizes')[z]}</button>`).join('');
 
     const builtin = !isDirectInput(set.lang, set.input[set.lang]);
     el.toggleGuide.hidden = !builtin;
@@ -283,6 +318,9 @@
     el.optVolume.value = set.volume;
     Sfx.setEnabled(set.sound);
     Sfx.setVolume(set.volume / 100);
+
+    $$('#side-tabs .chip').forEach(b => b.classList.toggle('active', b.dataset.tab === set.sideTab));
+    $$('.side-panel').forEach(p => { p.hidden = p.dataset.panel !== set.sideTab; });
 
     renderTopbar();
     renderStats();
@@ -486,7 +524,7 @@
     const input = set.input[set.lang];
     const mode = set.mode;
     const count = countFor(mode, set.sprintCount);
-    const free = mode === 'time' || mode === 'sprint';
+    const free = mode === 'time' || mode === 'sprint' || mode === 'paragraph';
     Object.assign(G, {
       active: true, phase: 'countdown',
       lang: set.lang, input, direct: isDirectInput(set.lang, input),
@@ -503,7 +541,7 @@
     G.ghost = S.ghosts[boardKeyFor(G.lang, G.input, G.mode, G.duration, G.count)] || null;
 
     el.hudSpeedLabel.textContent = t(G.direct ? 'cpm' : 'kpm');
-    el.hudTimeLabel.textContent = G.mode === 'time' ? t('hudTime') : G.mode === 'drill' ? t('hudItems') : t('hudSentences');
+    el.hudTimeLabel.textContent = G.mode === 'time' ? t('hudTime') : G.mode === 'drill' ? t('hudItems') : G.mode === 'paragraph' ? t('hudParagraphs') : t('hudSentences');
     el.hudGhostBox.hidden = !G.ghost;
     el.hudGhost.textContent = '±0';
     el.hudGhost.className = 'hud-value';
@@ -612,7 +650,8 @@
     G.units = G.direct ? [] : Hangul.buildUnits(G.target);
 
     el.reading.textContent = (G.lang === 'ja' && G.input === 'mixed' && set.furigana && G.sentence.reading && G.sentence.reading !== G.sentence.text) ? kataToHira(G.sentence.reading) : '';
-    el.en.textContent = set.translation ? (G.sentence.en || '') : '';
+    el.en.textContent = set.translation && G.mode !== 'paragraph' ? (G.sentence.en || '') : '';
+    el.main.classList.toggle('long', G.target.length > 60);
     renderSentence();
     renderDots();
   }
@@ -792,7 +831,8 @@
 
   function completeSentence() {
     G.sentences++;
-    if (G.levelSentences[G.sentence.level] !== undefined && G.mode !== 'drill') G.levelSentences[G.sentence.level]++;
+    if (G.sentence.parts) G.sentence.parts.forEach(lv => { if (G.levelSentences[lv] !== undefined) G.levelSentences[lv]++; });
+    else if (G.levelSentences[G.sentence.level] !== undefined && G.mode !== 'drill') G.levelSentences[G.sentence.level]++;
     let bonus = 100;
     if (G.sentenceMisses === 0) { bonus += 100; G.perfect++; floatText(t('perfectFloat'), 'ok'); mascotReact('happy', 1000); }
     else floatText(t('bonusFloat'), 'ok');
@@ -995,8 +1035,8 @@
     ctx.fillStyle = col('--surface'); ctx.fillRect(20, 20, W - 40, H - 40);
     ctx.strokeStyle = col('--ink'); ctx.lineWidth = 4; ctx.strokeRect(20, 20, W - 40, H - 40);
     ctx.fillStyle = col('--ink'); ctx.fillRect(28, H - 20, W - 40, 6); ctx.fillRect(W - 20, 28, 6, H - 40);
-    const pixel = "'Press Start 2P', 'Galmuri11', 'DotGothic16', monospace";
-    const text = "'Galmuri11', 'DotGothic16', 'Noto Sans JP', 'Noto Sans KR', sans-serif";
+    const pixel = col('--font-num') || 'sans-serif';
+    const text = col('--font-ui') || 'sans-serif';
     ctx.fillStyle = col('--text');
     ctx.font = `bold 20px ${text}`; ctx.fillText('Kotoba Type', 44, 60);
     ctx.font = `14px ${text}`; ctx.fillStyle = col('--muted');
@@ -1093,6 +1133,12 @@
   chipHandler('#sprint-chips', 'sprint', v => { set.sprintCount = +v; });
   chipHandler('#level-chips', 'level', v => { set.level = v === 'mixed' ? 'mixed' : +v; });
   chipHandler('#pack-chips', 'pack', v => { set.pack = v; });
+  chipHandler('#font-chips', 'font', v => { set.font = v; });
+  chipHandler('#side-tabs', 'tab', v => { set.sideTab = v; });
+  el.btnSettings.addEventListener('click', () => { renderHome(); el.settingsModal.showModal(); });
+  el.btnSettingsClose.addEventListener('click', () => el.settingsModal.close());
+  el.settingsModal.addEventListener('click', e => { if (e.target === el.settingsModal) el.settingsModal.close(); });
+  chipHandler('#size-chips', 'size', v => { set.textSize = v; });
   el.btnCustomSave.addEventListener('click', () => {
     const lines = el.customText.value.split('\n').map(l => l.trim()).filter(Boolean);
     S.custom[set.lang] = lines.map(l => {
@@ -1143,6 +1189,7 @@
       (again || next).focus();
     }
     if (e.key === 'Enter' && !e.repeat && (home || el.screens.result.classList.contains('active'))) {
+      if (el.settingsModal.open) return;
       const a = document.activeElement;
       if (a && (a.tagName === 'BUTTON' || a.tagName === 'TEXTAREA' || a.classList.contains('mascot')) && a !== el.btnStart && a !== el.btnRetry) return;
       e.preventDefault();
