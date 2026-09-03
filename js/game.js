@@ -256,12 +256,18 @@
     if (s.reading) for (const ch of kataToHira(s.reading)) score += w[ch] || 0;
     return score;
   }
-  function buildPool(lang, input, mode, level, pack, rnd) {
+  function buildPool(lang, input, mode, level, pack, rnd, count) {
     const pool = buildPoolInner(lang, input, mode, level, pack, rnd);
-    if (EGGS[lang] && rnd() < EGG_RATE) {
+    // Easter egg: never two rounds in a row, and always within the part of the round that gets played.
+    let hasEgg = false;
+    if (EGGS[lang] && !S.eggLast && rnd() < EGG_RATE) {
       const egg = { ...EGGS[lang](), parts: [1] };
-      pool.splice(Math.floor(rnd() * (pool.length + 1)), 0, egg);
+      const reach = Math.min(pool.length, mode === 'time' ? 8 : Math.max(1, count || pool.length));
+      pool.splice(Math.floor(rnd() * reach), 0, egg);
+      hasEgg = true;
     }
+    S.eggLast = hasEgg;
+    Store.save();
     return pool;
   }
   function buildPoolInner(lang, input, mode, level, pack, rnd) {
@@ -659,7 +665,7 @@
     });
     if (G.pack === 'custom') G.level = 'mixed';
     const rnd = mode === 'daily' ? seededRandom(`${todayStr()}:${G.lang}`) : Math.random;
-    G.pool = buildPool(G.lang, G.input, mode, G.level, G.pack, rnd);
+    G.pool = buildPool(G.lang, G.input, mode, G.level, G.pack, rnd, count);
     G.ghost = S.ghosts[boardKeyFor(G.lang, G.input, G.mode, G.duration, G.count)] || null;
 
     el.hudSpeedLabel.textContent = t(speedUnitFor(G.lang, G.direct));
