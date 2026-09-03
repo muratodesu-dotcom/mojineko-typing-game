@@ -461,7 +461,8 @@ h2.mt { margin-top: 18px; }
 .font-preview .chip { font-family: var(--preview-font); }
 
 /* ---------- cheer balloon from ムラト ---------- */
-.cheer { display: flex; align-items: center; gap: 12px; margin: 10px auto 0; max-width: 1160px; }
+.cheer { display: flex; align-items: center; gap: 12px; margin: 10px auto 0; max-width: 1160px; visibility: hidden; opacity: 0; transition: opacity 0.2s steps(2); }
+.cheer.show { visibility: visible; opacity: 1; }
 .cheer-avatar {
   flex: none; width: 36px; height: 36px; display: grid; place-items: center; border: 2px solid var(--ink); box-shadow: 2px 2px 0 var(--ink);
   background: var(--accent); color: var(--on-accent); font-weight: 700; font-family: var(--font-ja);

@@ -366,7 +366,7 @@
     renderAchievements();
     renderMascotPanel();
     setMascot(el.mascotHome, 'idle');
-    showCheer(el.cheerHome);
+    scheduleCheer();
   }
 
   // Encouragement from ムラト: random line, rank-aware on the result screen.
@@ -392,7 +392,26 @@
     void node.offsetWidth;
     node.style.animation = '';
   }
-  setInterval(() => { if (el.screens.home.classList.contains('active') && !el.settingsModal.open) showCheer(el.cheerHome); }, 15000);
+  // Menu balloon: nothing at first, then occasionally. First after ~45 s, visible 8 s, then every 2-3 minutes.
+  const CHEER_FIRST_MS = 45000, CHEER_SHOW_MS = 8000, CHEER_GAP_MIN = 120000, CHEER_GAP_MAX = 180000;
+  let cheerTimer = 0, cheerHideTimer = 0, cheerArmed = false;
+  const cheerBox = () => el.cheerHome.closest('.cheer');
+  function hideCheer() { cheerBox().classList.remove('show'); }
+  function scheduleCheer(delay) {
+    if (cheerArmed && delay === undefined) return; // already scheduled; a re-render should not reset it
+    clearTimeout(cheerTimer);
+    cheerArmed = true;
+    cheerTimer = setTimeout(() => {
+      cheerArmed = false;
+      if (!el.screens.home.classList.contains('active') || el.settingsModal.open) { scheduleCheer(CHEER_FIRST_MS); return; }
+      showCheer(el.cheerHome);
+      cheerBox().classList.add('show');
+      clearTimeout(cheerHideTimer);
+      cheerHideTimer = setTimeout(hideCheer, CHEER_SHOW_MS);
+      scheduleCheer(CHEER_GAP_MIN + Math.random() * (CHEER_GAP_MAX - CHEER_GAP_MIN));
+    }, delay === undefined ? CHEER_FIRST_MS : delay);
+  }
+  function cancelCheer() { clearTimeout(cheerTimer); clearTimeout(cheerHideTimer); cheerArmed = false; hideCheer(); }
 
   function renderTopbar() {
     el.streak.textContent = currentStreak();
@@ -649,6 +668,7 @@
     buildKeyboard();
     updateHud();
     setMascot(el.mascotPlay, 'idle');
+    cancelCheer();
     showScreen('play');
 
     loadSentence();
@@ -1132,6 +1152,7 @@
     renderBoard(el.resultBoard, el.resultBoardLabel, key, myIdx);
     renderTopbar();
     showCheer(el.cheerResult, r.rank);
+    el.cheerResult.closest('.cheer').classList.add('show');
     showScreen('result');
 
     Sfx.finish();
