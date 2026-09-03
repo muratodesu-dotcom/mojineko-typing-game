@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2716%27 fill=%27%23ff5c8a%27/%3E%3Ctext x=%2732%27 y=%2745%27 font-size=%2738%27 text-anchor=%27middle%27 font-family=%27sans-serif%27 font-weight=%27700%27 fill=%27%230b0d17%27%3E言%3C/text%3E%3C/svg%3E">
+  <title>Kotoba Type — Japanese & Korean Typing Game</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <!-- Fonts are optional: load without blocking render, fall back to system CJK fonts. -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="bg-orbs" aria-hidden="true"><span></span><span></span><span></span></div>
+
+  <header class="topbar">
+    <div class="brand" id="brand-home" role="button" tabindex="0" title="Home">
+      <span class="brand-mark">言</span>
+      <span class="brand-name">Kotoba<span>Type</span></span>
+    </div>
+    <div class="topbar-right">
+      <div class="pill" id="pill-streak" title="Daily streak">🔥 <b id="streak-count">0</b> day streak</div>
+      <div class="pill pill-level" id="pill-level" title="Your level">
+        <span class="lvl">Lv.<b id="level-num">1</b></span>
+        <span class="lvl-title" id="level-title">Novice</span>
+        <span class="xp-bar"><span id="xp-fill"></span></span>
+      </div>
+      <button class="icon-btn" id="btn-sound" title="Toggle sound">🔊</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ================= HOME ================= -->
+    <section class="screen active" id="screen-home">
+      <div class="home-grid">
+        <div class="panel setup">
+          <h1 class="hero-title">Type faster in <span id="hero-lang" class="accent">日本語</span></h1>
+          <p class="hero-sub">Pick a language, hit start, and chase a new high score.</p>
+
+          <div class="field">
+            <label>Language</label>
+            <div class="lang-cards">
+              <button class="lang-card" data-lang="ja">
+                <span class="lang-glyph">あ</span>
+                <span class="lang-name">日本語</span>
+                <span class="lang-sub">Japanese</span>
+              </button>
+              <button class="lang-card" data-lang="ko">
+                <span class="lang-glyph">한</span>
+                <span class="lang-name">한국어</span>
+                <span class="lang-sub">Korean</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Input method</label>
+            <div class="chips" id="input-chips"></div>
+            <p class="hint" id="input-hint"></p>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label>Mode</label>
+              <div class="chips" id="mode-chips">
+                <button class="chip" data-mode="time">⏱ Time attack</button>
+                <button class="chip" data-mode="sprint">🏁 Sprint</button>
+              </div>
+            </div>
+            <div class="field" id="field-duration">
+              <label>Duration</label>
+              <div class="chips" id="duration-chips">
+                <button class="chip" data-duration="30">30s</button>
+                <button class="chip" data-duration="60">60s</button>
+                <button class="chip" data-duration="120">120s</button>
+              </div>
+            </div>
+            <div class="field" id="field-sprint" hidden>
+              <label>Sentences</label>
+              <div class="chips" id="sprint-chips">
+                <button class="chip" data-sprint="5">5</button>
+                <button class="chip" data-sprint="10">10</button>
+                <button class="chip" data-sprint="20">20</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Difficulty</label>
+            <div class="chips" id="level-chips">
+              <button class="chip" data-level="mixed">🎲 Mixed</button>
+              <button class="chip" data-level="1">🌱 Easy</button>
+              <button class="chip" data-level="2">🌿 Normal</button>
+              <button class="chip" data-level="3">🌳 Hard</button>
+            </div>
+          </div>
+
+          <div class="field toggles">
+            <label class="toggle"><input type="checkbox" id="opt-guide"> <span>Show typing guide</span></label>
+            <label class="toggle"><input type="checkbox" id="opt-keyboard"> <span>Show keyboard</span></label>
+            <label class="toggle"><input type="checkbox" id="opt-translation"> <span>Show translation</span></label>
+          </div>
+
+          <button class="btn-start" id="btn-start">
+            <span>Start</span><kbd>Enter</kbd>
+          </button>
+        </div>
+
+        <aside class="side">
+          <div class="panel">
+            <h2>Your stats</h2>
+            <div class="stat-grid" id="home-stats"></div>
+          </div>
+          <div class="panel">
+            <h2>Leaderboard <small id="board-label"></small></h2>
+            <ol class="board" id="home-board"></ol>
+          </div>
+          <div class="panel">
+            <h2>Achievements <small id="ach-count"></small></h2>
+            <div class="ach-grid" id="ach-grid"></div>
+          </div>
+          <button class="btn-text danger" id="btn-reset">Reset all local data</button>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ================= PLAY ================= -->
+    <section class="screen" id="screen-play">
+      <div class="hud">
+        <div class="hud-item"><span class="hud-label" id="hud-time-label">Time</span><span class="hud-value" id="hud-time">60</span></div>
+        <div class="hud-item"><span class="hud-label">Score</span><span class="hud-value" id="hud-score">0</span></div>
+        <div class="hud-item combo"><span class="hud-label">Combo</span><span class="hud-value" id="hud-combo">0</span></div>
+        <div class="hud-item"><span class="hud-label" id="hud-speed-label">KPM</span><span class="hud-value" id="hud-speed">0</span></div>
+        <div class="hud-item"><span class="hud-label">Accuracy</span><span class="hud-value" id="hud-acc">100%</span></div>
+      </div>
+      <div class="timebar"><div id="timebar-fill"></div></div>
+
+      <div class="stage" id="stage">
+        <div class="countdown" id="countdown" hidden>3</div>
+        <div class="sentence-card" id="sentence-card">
+          <div class="progress-dots" id="progress-dots"></div>
+          <div class="sentence-main" id="sentence-main"></div>
+          <div class="sentence-reading" id="sentence-reading"></div>
+          <div class="sentence-guide" id="sentence-guide"></div>
+          <div class="sentence-en" id="sentence-en"></div>
+          <input class="direct-input" id="direct-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Type here with your IME…" hidden>
+        </div>
+        <div class="float-layer" id="float-layer"></div>
+      </div>
+
+      <div class="keyboard" id="keyboard"></div>
+      <p class="play-hint" id="play-hint">Press <kbd>Esc</kbd> to quit</p>
+    </section>
+
+    <!-- ================= RESULT ================= -->
+    <section class="screen" id="screen-result">
+      <div class="result-wrap">
+        <div class="result-rank-wrap">
+          <div class="result-rank" id="result-rank">S</div>
+          <div class="result-rank-label" id="result-rank-label">Rank</div>
+        </div>
+        <div class="result-score">
+          <span class="result-score-label">Score</span>
+          <span class="result-score-value" id="result-score">0</span>
+          <span class="new-record" id="new-record" hidden>🏆 New record!</span>
+        </div>
+        <div class="stat-grid result-stats" id="result-stats"></div>
+        <div class="result-ach" id="result-ach" hidden></div>
+        <div class="panel result-board">
+          <h2>Leaderboard <small id="result-board-label"></small></h2>
+          <ol class="board" id="result-board"></ol>
+        </div>
+        <div class="result-actions">
+          <button class="btn-start" id="btn-retry"><span>Play again</span><kbd>Enter</kbd></button>
+          <button class="btn-text" id="btn-home">Back to menu</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <canvas id="confetti" aria-hidden="true"></canvas>
+  <div class="toast-layer" id="toast-layer"></div>
+
+  <script src="js/data/ja.js"></script>
+  <script src="js/data/ko.js"></script>
+  <script src="js/romaji.js"></script>
+  <script src="js/hangul.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
