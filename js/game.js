@@ -48,6 +48,7 @@
   const COUNT_MODES = { sprint: null, daily: 10, drill: 15, paragraph: 3 }; // null = user-selected
   const PARAGRAPH_SENTENCES = 4;
   const EGG_RATE = 1 / 12; // chance per round that the easter-egg sentence appears (Japanese and Korean)
+  const EGG_MAX_PER_DAY = 2;
   const EGGS = { ja: () => JA_EGG, ko: () => KO_EGG };
 
   const RANKS = [
@@ -258,15 +259,18 @@
   }
   function buildPool(lang, input, mode, level, pack, rnd, count) {
     const pool = buildPoolInner(lang, input, mode, level, pack, rnd);
-    // Easter egg: never two rounds in a row, and always within the part of the round that gets played.
+    // Easter egg: never two rounds in a row, at most twice a day, and always within the part of the round that gets played.
+    const eggState = S.egg;
+    if (eggState.day !== todayStr()) { eggState.day = todayStr(); eggState.count = 0; }
     let hasEgg = false;
-    if (EGGS[lang] && !S.eggLast && rnd() < EGG_RATE) {
+    if (EGGS[lang] && !eggState.last && eggState.count < EGG_MAX_PER_DAY && rnd() < EGG_RATE) {
       const egg = { ...EGGS[lang](), parts: [1] };
       const reach = Math.min(pool.length, mode === 'time' ? 8 : Math.max(1, count || pool.length));
       pool.splice(Math.floor(rnd() * reach), 0, egg);
       hasEgg = true;
+      eggState.count++;
     }
-    S.eggLast = hasEgg;
+    eggState.last = hasEgg;
     Store.save();
     return pool;
   }
