@@ -1,31 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja" data-lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2716%27 fill=%27%23ff5c8a%27/%3E%3Ctext x=%2732%27 y=%2745%27 font-size=%2738%27 text-anchor=%27middle%27 font-family=%27sans-serif%27 font-weight=%27700%27 fill=%27%230b0d17%27%3E言%3C/text%3E%3C/svg%3E">
-  <title>Kotoba Type — Japanese & Korean Typing Game</title>
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2712%27 fill=%27%23c2414d%27/%3E%3Ctext x=%2732%27 y=%2745%27 font-size=%2738%27 text-anchor=%27middle%27 font-family=%27sans-serif%27 font-weight=%27700%27 fill=%27%23fff%27%3E言%3C/text%3E%3C/svg%3E">
+  <title>Kotoba Type</title>
+  <script>
+    // Apply the saved theme before first paint to avoid a flash.
+    (function () {
+      try {
+        var s = JSON.parse(localStorage.getItem('kotoba-type:v2') || '{}');
+        var t = s.settings && s.settings.theme;
+        if (t !== 'light' && t !== 'dark') t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.dataset.theme = t;
+        if (s.settings && s.settings.lang) { document.documentElement.dataset.lang = s.settings.lang; document.documentElement.lang = s.settings.lang; }
+      } catch (e) {}
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <!-- Fonts are optional: load without blocking render, fall back to system CJK fonts. -->
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <!-- Fonts are optional: loaded without blocking render, falling back to system CJK fonts. -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div class="bg-orbs" aria-hidden="true"><span></span><span></span><span></span></div>
-
   <header class="topbar">
-    <div class="brand" id="brand-home" role="button" tabindex="0" title="Home">
+    <div class="brand" id="brand-home" role="button" tabindex="0">
       <span class="brand-mark">言</span>
-      <span class="brand-name">Kotoba<span>Type</span></span>
+      <span class="brand-name">Kotoba Type</span>
     </div>
     <div class="topbar-right">
-      <div class="pill" id="pill-streak" title="Daily streak">🔥 <b id="streak-count">0</b> day streak</div>
-      <div class="pill pill-level" id="pill-level" title="Your level">
-        <span class="lvl">Lv.<b id="level-num">1</b></span>
-        <span class="lvl-title" id="level-title">Novice</span>
+      <div class="pill" id="pill-streak"><span class="dot"></span><b id="streak-count">0</b><span id="streak-label"></span></div>
+      <div class="pill" id="pill-level">
+        <b><span data-t="lv"></span><span id="level-num">1</span></b>
+        <span id="level-title"></span>
         <span class="xp-bar"><span id="xp-fill"></span></span>
       </div>
-      <button class="icon-btn" id="btn-sound" title="Toggle sound">🔊</button>
+      <button class="icon-btn" id="btn-theme" aria-label="theme"></button>
+      <button class="icon-btn" id="btn-sound" aria-label="sound"></button>
     </div>
   </header>
 
@@ -33,93 +45,83 @@
     <!-- ================= HOME ================= -->
     <section class="screen active" id="screen-home">
       <div class="home-grid">
-        <div class="panel setup">
-          <h1 class="hero-title">Type faster in <span id="hero-lang" class="accent">日本語</span></h1>
-          <p class="hero-sub">Pick a language, hit start, and chase a new high score.</p>
+        <div class="setup">
+          <h1 class="hero-title" data-t="heroTitle"></h1>
+          <p class="hero-sub" data-t="heroSub"></p>
 
           <div class="field">
-            <label>Language</label>
+            <label data-t="language"></label>
             <div class="lang-cards">
-              <button class="lang-card" data-lang="ja">
-                <span class="lang-glyph">あ</span>
-                <span class="lang-name">日本語</span>
-                <span class="lang-sub">Japanese</span>
-              </button>
-              <button class="lang-card" data-lang="ko">
-                <span class="lang-glyph">한</span>
-                <span class="lang-name">한국어</span>
-                <span class="lang-sub">Korean</span>
-              </button>
+              <button class="lang-card" data-lang="ja"><span class="lang-glyph">あ</span><span class="lang-name">日本語</span></button>
+              <button class="lang-card" data-lang="ko"><span class="lang-glyph">한</span><span class="lang-name">한국어</span></button>
             </div>
           </div>
 
           <div class="field">
-            <label>Input method</label>
+            <label id="input-label"></label>
             <div class="chips" id="input-chips"></div>
             <p class="hint" id="input-hint"></p>
           </div>
 
           <div class="field-row">
             <div class="field">
-              <label>Mode</label>
+              <label data-t="mode"></label>
               <div class="chips" id="mode-chips">
-                <button class="chip" data-mode="time">⏱ Time attack</button>
-                <button class="chip" data-mode="sprint">🏁 Sprint</button>
+                <button class="chip" data-mode="time" data-t="modeTime"></button>
+                <button class="chip" data-mode="sprint" data-t="modeSprint"></button>
               </div>
             </div>
             <div class="field" id="field-duration">
-              <label>Duration</label>
+              <label data-t="duration"></label>
               <div class="chips" id="duration-chips">
-                <button class="chip" data-duration="30">30s</button>
-                <button class="chip" data-duration="60">60s</button>
-                <button class="chip" data-duration="120">120s</button>
+                <button class="chip" data-duration="30">30<small data-t="sec"></small></button>
+                <button class="chip" data-duration="60">60<small data-t="sec"></small></button>
+                <button class="chip" data-duration="120">120<small data-t="sec"></small></button>
               </div>
             </div>
             <div class="field" id="field-sprint" hidden>
-              <label>Sentences</label>
+              <label data-t="sentenceCount"></label>
               <div class="chips" id="sprint-chips">
-                <button class="chip" data-sprint="5">5</button>
-                <button class="chip" data-sprint="10">10</button>
-                <button class="chip" data-sprint="20">20</button>
+                <button class="chip" data-sprint="5">5<small data-t="sentencesUnit"></small></button>
+                <button class="chip" data-sprint="10">10<small data-t="sentencesUnit"></small></button>
+                <button class="chip" data-sprint="20">20<small data-t="sentencesUnit"></small></button>
               </div>
             </div>
           </div>
 
           <div class="field">
-            <label>Difficulty</label>
+            <label data-t="difficulty"></label>
             <div class="chips" id="level-chips">
-              <button class="chip" data-level="mixed">🎲 Mixed</button>
-              <button class="chip" data-level="1">🌱 Easy</button>
-              <button class="chip" data-level="2">🌿 Normal</button>
-              <button class="chip" data-level="3">🌳 Hard</button>
+              <button class="chip" data-level="mixed" data-t="levelMixed"></button>
+              <button class="chip" data-level="1" data-t="level1"></button>
+              <button class="chip" data-level="2" data-t="level2"></button>
+              <button class="chip" data-level="3" data-t="level3"></button>
             </div>
           </div>
 
           <div class="field toggles">
-            <label class="toggle"><input type="checkbox" id="opt-guide"> <span>Show typing guide</span></label>
-            <label class="toggle"><input type="checkbox" id="opt-keyboard"> <span>Show keyboard</span></label>
-            <label class="toggle"><input type="checkbox" id="opt-translation"> <span>Show translation</span></label>
+            <label class="toggle" id="toggle-guide"><input type="checkbox" id="opt-guide"> <span data-t="optGuide"></span></label>
+            <label class="toggle" id="toggle-keyboard"><input type="checkbox" id="opt-keyboard"> <span data-t="optKeyboard"></span></label>
+            <label class="toggle"><input type="checkbox" id="opt-translation"> <span data-t="optTranslation"></span></label>
           </div>
 
-          <button class="btn-start" id="btn-start">
-            <span>Start</span><kbd>Enter</kbd>
-          </button>
+          <button class="btn-primary" id="btn-start"><span data-t="start"></span><kbd>Enter</kbd></button>
         </div>
 
         <aside class="side">
           <div class="panel">
-            <h2>Your stats</h2>
+            <h2 data-t="stats"></h2>
             <div class="stat-grid" id="home-stats"></div>
           </div>
           <div class="panel">
-            <h2>Leaderboard <small id="board-label"></small></h2>
+            <h2><span data-t="leaderboard"></span><small id="board-label"></small></h2>
             <ol class="board" id="home-board"></ol>
           </div>
           <div class="panel">
-            <h2>Achievements <small id="ach-count"></small></h2>
+            <h2><span data-t="achievements"></span><small id="ach-count"></small></h2>
             <div class="ach-grid" id="ach-grid"></div>
           </div>
-          <button class="btn-text danger" id="btn-reset">Reset all local data</button>
+          <button class="btn-text danger" id="btn-reset" data-t="reset"></button>
         </aside>
       </div>
     </section>
@@ -127,11 +129,11 @@
     <!-- ================= PLAY ================= -->
     <section class="screen" id="screen-play">
       <div class="hud">
-        <div class="hud-item"><span class="hud-label" id="hud-time-label">Time</span><span class="hud-value" id="hud-time">60</span></div>
-        <div class="hud-item"><span class="hud-label">Score</span><span class="hud-value" id="hud-score">0</span></div>
-        <div class="hud-item combo"><span class="hud-label">Combo</span><span class="hud-value" id="hud-combo">0</span></div>
-        <div class="hud-item"><span class="hud-label" id="hud-speed-label">KPM</span><span class="hud-value" id="hud-speed">0</span></div>
-        <div class="hud-item"><span class="hud-label">Accuracy</span><span class="hud-value" id="hud-acc">100%</span></div>
+        <div class="hud-item"><span class="hud-label" id="hud-time-label"></span><span class="hud-value" id="hud-time">60</span></div>
+        <div class="hud-item"><span class="hud-label" data-t="hudScore"></span><span class="hud-value" id="hud-score">0</span></div>
+        <div class="hud-item combo"><span class="hud-label" data-t="hudCombo"></span><span class="hud-value" id="hud-combo">0</span></div>
+        <div class="hud-item"><span class="hud-label" id="hud-speed-label"></span><span class="hud-value" id="hud-speed">0</span></div>
+        <div class="hud-item"><span class="hud-label" data-t="hudAcc"></span><span class="hud-value" id="hud-acc">100%</span></div>
       </div>
       <div class="timebar"><div id="timebar-fill"></div></div>
 
@@ -140,16 +142,15 @@
         <div class="sentence-card" id="sentence-card">
           <div class="progress-dots" id="progress-dots"></div>
           <div class="sentence-main" id="sentence-main"></div>
-          <div class="sentence-reading" id="sentence-reading"></div>
           <div class="sentence-guide" id="sentence-guide"></div>
           <div class="sentence-en" id="sentence-en"></div>
-          <input class="direct-input" id="direct-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Type here with your IME…" hidden>
+          <input class="direct-input" id="direct-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" hidden>
         </div>
         <div class="float-layer" id="float-layer"></div>
       </div>
 
       <div class="keyboard" id="keyboard"></div>
-      <p class="play-hint" id="play-hint">Press <kbd>Esc</kbd> to quit</p>
+      <p class="play-hint" id="play-hint"></p>
     </section>
 
     <!-- ================= RESULT ================= -->
@@ -157,22 +158,22 @@
       <div class="result-wrap">
         <div class="result-rank-wrap">
           <div class="result-rank" id="result-rank">S</div>
-          <div class="result-rank-label" id="result-rank-label">Rank</div>
+          <div class="result-rank-label" id="result-rank-label"></div>
         </div>
         <div class="result-score">
-          <span class="result-score-label">Score</span>
+          <span class="result-score-label" data-t="score"></span>
           <span class="result-score-value" id="result-score">0</span>
-          <span class="new-record" id="new-record" hidden>🏆 New record!</span>
+          <span class="new-record" id="new-record" hidden></span>
         </div>
         <div class="stat-grid result-stats" id="result-stats"></div>
         <div class="result-ach" id="result-ach" hidden></div>
         <div class="panel result-board">
-          <h2>Leaderboard <small id="result-board-label"></small></h2>
+          <h2><span data-t="leaderboard"></span><small id="result-board-label"></small></h2>
           <ol class="board" id="result-board"></ol>
         </div>
         <div class="result-actions">
-          <button class="btn-start" id="btn-retry"><span>Play again</span><kbd>Enter</kbd></button>
-          <button class="btn-text" id="btn-home">Back to menu</button>
+          <button class="btn-primary" id="btn-retry"><span data-t="retry"></span><kbd>Enter</kbd></button>
+          <button class="btn-text" id="btn-home" data-t="home"></button>
         </div>
       </div>
     </section>
@@ -183,7 +184,7 @@
 
   <script src="js/data/ja.js"></script>
   <script src="js/data/ko.js"></script>
-  <script src="js/romaji.js"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/hangul.js"></script>
   <script src="js/storage.js"></script>
   <script src="js/audio.js"></script>

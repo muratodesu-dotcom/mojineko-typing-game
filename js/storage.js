@@ -1,11 +1,12 @@
 // All persistence lives in localStorage under a single key.
 const Store = (() => {
-  const KEY = 'kotoba-type:v1';
+  const KEY = 'kotoba-type:v2';
 
   const DEFAULTS = () => ({
     settings: {
       lang: 'ja',
-      input: { ja: 'romaji', ko: 'jamo' },
+      theme: 'system',   // 'system' | 'light' | 'dark'
+      input: { ja: 'hiragana', ko: 'jamo' },  // ja: script to type (via IME); ko: input method
       mode: 'time',      // 'time' | 'sprint'
       duration: 60,      // seconds, for time mode
       sprintCount: 10,   // sentences, for sprint mode
