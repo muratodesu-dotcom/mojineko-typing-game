@@ -869,7 +869,6 @@
 
   // Boot.
   $('.brand-heart').innerHTML = Sprite.heart(2);
-  $('.pixel-heart').innerHTML = Sprite.heart(2);
   renderHome();
   showScreen('home');
 })();
