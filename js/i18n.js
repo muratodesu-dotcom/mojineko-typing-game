@@ -3,7 +3,7 @@ const I18N = {
   ja: {
     heroTitle: 'タイピング練習',
     heroSub: '言語を選んでスタート。ハイスコアを目指そう。',
-    language: '言語', script: '文字', inputMethod: '入力方式', mode: 'モード', duration: '時間', sentenceCount: '文の数', difficulty: '難易度',
+    language: '練習する言語', languageHint: '入力する文の言語です。メニューの言語は設定（歯車）の「表示言語」で変えられます。', script: '文字', inputMethod: '入力方式', mode: 'モード', duration: '時間', sentenceCount: '文の数', difficulty: '難易度',
     modeTime: 'タイムアタック', modeSprint: 'スプリント', sec: '秒', sentencesUnit: '文',
     levelMixed: 'ミックス', level1: 'やさしい', level2: 'ふつう', level3: 'むずかしい',
     optGuide: 'キーガイドを表示', optKeyboard: 'キーボードを表示', optTranslation: '英訳を表示',
@@ -51,7 +51,7 @@ const I18N = {
     xpBonus: '難易度ボーナス', madeBy: 'Made by ムラト',
     petsStat: 'なでた回数',
     pageTitle: 'もじねこ！ – 日本語・韓国語・英語のタイピング練習ゲーム',
-    uiLang: '表示言語', aboutTitle: 'このアプリについて',
+    uiLang: '表示言語（メニュー・設定）', uiLangHint: 'メニュー・設定・メッセージの言語です。練習する文の言語はホーム画面の「練習する言語」で選びます。', aboutTitle: 'このアプリについて',
     about: {
       whatTitle: 'もじねこ！とは',
       what: [
@@ -131,7 +131,7 @@ const I18N = {
   ko: {
     heroTitle: '타자 연습',
     heroSub: '언어를 고르고 시작하세요. 최고 점수에 도전!',
-    language: '언어', script: '문자', inputMethod: '입력 방식', mode: '모드', duration: '시간', sentenceCount: '문장 수', difficulty: '난이도',
+    language: '연습할 언어', languageHint: '입력할 문장의 언어입니다. 메뉴 언어는 설정(톱니바퀴)의 「표시 언어」에서 바꿀 수 있습니다.', script: '문자', inputMethod: '입력 방식', mode: '모드', duration: '시간', sentenceCount: '문장 수', difficulty: '난이도',
     modeTime: '타임 어택', modeSprint: '스프린트', sec: '초', sentencesUnit: '문장',
     levelMixed: '섞어서', level1: '쉬움', level2: '보통', level3: '어려움',
     optGuide: '키 가이드 표시', optKeyboard: '키보드 표시', optTranslation: '영어 번역 표시',
@@ -179,7 +179,7 @@ const I18N = {
     xpBonus: '난이도 보너스', madeBy: 'Made by ムラト',
     petsStat: '쓰다듬은 횟수',
     pageTitle: '모지네코! – 일본어·한국어·영어 타자 연습 게임',
-    uiLang: '표시 언어', aboutTitle: '이 앱에 대해',
+    uiLang: '표시 언어 (메뉴·설정)', uiLangHint: '메뉴·설정·메시지의 언어입니다. 연습할 문장의 언어는 홈 화면의 「연습할 언어」에서 고릅니다.', aboutTitle: '이 앱에 대해',
     about: {
       whatTitle: '모지네코!란',
       what: [
@@ -258,7 +258,7 @@ const I18N = {
   en: {
     heroTitle: 'Typing practice',
     heroSub: 'Pick a language, hit start, and chase a new high score.',
-    language: 'Language', script: 'Script', inputMethod: 'Input method', mode: 'Mode', duration: 'Duration', sentenceCount: 'Sentences', difficulty: 'Difficulty',
+    language: 'Practice language', languageHint: 'The language of the sentences you type. The menu language is set separately in Settings (gear) → Menu language.', script: 'Script', inputMethod: 'Input method', mode: 'Mode', duration: 'Duration', sentenceCount: 'Sentences', difficulty: 'Difficulty',
     modeTime: 'Time attack', modeSprint: 'Sprint', sec: 's', sentencesUnit: '',
     levelMixed: 'Mixed', level1: 'Easy', level2: 'Normal', level3: 'Hard',
     optGuide: 'Show key guide', optKeyboard: 'Show keyboard', optTranslation: 'Show translation',
@@ -309,7 +309,7 @@ const I18N = {
     xpBonus: 'Difficulty bonus', madeBy: 'Made by ムラト',
     petsStat: 'Times petted',
     pageTitle: 'もじねこ！ – Japanese, Korean & English typing game',
-    uiLang: 'Menu language', aboutTitle: 'About',
+    uiLang: 'Menu language (menus & settings)', uiLangHint: 'Language of the menus, settings and messages. What you practise is chosen on the home screen under Practice language.', aboutTitle: 'About',
     about: {
       whatTitle: 'What is もじねこ！?',
       what: [
