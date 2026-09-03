@@ -51,7 +51,7 @@ const I18N = {
     xpBonus: '難易度ボーナス', madeBy: 'Made by ムラト',
     petsStat: 'なでた回数',
     pageTitle: 'もじねこ！ – 日本語・韓国語・英語のタイピング練習ゲーム',
-    aboutTitle: 'このアプリについて',
+    uiLang: '表示言語', aboutTitle: 'このアプリについて',
     about: {
       whatTitle: 'もじねこ！とは',
       what: [
@@ -61,7 +61,7 @@ const I18N = {
       ],
       howTitle: '使い方',
       how: [
-        '**言語を選ぶ**：日本語・한국어・English から選びます。メニューの表示も選んだ言語に変わります。',
+        '**言語を選ぶ**：練習する言語を日本語・한국어・English から選びます。メニューの表示言語は、設定（歯車アイコン）の「表示言語」で別に変えられます。',
         '**入力方式を選ぶ**：日本語は「ひらがな」か「混合（漢字・カナ）」。IMEをオンにして、表示された文をそのまま入力し、Enterで確定します。韓国語の「2벌식」と英語は、IMEをオフにしてキーを直接打ちます。',
         '**モードを選ぶ**：タイムアタック（時間内にできるだけ多く）、スプリント（決めた数の文）、デイリー（毎日同じ10文）、ウォームアップ（かな行と短い単語）、段落（長めの文章）。',
         '**テーマと難易度を選んでスタート**：3秒のカウントダウンのあと始まります。途中でやめたいときは Esc を押します。',
@@ -179,7 +179,7 @@ const I18N = {
     xpBonus: '난이도 보너스', madeBy: 'Made by ムラト',
     petsStat: '쓰다듬은 횟수',
     pageTitle: '모지네코! – 일본어·한국어·영어 타자 연습 게임',
-    aboutTitle: '이 앱에 대해',
+    uiLang: '표시 언어', aboutTitle: '이 앱에 대해',
     about: {
       whatTitle: '모지네코!란',
       what: [
@@ -189,7 +189,7 @@ const I18N = {
       ],
       howTitle: '사용 방법',
       how: [
-        '**언어 선택**: 日本語·한국어·English 중에서 고릅니다. 메뉴 표시도 선택한 언어로 바뀝니다.',
+        '**언어 선택**: 연습할 언어를 日本語·한국어·English 중에서 고릅니다. 메뉴 표시 언어는 설정(톱니바퀴 아이콘)의 「표시 언어」에서 따로 바꿀 수 있습니다.',
         '**입력 방식 선택**: 한국어는 「2벌식」(IME를 끄고 자판을 직접 입력) 또는 「직접 입력」(한글 IME 사용). 일본어는 IME를 켜고 화면의 문장을 그대로 입력한 뒤 Enter로 확정합니다. 영어는 자판을 직접 입력합니다.',
         '**모드 선택**: 타임 어택(제한 시간 안에 최대한 많이), 스프린트(정해진 문장 수), 데일리(매일 같은 10문장), 워밍업(자모 행과 짧은 단어), 문단(긴 글).',
         '**테마와 난이도를 고르고 시작**: 3초 카운트다운 후 시작됩니다. 도중에 그만두려면 Esc를 누르세요.',
@@ -309,7 +309,7 @@ const I18N = {
     xpBonus: 'Difficulty bonus', madeBy: 'Made by ムラト',
     petsStat: 'Times petted',
     pageTitle: 'もじねこ！ – Japanese, Korean & English typing game',
-    aboutTitle: 'About',
+    uiLang: 'Menu language', aboutTitle: 'About',
     about: {
       whatTitle: 'What is もじねこ！?',
       what: [
@@ -319,7 +319,7 @@ const I18N = {
       ],
       howTitle: 'How to use',
       how: [
-        '**Pick a language**: 日本語, 한국어 or English. The menu switches to that language too.',
+        '**Pick a language**: choose what to practise, 日本語, 한국어 or English. The menu language is set separately under Settings (gear icon) → Menu language.',
         '**Pick an input method**: Japanese is typed through your IME (ひらがな or 混合 with kanji), pressing Enter to confirm each sentence. Korean 2-set and English are typed directly on the keyboard, so turn your IME off.',
         '**Pick a mode**: Time attack (as much as you can in the time), Sprint (a set number of sentences), Daily (the same 10 sentences every day), Warm-up (rows and short words) or Paragraph (longer passages).',
         '**Choose a theme and difficulty, then start**: the round begins after a 3-second countdown. Press Esc to quit early.',

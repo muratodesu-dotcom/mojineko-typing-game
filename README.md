@@ -62,7 +62,8 @@ what the app is, the five steps to a round, and tips (IME on/off, packs, setting
 - Result share card saved as a PNG.
 
 **Interface**
-- Menu and HUD in Japanese, Korean or English, following the selected language. Light theme by default, dark theme via the header toggle.
+- Menu and HUD in Japanese, Korean or English, chosen separately from the practice language
+  (Settings → 表示言語 / Menu language; Japanese by default). Light theme by default, dark theme via the header toggle.
 - Settings behind the gear icon: five font sets, three text sizes, input options, volume, and data export / import / reset. The home page fits a desktop screen without scrolling; stats, records, goals, rankings and achievements live in tabs.
 - Arrow keys move between options on the menu; everything is keyboard-accessible.
 - Export / import all local data as a JSON file.

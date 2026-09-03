@@ -4,7 +4,8 @@ const Store = (() => {
 
   const DEFAULTS = () => ({
     settings: {
-      lang: 'ja',
+      lang: 'ja',       // practice language
+      uiLang: 'ja',     // menu / settings language, independent of the practice language
       theme: 'light',    // 'light' | 'dark' (light is the default; anything else is treated as light)
       font: 'clean',     // 'clean' | 'round' | 'serif' | 'pixel' | 'system'
       textSize: 'm',     // sentence size: 's' | 'm' | 'l'
