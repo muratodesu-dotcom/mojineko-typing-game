@@ -1413,7 +1413,6 @@
   if (location.hash === '#debug') window.__kotoba = { buildPool };
 
   // Boot.
-  $('.brand-heart').innerHTML = Sprite.heart(2);
   renderHome();
   showScreen('home');
 })();

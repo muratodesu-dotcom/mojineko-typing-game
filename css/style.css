@@ -132,7 +132,6 @@ h2 small { font-weight: 400; color: var(--muted); font-size: 0.78rem; }
 .brand-mark .px { display: block; }
 .brand:hover .brand-mark .px { animation: bump 0.35s steps(4) both; }
 .brand-name { font-weight: 700; font-size: 1.05rem; letter-spacing: 0.02em; }
-.brand-heart { display: inline-flex; }
 .topbar-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .pill { height: 36px; padding: 0 12px; font-size: 0.82rem; color: var(--muted); display: flex; align-items: center; gap: 6px; }
 .pill b { color: var(--text); font-weight: 700; }
