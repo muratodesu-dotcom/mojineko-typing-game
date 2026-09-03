@@ -36,10 +36,27 @@
     { id: 'streak3', ico: '📅', test: (r, s) => s.streak.count >= 3 },
     { id: 'streak7', ico: '🗓️', test: (r, s) => s.streak.count >= 7 },
     { id: 'chars10k', ico: '📚', test: (r, s) => s.stats.chars >= 10000 },
-    { id: 'hard', ico: '🌳', test: r => r.level === '3' && 'SAB'.includes(r.rank) },
     { id: 'sprint', ico: '🏁', test: r => r.mode === 'sprint' && r.sprintCount === 20 },
     { id: 'night', ico: '🌙', test: r => r.hour >= 0 && r.hour < 4 },
+    // Difficulty-based
+    { id: 'easyClear', ico: '🌱', test: r => r.level === '1' && r.sentences >= 3 },
+    { id: 'normalClear', ico: '🌿', test: r => r.level === '2' && r.sentences >= 3 },
+    { id: 'hardClear', ico: '🌳', test: r => r.level === '3' && r.sentences >= 3 },
+    { id: 'easyS', ico: '🍬', test: r => r.level === '1' && r.rank === 'S' },
+    { id: 'normalS', ico: '🍡', test: r => r.level === '2' && r.rank === 'S' },
+    { id: 'hardS', ico: '🎂', test: r => r.level === '3' && r.rank === 'S' },
+    { id: 'hardPerfect', ico: '🏔️', test: r => r.level === '3' && r.misses === 0 && r.sentences >= 3 },
+    { id: 'hardSprint', ico: '🦾', test: r => r.level === '3' && r.mode === 'sprint' && r.sprintCount === 20 },
   ];
+
+  // Goals per difficulty: [tier values]; rank tiers compare by RANK_ORDER.
+  const GOALS = [
+    { id: 'games', tiers: [3, 10, 30] },
+    { id: 'sentences', tiers: [10, 50, 200] },
+    { id: 'rank', tiers: ['B', 'A', 'S'] },
+  ];
+  const RANK_ORDER = ['', 'E', 'D', 'C', 'B', 'A', 'S'];
+  const XP_MULT = { 1: 1, 2: 1.25, 3: 1.5, mixed: 1.2 };
 
   const ICONS = {
     sun: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',
@@ -61,7 +78,7 @@
     pool: [], poolIdx: 0, sentence: null, target: '', units: [], uIdx: 0, buf: '',
     startAt: 0, elapsed: 0, raf: 0, timer: 0,
     score: 0, combo: 0, maxCombo: 0, hits: 0, misses: 0, keys: 0, chars: 0,
-    sentences: 0, perfect: 0, sentenceMisses: 0,
+    sentences: 0, perfect: 0, sentenceMisses: 0, levelSentences: { 1: 0, 2: 0, 3: 0 },
     ime: { scored: 0, flagged: false, composing: false },
   };
 
@@ -74,6 +91,7 @@
     optGuide: $('#opt-guide'), optKeyboard: $('#opt-keyboard'), optTranslation: $('#opt-translation'),
     btnStart: $('#btn-start'), btnRetry: $('#btn-retry'), btnHome: $('#btn-home'), btnReset: $('#btn-reset'),
     btnSound: $('#btn-sound'), btnTheme: $('#btn-theme'),
+    goals: $('#goals'), mascotHome: $('#mascot-home'), mascotPlay: $('#mascot-play'), mascotBubble: $('#mascot-bubble'),
     homeStats: $('#home-stats'), homeBoard: $('#home-board'), boardLabel: $('#board-label'), achGrid: $('#ach-grid'), achCount: $('#ach-count'),
     streak: $('#streak-count'), streakLabel: $('#streak-label'), levelNum: $('#level-num'), levelTitle: $('#level-title'), xpFill: $('#xp-fill'),
     hudTime: $('#hud-time'), hudTimeLabel: $('#hud-time-label'), hudScore: $('#hud-score'), hudCombo: $('#hud-combo'),
@@ -180,9 +198,71 @@
 
     renderTopbar();
     renderStats();
+    renderGoals();
     renderBoard(el.homeBoard, el.boardLabel, boardKey(set.lang, set.input[set.lang], set.mode, set.duration, set.sprintCount), null);
     renderAchievements();
+    setMascot(el.mascotHome, 'idle');
   }
+
+  function goalProgress(lvStats, goal) {
+    if (goal.id === 'rank') {
+      const cur = RANK_ORDER.indexOf(lvStats.bestRank || '');
+      const tierIdx = goal.tiers.findIndex(tv => cur < RANK_ORDER.indexOf(tv));
+      const done = tierIdx === -1;
+      const target = done ? goal.tiers[goal.tiers.length - 1] : goal.tiers[tierIdx];
+      return { done, label: `${lvStats.bestRank || '-'} / ${target}`, pct: done ? 100 : (cur / RANK_ORDER.indexOf(target)) * 100 };
+    }
+    const cur = lvStats[goal.id] || 0;
+    const target = goal.tiers.find(tv => cur < tv);
+    const done = target === undefined;
+    const tgt = done ? goal.tiers[goal.tiers.length - 1] : target;
+    return { done, label: `${cur} / ${tgt}`, pct: done ? 100 : (cur / tgt) * 100 };
+  }
+
+  function renderGoals() {
+    const names = { games: t('goalGames'), sentences: t('goalSentences'), rank: t('goalRank') };
+    el.goals.innerHTML = [1, 2, 3].map(lv => {
+      const ls = S.stats.levels[lv];
+      const rows = GOALS.map(g => {
+        const p = goalProgress(ls, g);
+        return `<div class="goal${p.done ? ' done' : ''}"><span class="name">${names[g.id]}</span><span class="val">${p.label}</span><div class="bar"><span style="width:${clamp(p.pct, 0, 100)}%"></span></div></div>`;
+      }).join('');
+      return `<div class="goal-level"><h3><span class="tag">×${XP_MULT[lv]}</span>${t('levelNames')[lv]}</h3>${rows}</div>`;
+    }).join('');
+  }
+
+  // ---------------------------------------------------------------------
+  // Mascot
+  // ---------------------------------------------------------------------
+  let mascotTimer = 0;
+  function setMascot(node, frame) {
+    if (!node) return;
+    const bubble = node.querySelector('.bubble');
+    node.innerHTML = Sprite.cat(frame, node === el.mascotPlay ? 4 : 5);
+    if (bubble) node.appendChild(bubble);
+  }
+  function mascotReact(frame, text, ms) {
+    clearTimeout(mascotTimer);
+    const node = el.mascotPlay;
+    setMascot(node, frame);
+    node.classList.remove('happy', 'sad');
+    void node.offsetWidth;
+    if (frame !== 'idle') node.classList.add(frame);
+    if (text) { el.mascotBubble.textContent = text; el.mascotBubble.classList.add('show'); }
+    mascotTimer = setTimeout(() => {
+      setMascot(node, 'idle');
+      node.classList.remove('happy', 'sad');
+      el.mascotBubble.classList.remove('show');
+    }, ms);
+  }
+  setInterval(() => {
+    // Idle blink on both mascots.
+    [el.mascotHome, el.mascotPlay].forEach(n => {
+      if (!n || n.classList.contains('happy') || n.classList.contains('sad')) return;
+      setMascot(n, 'blink');
+      setTimeout(() => { if (!n.classList.contains('happy') && !n.classList.contains('sad')) setMascot(n, 'idle'); }, 160);
+    });
+  }, 3200);
 
   function renderTopbar() {
     el.streak.textContent = currentStreak();
@@ -263,7 +343,7 @@
       poolIdx: 0, sentence: null, target: '', units: [], uIdx: 0, buf: '',
       startAt: 0, elapsed: 0,
       score: 0, combo: 0, maxCombo: 0, hits: 0, misses: 0, keys: 0, chars: 0,
-      sentences: 0, perfect: 0, sentenceMisses: 0,
+      sentences: 0, perfect: 0, sentenceMisses: 0, levelSentences: { 1: 0, 2: 0, 3: 0 },
       ime: { scored: 0, flagged: false, composing: false },
     });
     const all = LANGS[G.lang].sentences();
@@ -280,6 +360,8 @@
     el.floatLayer.innerHTML = '';
     buildKeyboard();
     updateHud();
+    setMascot(el.mascotPlay, 'idle');
+    el.mascotBubble.classList.remove('show');
     showScreen('play');
 
     loadSentence();
@@ -365,8 +447,7 @@
 
   function renderDots() {
     if (G.mode !== 'sprint') { el.dots.innerHTML = ''; return; }
-    el.dots.innerHTML = Array.from({ length: G.sprintCount }, (_, i) =>
-      `<span class="${i < G.sentences ? 'done' : i === G.sentences ? 'cur' : ''}"></span>`).join('');
+    el.dots.innerHTML = Array.from({ length: G.sprintCount }, (_, i) => Sprite.star(2, i < G.sentences)).join('');
   }
 
   function unitSpan(cls, text) {
@@ -511,6 +592,7 @@
     if (G.combo >= 10) floatText(t('comboLost'), 'lost');
     G.combo = 0;
     Sfx.miss();
+    mascotReact('sad', t('mascotSad'), 700);
     el.card.classList.remove('shake');
     void el.card.offsetWidth;
     el.card.classList.add('shake');
@@ -518,8 +600,9 @@
 
   function completeSentence() {
     G.sentences++;
+    G.levelSentences[G.sentence.level]++;
     let bonus = 100;
-    if (G.sentenceMisses === 0) { bonus += 100; G.perfect++; floatText(t('perfectFloat'), 'ok'); }
+    if (G.sentenceMisses === 0) { bonus += 100; G.perfect++; floatText(t('perfectFloat'), 'ok'); mascotReact('happy', t('mascotHappy'), 1000); }
     else floatText(t('bonusFloat'), 'ok');
     G.score += bonus;
     Sfx.sentence();
@@ -625,7 +708,15 @@
     st.bestCombo = Math.max(st.bestCombo, r.maxCombo);
     st.langs[r.lang] = (st.langs[r.lang] || 0) + 1;
     const prevLevel = levelFromXp(st.xp);
-    st.xp += Math.round(r.score / 10);
+    r.xp = Math.round((r.score / 10) * XP_MULT[r.level]);
+    st.xp += r.xp;
+    for (const lv of [1, 2, 3]) st.levels[lv].sentences += G.levelSentences[lv];
+    if (r.level !== 'mixed') {
+      const ls = st.levels[r.level];
+      ls.games++;
+      ls.bestScore = Math.max(ls.bestScore, r.score);
+      if (RANK_ORDER.indexOf(r.rank) > RANK_ORDER.indexOf(ls.bestRank || '')) ls.bestRank = r.rank;
+    }
     touchStreak();
 
     const key = boardKey(r.lang, r.input, r.mode, r.duration, r.sprintCount);
@@ -658,7 +749,7 @@
       statCard(t('maxCombo'), r.maxCombo, 'x'),
       statCard(t('sentencesDone'), r.sentences, r.perfect ? `${t('perfect')} ${r.perfect}` : ''),
       statCard(t('misses'), r.misses),
-      statCard(t('xpEarned'), `+${fmt(r.score / 10)}`),
+      statCard(t('xpEarned'), `+${fmt(r.xp)}`, `×${XP_MULT[r.level]}`),
     ].join('');
     el.resultAch.hidden = !unlocked.length;
     el.resultAch.innerHTML = unlocked.map(a => {
@@ -777,6 +868,8 @@
   window.addEventListener('resize', () => { el.confetti.width = window.innerWidth; el.confetti.height = window.innerHeight; });
 
   // Boot.
+  $('.brand-heart').innerHTML = Sprite.heart(2);
+  $('.pixel-heart').innerHTML = Sprite.heart(2);
   renderHome();
   showScreen('home');
 })();

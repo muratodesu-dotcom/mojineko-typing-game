@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="light dark">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2712%27 fill=%27%23c2414d%27/%3E%3Ctext x=%2732%27 y=%2745%27 font-size=%2738%27 text-anchor=%27middle%27 font-family=%27sans-serif%27 font-weight=%27700%27 fill=%27%23fff%27%3E言%3C/text%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2712%27 fill=%27%23ff85a1%27/%3E%3Ctext x=%2732%27 y=%2745%27 font-size=%2738%27 text-anchor=%27middle%27 font-family=%27sans-serif%27 font-weight=%27700%27 fill=%27%233b2f45%27%3E言%3C/text%3E%3C/svg%3E">
   <title>Kotoba Type</title>
   <script>
     // Apply the saved theme before first paint to avoid a flash.
@@ -20,14 +20,15 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <!-- Fonts are optional: loaded without blocking render, falling back to system CJK fonts. -->
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Press+Start+2P&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <link href="https://cdn.jsdelivr.net/npm/galmuri/dist/galmuri.css" rel="stylesheet" media="print" onload="this.media='all'">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <header class="topbar">
     <div class="brand" id="brand-home" role="button" tabindex="0">
       <span class="brand-mark">言</span>
-      <span class="brand-name">Kotoba Type</span>
+      <span class="brand-name">Kotoba Type</span><span class="brand-heart" aria-hidden="true"></span>
     </div>
     <div class="topbar-right">
       <div class="pill" id="pill-streak"><span class="dot"></span><b id="streak-count">0</b><span id="streak-label"></span></div>
@@ -46,8 +47,13 @@
     <section class="screen active" id="screen-home">
       <div class="home-grid">
         <div class="setup">
-          <h1 class="hero-title" data-t="heroTitle"></h1>
-          <p class="hero-sub" data-t="heroSub"></p>
+          <div class="hero">
+            <div>
+              <h1 class="hero-title" data-t="heroTitle"></h1>
+              <p class="hero-sub" data-t="heroSub"></p>
+            </div>
+            <div class="mascot" id="mascot-home"></div>
+          </div>
 
           <div class="field">
             <label data-t="language"></label>
@@ -114,6 +120,10 @@
             <div class="stat-grid" id="home-stats"></div>
           </div>
           <div class="panel">
+            <h2 data-t="goals"></h2>
+            <div class="goals" id="goals"></div>
+          </div>
+          <div class="panel">
             <h2><span data-t="leaderboard"></span><small id="board-label"></small></h2>
             <ol class="board" id="home-board"></ol>
           </div>
@@ -140,6 +150,7 @@
       <div class="stage" id="stage">
         <div class="countdown" id="countdown" hidden>3</div>
         <div class="sentence-card" id="sentence-card">
+          <div class="mascot card-mascot" id="mascot-play"><div class="bubble" id="mascot-bubble"></div></div>
           <div class="progress-dots" id="progress-dots"></div>
           <div class="sentence-main" id="sentence-main"></div>
           <div class="sentence-guide" id="sentence-guide"></div>
@@ -179,6 +190,8 @@
     </section>
   </main>
 
+  <footer class="footer"><span class="pixel-heart" aria-hidden="true"></span><span data-t="madeBy"></span></footer>
+
   <canvas id="confetti" aria-hidden="true"></canvas>
   <div class="toast-layer" id="toast-layer"></div>
 
@@ -186,6 +199,7 @@
   <script src="js/data/ko.js"></script>
   <script src="js/i18n.js"></script>
   <script src="js/hangul.js"></script>
+  <script src="js/sprite.js"></script>
   <script src="js/storage.js"></script>
   <script src="js/audio.js"></script>
   <script src="js/game.js"></script>

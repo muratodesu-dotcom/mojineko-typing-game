@@ -19,6 +19,12 @@ const Store = (() => {
     stats: {
       games: 0, chars: 0, keys: 0, seconds: 0, bestCombo: 0, xp: 0,
       langs: { ja: 0, ko: 0 },
+      // Per-difficulty progress (mixed games credit each sentence to its own level).
+      levels: {
+        1: { games: 0, sentences: 0, bestRank: '', bestScore: 0 },
+        2: { games: 0, sentences: 0, bestRank: '', bestScore: 0 },
+        3: { games: 0, sentences: 0, bestRank: '', bestScore: 0 },
+      },
     },
     boards: {},        // boardKey -> [{score, speed, acc, combo, rank, date}]
     achievements: {},  // id -> ISO date unlocked
