@@ -52,12 +52,12 @@
               <h1 class="hero-title" data-t="heroTitle"></h1>
               <p class="hero-sub" data-t="heroSub"></p>
             </div>
-            <div class="mascot" id="mascot-home" role="button" tabindex="0"><div class="bubble" id="mascot-bubble-home"></div></div>
+            <div class="mascot" id="mascot-home" role="button" tabindex="0"></div>
           </div>
 
           <div class="field">
             <label data-t="language"></label>
-            <div class="lang-cards">
+            <div class="lang-cards" data-nav>
               <button class="lang-card" data-lang="ja"><span class="lang-glyph">あ</span><span class="lang-name">日本語</span></button>
               <button class="lang-card" data-lang="ko"><span class="lang-glyph">한</span><span class="lang-name">한국어</span></button>
             </div>
@@ -65,21 +65,25 @@
 
           <div class="field">
             <label id="input-label"></label>
-            <div class="chips" id="input-chips"></div>
+            <div class="chips" id="input-chips" data-nav></div>
             <p class="hint" id="input-hint"></p>
           </div>
 
-          <div class="field-row">
-            <div class="field">
-              <label data-t="mode"></label>
-              <div class="chips" id="mode-chips">
-                <button class="chip" data-mode="time" data-t="modeTime"></button>
-                <button class="chip" data-mode="sprint" data-t="modeSprint"></button>
-              </div>
+          <div class="field">
+            <label data-t="mode"></label>
+            <div class="chips" id="mode-chips" data-nav>
+              <button class="chip" data-mode="time" data-t="modeTime"></button>
+              <button class="chip" data-mode="sprint" data-t="modeSprint"></button>
+              <button class="chip" data-mode="daily" data-t="modeDaily"></button>
+              <button class="chip" data-mode="drill" data-t="modeDrill"></button>
             </div>
+            <p class="hint" id="mode-hint"></p>
+          </div>
+
+          <div class="field-row">
             <div class="field" id="field-duration">
               <label data-t="duration"></label>
-              <div class="chips" id="duration-chips">
+              <div class="chips" id="duration-chips" data-nav>
                 <button class="chip" data-duration="30">30<small data-t="sec"></small></button>
                 <button class="chip" data-duration="60">60<small data-t="sec"></small></button>
                 <button class="chip" data-duration="120">120<small data-t="sec"></small></button>
@@ -87,7 +91,7 @@
             </div>
             <div class="field" id="field-sprint" hidden>
               <label data-t="sentenceCount"></label>
-              <div class="chips" id="sprint-chips">
+              <div class="chips" id="sprint-chips" data-nav>
                 <button class="chip" data-sprint="5">5<small data-t="sentencesUnit"></small></button>
                 <button class="chip" data-sprint="10">10<small data-t="sentencesUnit"></small></button>
                 <button class="chip" data-sprint="20">20<small data-t="sentencesUnit"></small></button>
@@ -95,9 +99,22 @@
             </div>
           </div>
 
-          <div class="field">
+          <div class="field" id="field-pack">
+            <label data-t="pack"></label>
+            <div class="chips" id="pack-chips" data-nav></div>
+            <p class="hint" id="pack-hint"></p>
+            <div class="custom-editor" id="custom-editor" hidden>
+              <textarea id="custom-text" rows="5" spellcheck="false"></textarea>
+              <div class="custom-actions">
+                <span class="hint" id="custom-help"></span>
+                <button class="chip" id="btn-custom-save" data-t="customSave"></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="field" id="field-level">
             <label data-t="difficulty"></label>
-            <div class="chips" id="level-chips">
+            <div class="chips" id="level-chips" data-nav>
               <button class="chip" data-level="mixed" data-t="levelMixed"></button>
               <button class="chip" data-level="1" data-t="level1"></button>
               <button class="chip" data-level="2" data-t="level2"></button>
@@ -108,7 +125,11 @@
           <div class="field toggles">
             <label class="toggle" id="toggle-guide"><input type="checkbox" id="opt-guide"> <span data-t="optGuide"></span></label>
             <label class="toggle" id="toggle-keyboard"><input type="checkbox" id="opt-keyboard"> <span data-t="optKeyboard"></span></label>
+            <label class="toggle" id="toggle-strict"><input type="checkbox" id="opt-strict"> <span data-t="optStrict"></span></label>
+            <label class="toggle" id="toggle-furigana"><input type="checkbox" id="opt-furigana"> <span data-t="optFurigana"></span></label>
+            <label class="toggle" id="toggle-hide-input"><input type="checkbox" id="opt-hide-input"> <span data-t="optHideInput"></span></label>
             <label class="toggle"><input type="checkbox" id="opt-translation"> <span data-t="optTranslation"></span></label>
+            <label class="toggle volume"><span data-t="volume"></span> <input type="range" id="opt-volume" min="0" max="100" step="5"></label>
           </div>
 
           <button class="btn-primary" id="btn-start"><span data-t="start"></span><kbd>Enter</kbd></button>
@@ -118,6 +139,15 @@
           <div class="panel">
             <h2 data-t="stats"></h2>
             <div class="stat-grid" id="home-stats"></div>
+          </div>
+          <div class="panel">
+            <h2><span data-t="history"></span><small id="history-label"></small></h2>
+            <div class="history" id="history-chart"></div>
+            <ol class="board history-list" id="history-list"></ol>
+          </div>
+          <div class="panel">
+            <h2><span data-t="dailyTitle"></span><small id="daily-label"></small></h2>
+            <ol class="board" id="daily-list"></ol>
           </div>
           <div class="panel">
             <h2 data-t="goals"></h2>
@@ -131,7 +161,16 @@
             <h2><span data-t="achievements"></span><small id="ach-count"></small></h2>
             <div class="ach-grid" id="ach-grid"></div>
           </div>
-          <button class="btn-text danger" id="btn-reset" data-t="reset"></button>
+          <div class="panel mascot-panel">
+            <h2 data-t="mascotTitle"></h2>
+            <div class="mascot-growth"><div class="mascot" id="mascot-preview"></div><div class="hint" id="mascot-next"></div></div>
+          </div>
+          <div class="data-actions">
+            <button class="btn-text" id="btn-export" data-t="exportData"></button>
+            <button class="btn-text" id="btn-import" data-t="importData"></button>
+            <input type="file" id="import-file" accept="application/json" hidden>
+            <button class="btn-text danger" id="btn-reset" data-t="reset"></button>
+          </div>
         </aside>
       </div>
     </section>
@@ -144,15 +183,17 @@
         <div class="hud-item combo"><span class="hud-label" data-t="hudCombo"></span><span class="hud-value" id="hud-combo">0</span></div>
         <div class="hud-item"><span class="hud-label" id="hud-speed-label"></span><span class="hud-value" id="hud-speed">0</span></div>
         <div class="hud-item"><span class="hud-label" data-t="hudAcc"></span><span class="hud-value" id="hud-acc">100%</span></div>
+        <div class="hud-item ghost" id="hud-ghost-box" hidden><span class="hud-label" data-t="ghost"></span><span class="hud-value" id="hud-ghost">±0</span></div>
       </div>
-      <div class="timebar"><div id="timebar-fill"></div></div>
+      <div class="timebar"><div id="timebar-fill"></div><div id="ghost-marker" hidden></div></div>
 
       <div class="stage" id="stage">
         <div class="countdown" id="countdown" hidden>3</div>
         <div class="sentence-card" id="sentence-card">
-          <div class="mascot card-mascot" id="mascot-play" role="button" tabindex="0"><div class="bubble" id="mascot-bubble"></div></div>
+          <div class="mascot card-mascot" id="mascot-play" role="button" tabindex="0"></div>
           <div class="progress-dots" id="progress-dots"></div>
           <div class="sentence-main" id="sentence-main"></div>
+          <div class="sentence-reading" id="sentence-reading"></div>
           <div class="sentence-guide" id="sentence-guide"></div>
           <div class="sentence-en" id="sentence-en"></div>
           <input class="direct-input" id="direct-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" hidden>
@@ -177,6 +218,10 @@
           <span class="new-record" id="new-record" hidden></span>
         </div>
         <div class="stat-grid result-stats" id="result-stats"></div>
+        <div class="panel result-weak" id="result-weak" hidden>
+          <h2 data-t="weakTitle"></h2>
+          <div class="weak-chips" id="weak-chips"></div>
+        </div>
         <div class="result-ach" id="result-ach" hidden></div>
         <div class="panel result-board">
           <h2><span data-t="leaderboard"></span><small id="result-board-label"></small></h2>
@@ -184,9 +229,13 @@
         </div>
         <div class="result-actions">
           <button class="btn-primary" id="btn-retry"><span data-t="retry"></span><kbd>Enter</kbd></button>
-          <button class="btn-text" id="btn-home" data-t="home"></button>
+          <div class="result-links">
+            <button class="btn-text" id="btn-share" data-t="share"></button>
+            <button class="btn-text" id="btn-home" data-t="home"></button>
+          </div>
         </div>
       </div>
+      <canvas id="share-canvas" width="640" height="360" hidden></canvas>
     </section>
   </main>
 
