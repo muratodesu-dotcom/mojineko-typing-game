@@ -1,27 +1,44 @@
 // All persistence lives in localStorage under a single key.
 const Store = (() => {
-  const KEY = 'kotoba-type:v1';
+  const KEY = 'kotoba-type:v2';
 
   const DEFAULTS = () => ({
     settings: {
       lang: 'ja',
-      input: { ja: 'romaji', ko: 'jamo' },
-      mode: 'time',      // 'time' | 'sprint'
+      theme: 'system',   // 'system' | 'light' | 'dark'
+      input: { ja: 'hiragana', ko: 'jamo' },  // ja: script to type (via IME); ko: input method
+      mode: 'time',      // 'time' | 'sprint' | 'daily' | 'drill'
       duration: 60,      // seconds, for time mode
       sprintCount: 10,   // sentences, for sprint mode
       level: 'mixed',    // 'mixed' | 1 | 2 | 3
+      pack: 'all',       // 'all' | 'daily' | 'travel' | 'work' | 'food' | 'weak' | 'custom'
       sound: true,
+      volume: 60,        // 0..100
       guide: true,
       keyboard: true,
       translation: true,
+      furigana: false,   // reading hint under kanji sentences (Japanese 混合)
+      hideInput: false,  // inline IME composition, input box visually hidden
+      strict: false,     // 2-set mode: wrong keys must be erased with Backspace
     },
     stats: {
-      games: 0, chars: 0, keys: 0, seconds: 0, bestCombo: 0, xp: 0,
+      games: 0, chars: 0, keys: 0, seconds: 0, bestCombo: 0, xp: 0, pets: 0,
       langs: { ja: 0, ko: 0 },
+      // Per-difficulty progress (mixed games credit each sentence to its own level).
+      levels: {
+        1: { games: 0, sentences: 0, bestRank: '', bestScore: 0 },
+        2: { games: 0, sentences: 0, bestRank: '', bestScore: 0 },
+        3: { games: 0, sentences: 0, bestRank: '', bestScore: 0 },
+      },
     },
     boards: {},        // boardKey -> [{score, speed, acc, combo, rank, date}]
+    ghosts: {},        // boardKey -> score sampled each second of the best run
+    daily: {},         // "YYYY-MM-DD:lang:input" -> best entry that day
+    history: [],       // recent rounds: {t, lang, input, mode, level, score, speed, acc, rank}
+    weak: { ja: {}, ko: {} },  // character -> miss count
+    custom: { ja: [], ko: [] }, // user sentences: {text, reading, en}
     achievements: {},  // id -> ISO date unlocked
-    streak: { last: '', count: 0, best: 0 },
+    streak: { last: '', count: 0, best: 0, freezeUsed: '' },
   });
 
   let state = null;
@@ -31,10 +48,7 @@ const Store = (() => {
     state = DEFAULTS();
     try {
       const raw = localStorage.getItem(KEY);
-      if (raw) {
-        const saved = JSON.parse(raw);
-        state = deepMerge(state, saved);
-      }
+      if (raw) state = deepMerge(state, JSON.parse(raw));
     } catch (e) { /* corrupted or unavailable storage: start fresh */ }
     return state;
   }
@@ -46,6 +60,16 @@ const Store = (() => {
   function reset() {
     state = DEFAULTS();
     try { localStorage.removeItem(KEY); } catch (e) { /* ignore */ }
+  }
+
+  // Replace the whole state with an imported backup (validated by the caller).
+  function replace(obj) {
+    state = deepMerge(DEFAULTS(), obj);
+    save();
+  }
+
+  function exportJson() {
+    return JSON.stringify({ app: 'kotoba-type', version: 2, exportedAt: new Date().toISOString(), data: state }, null, 2);
   }
 
   function deepMerge(base, extra) {
@@ -60,5 +84,5 @@ const Store = (() => {
     return out;
   }
 
-  return { load, save, reset };
+  return { load, save, reset, replace, exportJson, KEY };
 })();
