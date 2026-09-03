@@ -8,6 +8,27 @@
   const escapeHtml = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const kataToHira = s => s.replace(/[ァ-ヶ]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0x60));
   const isPunct = ch => /[\s、。！？!?.,「」・～\-]/.test(ch);
+  const isKanji = ch => /[一-龯々〆]/.test(ch);
+
+  // Align kanji runs to their readings by anchoring on the kana between them.
+  // Returns [{ t, r? }] segments, or null when the reading cannot be aligned.
+  function alignFurigana(text, reading) {
+    if (!reading || reading === text) return null;
+    const hira = kataToHira(reading);
+    const segs = [];
+    for (const ch of text) {
+      const k = isKanji(ch);
+      const last = segs[segs.length - 1];
+      if (last && last.kanji === k) last.t += ch; else segs.push({ t: ch, kanji: k });
+    }
+    if (!segs.some(s => s.kanji)) return null;
+    const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    let m = null;
+    try { m = hira.match(new RegExp('^' + segs.map(s => s.kanji ? '(.+?)' : esc(kataToHira(s.t))).join('') + '$')); } catch (e) { m = null; }
+    if (!m) return null;
+    let gi = 1;
+    return segs.map(s => s.kanji ? { t: s.t, r: m[gi++] } : { t: s.t });
+  }
 
   // ---------------------------------------------------------------------
   // Static config
@@ -86,7 +107,7 @@
   const G = {
     active: false, phase: 'idle', // idle | countdown | play | done
     lang: 'ja', input: 'hiragana', direct: true, mode: 'time', duration: 60, count: 10, level: 'mixed', pack: 'all',
-    pool: [], poolIdx: 0, sentence: null, target: '', units: [], uIdx: 0, buf: '', err: '',
+    pool: [], poolIdx: 0, sentence: null, target: '', units: [], uIdx: 0, buf: '', err: '', furi: null,
     startAt: 0, elapsed: 0, raf: 0, timer: 0, timeline: [], ghost: null,
     score: 0, combo: 0, maxCombo: 0, hits: 0, misses: 0, keys: 0, chars: 0,
     sentences: 0, perfect: 0, sentenceMisses: 0, levelSentences: { 1: 0, 2: 0, 3: 0 }, roundMisses: {},
@@ -654,9 +675,11 @@
     else G.target = G.sentence.text;
     G.units = G.direct ? [] : Hangul.buildUnits(G.target);
 
-    el.reading.textContent = (G.lang === 'ja' && G.input === 'mixed' && set.furigana && G.sentence.reading && G.sentence.reading !== G.sentence.text) ? kataToHira(G.sentence.reading) : '';
+    G.furi = (G.lang === 'ja' && G.input === 'mixed' && set.furigana) ? alignFurigana(G.sentence.text, G.sentence.reading) : null;
+    el.reading.textContent = '';
     el.en.textContent = set.translation && G.mode !== 'paragraph' ? (G.sentence.en || '') : '';
     el.main.classList.toggle('long', G.target.length > 60);
+    el.main.classList.toggle('furi', !!G.furi);
     renderSentence();
     renderDots();
   }
@@ -762,12 +785,24 @@
     const composing = G.ime.composing;
     let html = '';
     let mismatch = false;
-    for (let i = 0; i < target.length; i++) {
+    const charSpan = i => {
       const ch = target[i];
       if (i < typed.length) {
-        if (!mismatch && typed[i] === ch) html += unitSpan('done', ch);
-        else { mismatch = true; html += unitSpan(composing ? 'comp' : 'bad', ch); }
-      } else html += unitSpan(i === typed.length ? 'cur' : 'pend', ch);
+        if (!mismatch && typed[i] === ch) return unitSpan('done', ch);
+        mismatch = true;
+        return unitSpan(composing ? 'comp' : 'bad', ch);
+      }
+      return unitSpan(i === typed.length ? 'cur' : 'pend', ch);
+    };
+    if (G.furi) {
+      let i = 0;
+      for (const seg of G.furi) {
+        let inner = '';
+        for (let k = 0; k < seg.t.length; k++) inner += charSpan(i++);
+        html += seg.r ? `<ruby>${inner}<rt>${escapeHtml(seg.r)}</rt></ruby>` : inner;
+      }
+    } else {
+      for (let i = 0; i < target.length; i++) html += charSpan(i);
     }
     el.main.innerHTML = html;
     el.guide.innerHTML = '';
