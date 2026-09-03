@@ -161,8 +161,8 @@
   // Theme & i18n
   // ---------------------------------------------------------------------
   function resolvedTheme() {
-    if (set.theme === 'light' || set.theme === 'dark') return set.theme;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    // Light is the default; dark only when the user chose it with the toggle.
+    return set.theme === 'dark' ? 'dark' : 'light';
   }
   function applyTheme() {
     const th = resolvedTheme();
@@ -1358,7 +1358,6 @@
     el.btnSound.innerHTML = set.sound ? ICONS.soundOn : ICONS.soundOff;
   });
   el.btnTheme.addEventListener('click', () => { set.theme = resolvedTheme() === 'dark' ? 'light' : 'dark'; Store.save(); applyTheme(); });
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if (set.theme === 'system') applyTheme(); });
 
   el.btnStart.addEventListener('click', startGame);
   el.btnRetry.addEventListener('click', startGame);
