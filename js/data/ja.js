@@ -184,7 +184,7 @@ const JA_SENTENCES = [
 ];
 
 // Easter egg: rarely slipped into any Japanese round.
-const JA_EGG = { text: '有利が今日もすいりにご帰宅しました。', reading: 'ゆりがきょうもすいりにごきたくしました。', en: '', level: 1, tag: 'egg' };
+const JA_EGG = { text: '有利が今日もすいりにご帰宅しました。', reading: 'ゆりがきょうもすいりにごきたくしました。', en: 'Yuri came home to Suiri again today.', level: 1, tag: 'egg' };
 
 // Warm-up drill items: kana rows and short words.
 const JA_DRILLS = [

@@ -182,6 +182,9 @@ const KO_SENTENCES = [
   { text: '음식을 남기지 않는 것은 만든 사람에 대한 감사이기도 해요.', en: 'Not leaving food is also gratitude toward the person who made it.', level: 3, tag: 'food' },
 ];
 
+// Easter egg: rarely slipped into any Korean round (귀가 = a maid-café "visit").
+const KO_EGG = { text: '유리가 오늘도 스이리에게 귀가했습니다.', en: 'Yuri came home to Suiri again today.', level: 1, tag: 'egg' };
+
 // Warm-up drill items: syllable rows and short words.
 const KO_DRILLS = [
   { text: '가나다라마바사', en: 'ga na da ra ma ba sa' },

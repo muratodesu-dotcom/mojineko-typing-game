@@ -47,7 +47,8 @@
   const SIZES = ['s', 'm', 'l'];
   const COUNT_MODES = { sprint: null, daily: 10, drill: 15, paragraph: 3 }; // null = user-selected
   const PARAGRAPH_SENTENCES = 4;
-  const EGG_RATE = 1 / 12; // chance per Japanese round that the easter-egg sentence appears
+  const EGG_RATE = 1 / 12; // chance per round that the easter-egg sentence appears (Japanese and Korean)
+  const EGGS = { ja: () => JA_EGG, ko: () => KO_EGG };
 
   const RANKS = [
     { r: 'S', min: 8000 }, { r: 'A', min: 5500 }, { r: 'B', min: 3500 },
@@ -257,8 +258,8 @@
   }
   function buildPool(lang, input, mode, level, pack, rnd) {
     const pool = buildPoolInner(lang, input, mode, level, pack, rnd);
-    if (lang === 'ja' && rnd() < EGG_RATE) {
-      const egg = { ...JA_EGG, parts: [1] };
+    if (EGGS[lang] && rnd() < EGG_RATE) {
+      const egg = { ...EGGS[lang](), parts: [1] };
       pool.splice(Math.floor(rnd() * (pool.length + 1)), 0, egg);
     }
     return pool;
