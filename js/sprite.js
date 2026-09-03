@@ -1,76 +1,53 @@
 // Tiny pixel-art sprites rendered as inline SVG (one <rect> per pixel) or onto a canvas.
 const Sprite = (() => {
   // Legend: . transparent, k ink, w body, p inner ear / blush, y yellow, r red, b accent
-  // 20x18 chibi cat, front view. Legend: . transparent, k ink, w body, p pink (ears, blush, nose),
-  // h eye highlight, y yellow, r red, b accent (accessories).
   const CAT = {
     idle: [
-      '...kk..........kk...',
-      '..kppk........kppk..',
-      '..kpppk......kpppk..',
-      '..kwwwwkkkkkkwwwwk..',
-      '.kwwwwwwwwwwwwwwwwk.',
-      'kwwwwwwwwwwwwwwwwwwk',
-      'kwwwkhwwwwwwwwkhwwwk',
-      'kwwwkkwwwwwwwwkkwwwk',
-      'kwwwkkwwwwwwwwkkwwwk',
-      'kpwwwwwwwppwwwwwwwpk',
-      'kppwwwwwkwwkwwwwwppk',
-      'kwwwwwwwwkkwwwwwwwwk',
-      'kwwwwwwwwwwwwwwwwwwk',
-      '.kwwwwwwwwwwwwwwwwk.',
-      '..kkwwwwwwwwwwwwkk..',
-      '.kwwwwwwwwwwwwwwwwkk',
-      '.kwwkwwwwwwwwkwwwkwk',
-      '..kkkkkkkkkkkkkkkkk.',
+      '.kk........kk.',
+      'kppk......kppk',
+      'kpppk....kpppk',
+      'kwwwkkkkkkwwwk',
+      'kwwwwwwwwwwwwk',
+      'kwwkkwwwwkkwwk',
+      'kwwkkwwwwkkwwk',
+      'kwwwwwwkwwwwwk',
+      'kpwwwwkwkwwwpk',
+      'kwwwwwwwwwwwwk',
+      '.kkkkkkkkkkkk.',
     ],
     happy: [
-      '...kk..........kk...',
-      '..kppk........kppk..',
-      '..kpppk......kpppk..',
-      '..kwwwwkkkkkkwwwwk..',
-      '.kwwwwwwwwwwwwwwwwk.',
-      'kwwwwwwwwwwwwwwwwwwk',
-      'kwwkwwkwwwwwwkwwkwwk',
-      'kwwwkkwwwwwwwwkkwwwk',
-      'kwwwwwwwwwwwwwwwwwwk',
-      'kpwwwwwwwppwwwwwwwpk',
-      'kppwwwwwkwwkwwwwwppk',
-      'kwwwwwwwwkkwwwwwwwwk',
-      'kwwwwwwwwppwwwwwwwwk',
-      '.kwwwwwwwwwwwwwwwwk.',
-      '..kkwwwwwwwwwwwwkk..',
-      '.kwwwwwwwwwwwwwwwwkk',
-      '.kwwkwwwwwwwwkwwwkwk',
-      '..kkkkkkkkkkkkkkkkk.',
+      '.kk........kk.',
+      'kppk......kppk',
+      'kpppk....kpppk',
+      'kwwwkkkkkkwwwk',
+      'kwwwwwwwwwwwwk',
+      'kwkwwkwwwwkwwk',
+      'kwwkkwwwwkkwwk',
+      'kwwwwwwkwwwwwk',
+      'kpwwwkwwwkwwpk',
+      'kwwwwwkkkwwwwk',
+      '.kkkkkkkkkkkk.',
     ],
     sad: [
-      '...kk..........kk...',
-      '..kppk........kppk..',
-      '..kpppk......kpppk..',
-      '..kwwwwkkkkkkwwwwk..',
-      '.kwwwwwwwwwwwwwwwwk.',
-      'kwwwwwwwwwwwwwwwwwwk',
-      'kwwkwkwwwwwwwwkwkwwk',
-      'kwwwkwwwwwwwwwwkwwwk',
-      'kwwkwkwwwwwwwwkwkwwk',
-      'kpwwwwwwwppwwwwwwwpk',
-      'kppwwwwwwkkwwwwwwppk',
-      'kwwwwwwwkwwkwwwwwwwk',
-      'kwwwwwwwwwwwwwwwwwwk',
-      '.kwwwwwwwwwwwwwwwwk.',
-      '..kkwwwwwwwwwwwwkk..',
-      '.kwwwwwwwwwwwwwwwwkk',
-      '.kwwkwwwwwwwwkwwwkwk',
-      '..kkkkkkkkkkkkkkkkk.',
+      '.kk........kk.',
+      'kppk......kppk',
+      'kpppk....kpppk',
+      'kwwwkkkkkkwwwk',
+      'kwwwwwwwwwwwwk',
+      'kwkwkwwwwkwkwk',
+      'kwwkwwwwwwkwwk',
+      'kwkwkwwwwkwkwk',
+      'kwwwwwkkkwwwwk',
+      'kwwwwkwwwkwwwk',
+      '.kkkkkkkkkkkk.',
     ],
   };
 
   // Accessories drawn over the base map: [x, y, colour key]
   const ACCESSORIES = {
-    bow: [[8, 1, 'b'], [11, 1, 'b'], [8, 2, 'b'], [9, 2, 'p'], [10, 2, 'p'], [11, 2, 'b'], [8, 3, 'b'], [11, 3, 'b']],
-    scarf: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17].map(x => [x, 13, 'r']).concat([4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map(x => [x, 14, 'r'])).concat([[3, 15, 'r'], [3, 16, 'r']]),
-    crown: [[9, 0, 'y'], [7, 1, 'y'], [9, 1, 'y'], [11, 1, 'y'], [7, 2, 'y'], [8, 2, 'y'], [9, 2, 'y'], [10, 2, 'y'], [11, 2, 'y']],
+    bow: [[0, 0, 'b'], [2, 0, 'b'], [1, 1, 'b'], [0, 2, 'b'], [2, 2, 'b'], [1, 0, 'k'], [1, 2, 'k']],
+    scarf: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(x => [x, 9, 'r']).concat([[3, 10, 'r'], [4, 10, 'r']]),
+    crown: [[5, 1, 'y'], [7, 1, 'y'], [9, 1, 'y'], [5, 2, 'y'], [6, 2, 'y'], [7, 2, 'y'], [8, 2, 'y'], [9, 2, 'y']],
   };
 
   // Looks unlocked by player level. Body colours and accessories accumulate.
@@ -98,7 +75,7 @@ const Sprite = (() => {
   const HEART = ['.kk.kk.', 'kppkppk', 'kpppppk', '.kpppk.', '..kpk..', '...k...'];
   const STAR = ['...k...', '..kyk..', 'kkkykkk', '.kyyyk.', '.kyyyk.', 'kk...kk'];
 
-  const DEFAULT_PAL = { k: 'var(--ink)', w: 'var(--sprite-body)', p: 'var(--accent)', b: 'var(--accent)', y: 'var(--warn)', r: 'var(--bad)', h: '#ffffff' };
+  const DEFAULT_PAL = { k: 'var(--ink)', w: 'var(--sprite-body)', p: 'var(--accent)', b: 'var(--accent)', y: 'var(--warn)', r: 'var(--bad)' };
 
   function pixels(map, look) {
     const grid = map.map(row => row.split(''));
@@ -124,7 +101,7 @@ const Sprite = (() => {
 
   // Draw the cat onto a 2D canvas with concrete colours (no CSS variables).
   function drawCat(ctx, frame, x, y, scale, colors, look) {
-    const pal = Object.assign({ k: '#3b2f45', w: '#ffffff', p: '#ff85a1', b: '#ff85a1', y: '#ffcf4a', r: '#ff6b6b', h: '#ffffff' }, colors);
+    const pal = Object.assign({ k: '#3b2f45', w: '#ffffff', p: '#ff85a1', b: '#ff85a1', y: '#ffcf4a', r: '#ff6b6b' }, colors);
     if (look && look.body) pal.w = look.body;
     const grid = pixels(CAT[frame] || CAT.idle, look);
     for (let gy = 0; gy < grid.length; gy++) for (let gx = 0; gx < grid[gy].length; gx++) {
