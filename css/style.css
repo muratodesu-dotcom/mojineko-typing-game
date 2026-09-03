@@ -73,8 +73,10 @@
   --font-num: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-en: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
-:root[data-size="s"] { --text-scale: 0.85; }
-:root[data-size="l"] { --text-scale: 1.25; }
+/* 文字サイズ scales the whole interface (rem-based) and the sentence a little more. */
+:root { font-size: 16px; }
+:root[data-size="s"] { font-size: 14.5px; --text-scale: 0.95; }
+:root[data-size="l"] { font-size: 18px; --text-scale: 1.1; }
 :root[data-lang="ko"] { --bg: #eef6ff; --surface-2: #e9f2ff; --accent: #7cc0ff; --accent-soft: #d6e9ff; --dot: #d6e4f3; }
 :root[data-lang="en"] { --bg: #eefaf3; --surface-2: #e8f6ee; --accent: #3fbf8a; --accent-soft: #d3f2e2; --dot: #d3e9dc; }
 :root[data-lang="en"][data-theme="dark"] { --bg: #16221c; --surface: #1f2d26; --surface-2: #27382f; --accent: #5fd6a8; --accent-soft: #2b4a3c; --dot: #1f2d26; }
