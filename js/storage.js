@@ -17,7 +17,7 @@ const Store = (() => {
       translation: true,
     },
     stats: {
-      games: 0, chars: 0, keys: 0, seconds: 0, bestCombo: 0, xp: 0,
+      games: 0, chars: 0, keys: 0, seconds: 0, bestCombo: 0, xp: 0, pets: 0,
       langs: { ja: 0, ko: 0 },
       // Per-difficulty progress (mixed games credit each sentence to its own level).
       levels: {

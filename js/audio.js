@@ -36,6 +36,7 @@ const Sfx = (() => {
     sentence() { tone(660, 0.1, 'sine', 0.07); tone(990, 0.16, 'sine', 0.07, 0.08); },
     milestone() { [523, 659, 784, 1047].forEach((f, i) => tone(f, 0.12, 'square', 0.04, i * 0.06)); },
     countdown() { tone(520, 0.08, 'sine', 0.06); },
+    purr() { tone(660, 0.08, 'triangle', 0.05); tone(880, 0.12, 'triangle', 0.05, 0.07); tone(1100, 0.1, 'sine', 0.04, 0.15); },
     go() { tone(780, 0.2, 'sine', 0.08); },
     finish() { [523, 659, 784, 1047, 1319].forEach((f, i) => tone(f, 0.25, 'triangle', 0.06, i * 0.09)); },
     record() { [784, 988, 1175, 1568, 1976].forEach((f, i) => tone(f, 0.3, 'triangle', 0.06, 0.5 + i * 0.1)); },

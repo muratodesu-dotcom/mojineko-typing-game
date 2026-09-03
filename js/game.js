@@ -38,6 +38,7 @@
     { id: 'chars10k', ico: '📚', test: (r, s) => s.stats.chars >= 10000 },
     { id: 'sprint', ico: '🏁', test: r => r.mode === 'sprint' && r.sprintCount === 20 },
     { id: 'night', ico: '🌙', test: r => r.hour >= 0 && r.hour < 4 },
+    { id: 'catLover', ico: '🐱', test: (r, s) => s.stats.pets >= 100 },
     // Difficulty-based
     { id: 'easyClear', ico: '🌱', test: r => r.level === '1' && r.sentences >= 3 },
     { id: 'normalClear', ico: '🌿', test: r => r.level === '2' && r.sentences >= 3 },
@@ -255,10 +256,56 @@
       el.mascotBubble.classList.remove('show');
     }, ms);
   }
+  // Petting: click or tap the cat for a bounce, a heart and a purr.
+  const petTimers = new Map();
+  function petCat(node) {
+    Sfx.unlock();
+    Sfx.purr();
+    S.stats.pets = (S.stats.pets || 0) + 1;
+    Store.save();
+    clearTimeout(petTimers.get(node));
+    if (node === el.mascotPlay) clearTimeout(mascotTimer);
+    setMascot(node, 'happy');
+    node.classList.remove('pet', 'happy', 'sad');
+    void node.offsetWidth;
+    node.classList.add('pet');
+    const heart = document.createElement('div');
+    heart.className = 'pet-heart';
+    heart.innerHTML = Sprite.heart(2);
+    heart.style.left = `${35 + Math.random() * 30}%`;
+    node.appendChild(heart);
+    setTimeout(() => heart.remove(), 900);
+    const bubble = node.querySelector('.bubble');
+    if (bubble) {
+      const phrases = t('petPhrases');
+      bubble.textContent = phrases[Math.floor(Math.random() * phrases.length)];
+      bubble.classList.add('show');
+    }
+    petTimers.set(node, setTimeout(() => {
+      node.classList.remove('pet');
+      setMascot(node, 'idle');
+      if (bubble) bubble.classList.remove('show');
+    }, 900));
+    if (S.stats.pets === 100 && !S.achievements.catLover) {
+      const a = ACHIEVEMENTS.find(x => x.id === 'catLover');
+      S.achievements.catLover = todayStr();
+      Store.save();
+      const [name, desc] = t('ach').catLover;
+      toast(a.ico, `${t('achUnlocked')}: ${name}`, desc);
+      if (el.screens.home.classList.contains('active')) renderAchievements();
+    }
+    if (el.screens.home.classList.contains('active')) renderStats();
+  }
+  [el.mascotHome, el.mascotPlay].forEach(n => {
+    n.addEventListener('mousedown', e => e.preventDefault()); // keep the IME input focused during play
+    n.addEventListener('click', () => petCat(n));
+    n.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); petCat(n); } });
+  });
+
   setInterval(() => {
     // Idle blink on both mascots.
     [el.mascotHome, el.mascotPlay].forEach(n => {
-      if (!n || n.classList.contains('happy') || n.classList.contains('sad')) return;
+      if (!n || n.classList.contains('happy') || n.classList.contains('sad') || n.classList.contains('pet')) return;
       setMascot(n, 'blink');
       setTimeout(() => { if (!n.classList.contains('happy') && !n.classList.contains('sad')) setMascot(n, 'idle'); }, 160);
     });
@@ -288,6 +335,7 @@
       statCard(t('timePlayed'), mins < 60 ? fmt(mins) : (st.seconds / 3600).toFixed(1), mins < 60 ? t('min') : t('hour')),
       statCard(t('xp'), fmt(st.xp)),
       statCard(t('bestStreak'), fmt(S.streak.best), t('days')),
+      statCard(t('pets'), fmt(S.stats.pets || 0)),
     ].join('');
   }
 

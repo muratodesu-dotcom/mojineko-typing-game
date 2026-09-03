@@ -24,11 +24,11 @@ Works offline. Google Fonts are loaded opportunistically and fall back to your s
   - **두벌식 keys** — type on a regular keyboard using the 2-set layout; syllables compose on screen as you type (ㄷ → 다 → 달 → 닭), with an optional key guide and on-screen keyboard.
   - **Korean IME** — type real Hangul with your OS input method.
 - **Modes**: time attack (30 / 60 / 120 s) or sprint (5 / 10 / 20 sentences). Every round starts with a 3-second countdown.
-- **Kawaii pixel look** — pixel fonts (Galmuri / DotGothic16 / Press Start 2P, with system fallbacks), chunky outlines, pastel palette, and a pixel cat mascot that reacts to your typing.
+- **Kawaii pixel look** — pixel fonts (Galmuri / DotGothic16 / Press Start 2P, with system fallbacks), chunky outlines, pastel palette, and a pixel cat mascot that reacts to your typing and can be petted (click or tap it).
 - **Light and dark mode** — follows the system by default, toggle in the header, remembered locally.
 - **Difficulty progression** — a goals panel with tiered targets per difficulty (games, sentences, best rank), eight difficulty-specific achievements, and an XP multiplier (×1 / ×1.25 / ×1.5, mixed ×1.2).
 - **Score system**: combo multiplier (up to 3×), perfect-sentence bonuses, S–E ranks, sound effects.
-- **Progression**: XP and levels, 23 achievements, daily streak, per-mode top-10 leaderboards, lifetime stats.
+- **Progression**: XP and levels, 24 achievements, daily streak, per-mode top-10 leaderboards, lifetime stats.
 - Everything is stored under one `localStorage` key; the menu has a reset button.
 
 ## Controls
