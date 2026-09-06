@@ -42,7 +42,8 @@ what the app is, the five steps to a round, and tips (IME on/off, packs, setting
   tsu / tu, fu / hu, ji / zi, kya / kixya, kko / xtuko, n / nn / xn for ん) and the displayed
   spelling follows what you type. An **IME** mode types the same sentence through your Japanese IME.
 - **Korean**: 2-set (두벌식) keys on a regular keyboard with live syllable composition, an
-  on-screen keyboard and a key guide, or your Korean IME. Optional strict mode where wrong
+  on-screen keyboard and a key guide under the sentence that shows, per syllable, the jamo each
+  key produces above the keys themselves (ㅇㅓㄹ over djf); or your Korean IME. Optional strict mode where wrong
   keys must be erased with Backspace.
 - **English**: typed directly on the keyboard with the on-screen keyboard highlighting the next
   key; speed is shown in WPM.

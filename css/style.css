@@ -295,7 +295,9 @@ main { padding: 14px 28px 14px; max-width: 1160px; margin: 0 auto; width: 100%; 
 .sentence-main rt { font-size: 0.42em; color: var(--muted); letter-spacing: 0; font-weight: 400; line-height: 1; }
 .sentence-main.furi { line-height: 2.1; }
 .sentence-main.long { font-size: calc(clamp(1.1rem, 2.2vw, 1.5rem) * var(--text-scale)); text-align: left; line-height: 1.9; }
-.sentence-guide { font-family: var(--font-mono); font-size: clamp(0.85rem, 1.7vw, 1.05rem); letter-spacing: 0.08em; color: var(--muted); }
+/* Key line under the sentence (romaji for Japanese, 2-set keys for Korean): sized to be read, one unit per kana / syllable. */
+.sentence-guide { font-family: var(--font-mono); font-size: calc(clamp(1rem, 2vw, 1.3rem) * var(--text-scale)); letter-spacing: 0.06em; color: var(--muted); margin-top: 4px; }
+.sentence-main.long ~ .sentence-guide { text-align: left; width: 100%; }
 .sentence-en { color: var(--muted); font-size: 0.88rem; margin-top: 2px; font-family: var(--font-ui); }
 .sentence-guide:empty, .sentence-en:empty { display: none; }
 
@@ -306,7 +308,10 @@ main { padding: 14px 28px 14px; max-width: 1160px; margin: 0 auto; width: 100%; 
 .u.bad { color: var(--bad); background: color-mix(in srgb, var(--bad) 18%, transparent); }
 .u.comp { color: var(--warn); text-decoration: underline dotted; }
 .u.ws { min-width: 0.4em; }
-.g { display: inline-block; }
+.g { display: inline-block; vertical-align: bottom; text-align: center; margin-right: 0.22em; }
+.g:last-child { margin-right: 0; }
+.g .jm { display: block; font-family: var(--font-ko); font-size: 0.68em; line-height: 1.2; letter-spacing: 0; color: var(--muted); font-weight: 400; }
+.g.cur .jm { color: var(--text); }
 .g.done { color: var(--ok); }
 .g.cur { color: var(--text); font-weight: 700; }
 .g .typed { color: var(--ok); }
@@ -508,8 +513,3 @@ h2.mt { margin-top: 18px; }
 .mascot.wake { animation: stretch 0.6s steps(4) 1; }
 @keyframes stretch { 0% { transform: scale(1, 1); } 30% { transform: scale(0.92, 1.18) translateY(-4px); } 60% { transform: scale(1.1, 0.9); } 100% { transform: scale(1, 1); } }
 
-/* Japanese romaji mode: the romaji line is what you read, so it is larger than the Korean key guide,
-   and each kana unit is spaced a little so the letters can be matched to the kana above. */
-.sentence-guide.romaji { font-size: calc(clamp(1rem, 2vw, 1.3rem) * var(--text-scale)); letter-spacing: 0.06em; margin-top: 4px; }
-.sentence-guide.romaji .g { margin-right: 0.22em; }
-.sentence-guide.romaji .g:last-child { margin-right: 0; }

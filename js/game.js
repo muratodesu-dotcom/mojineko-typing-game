@@ -824,12 +824,11 @@
     G.segs = romaji ? readingSegments(G.sentence.text, G.sentence.reading) : null;
     const showFuri = !!G.furi || (romaji && set.furigana && G.segs.some(s => s.kanji));
     el.reading.textContent = '';
-    el.guide.classList.toggle('romaji', romaji);
     el.en.textContent = set.translation && G.mode !== 'paragraph' ? (G.sentence.en || '') : '';
     el.main.classList.remove('swap');
     void el.main.offsetWidth;
     el.main.classList.add('swap');
-    el.main.classList.toggle('long', G.target.length > 60);
+    el.main.classList.toggle('long', (G.lang === 'ja' && G.sentence.reading ? G.sentence.reading : G.target).length > 60);  // kanji text is short even when the reading is long
     el.main.classList.toggle('furi', showFuri);
     renderSentence();
     renderDots();
@@ -856,11 +855,13 @@
     }).join('');
 
     if (G.segs || (set.guide && G.lang === 'ko')) {
+      // Korean: the jamo each key produces sit above the keys (ㅇㅓㄹ over djf).
+      const jamo = u => G.lang === 'ko' ? `<span class="jm">${escapeHtml(Hangul.jamoFor(u.canon)) || '&nbsp;'}</span>` : '';
       el.guide.innerHTML = G.units.map((u, i) => {
         if (u.text === ' ') return '<span class="g sp"></span>';
-        if (i < cur) return `<span class="g done">${escapeHtml(u.typed)}</span>`;
-        if (i === cur) return `<span class="g cur"><span class="typed">${escapeHtml(G.buf)}</span><span class="err">${escapeHtml(G.err)}</span><span class="rest">${escapeHtml(u.canon.slice(G.buf.length))}</span></span>`;
-        return `<span class="g pend">${escapeHtml(u.canon)}</span>`;
+        if (i < cur) return `<span class="g done">${jamo(u)}${escapeHtml(u.typed)}</span>`;
+        if (i === cur) return `<span class="g cur">${jamo(u)}<span class="typed">${escapeHtml(G.buf)}</span><span class="err">${escapeHtml(G.err)}</span><span class="rest">${escapeHtml(u.canon.slice(G.buf.length))}</span></span>`;
+        return `<span class="g pend">${jamo(u)}${escapeHtml(u.canon)}</span>`;
       }).join('');
     } else {
       el.guide.innerHTML = '';
