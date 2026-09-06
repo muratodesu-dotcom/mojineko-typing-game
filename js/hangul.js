@@ -54,9 +54,12 @@ const Hangul = (() => {
   function buildUnits(text) {
     return [...text].map(ch => {
       const keys = keysFor(ch);
-      return { text: ch, alts: [keys], canon: keys, isN: false, typed: '', partial: p => partial(ch, p) };
+      return { text: ch, alts: [keys], canon: keys, typed: '', partial: p => partial(ch, p) };
     });
   }
 
-  return { buildUnits, keysFor, isSyllable, KEY_LABELS, SHIFT_LABELS };
+  // Jamo produced by each key of a key sequence, one per key ("dhk" → "ㅇㅗㅏ"); non-jamo keys give ''.
+  const jamoFor = keys => [...keys].map(k => KEY_LABELS[k] || SHIFT_LABELS[k.toLowerCase()] || '').join('');
+
+  return { buildUnits, keysFor, jamoFor, isSyllable, KEY_LABELS, SHIFT_LABELS };
 })();

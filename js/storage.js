@@ -11,7 +11,7 @@ const Store = (() => {
       textSize: 'm',     // sentence size: 's' | 'm' | 'l'
       sideTab: 'overview',
       pet: 'cat',        // 'cat' | 'dog' | 'rabbit' | 'bear' | 'chick'
-      input: { ja: 'hiragana', ko: 'jamo', en: 'keys' },  // ja: script to type (via IME); ko: input method
+      input: { ja: 'romaji', ko: 'jamo', en: 'keys' },  // ja: 'romaji' (plain keyboard) | 'mixed' (IME); ko: 'jamo' | 'direct'
       mode: 'time',      // 'time' | 'sprint' | 'daily' | 'drill'
       duration: 60,      // seconds, for time mode
       sprintCount: 10,   // sentences, for sprint mode

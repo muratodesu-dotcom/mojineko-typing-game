@@ -34,13 +34,14 @@
   // Static config
   // ---------------------------------------------------------------------
   const LANGS = {
-    ja: { sentences: () => JA_SENTENCES, drills: () => JA_DRILLS, paragraphs: () => JA_PARAGRAPHS, inputs: ['hiragana', 'mixed'] },   // both typed through the IME
+    // 'romaji': the kanji/kana sentence typed as romaji on a plain keyboard (Sushida-style). 'mixed': the same sentence typed through the IME.
+    ja: { sentences: () => JA_SENTENCES, drills: () => JA_DRILLS, paragraphs: () => JA_PARAGRAPHS, inputs: ['romaji', 'mixed'] },
     ko: { sentences: () => KO_SENTENCES, drills: () => KO_DRILLS, paragraphs: () => KO_PARAGRAPHS, inputs: ['jamo', 'direct'] },
     en: { sentences: () => EN_SENTENCES, drills: () => EN_DRILLS, paragraphs: () => EN_PARAGRAPHS, inputs: ['keys'] },
   };
   const plainUnits = text => [...text].map(ch => ({ text: ch, alts: [ch], canon: ch, typed: '', partial: p => p }));
   const speedUnitFor = (lang, direct) => (direct ? 'cpm' : lang === 'en' ? 'wpm' : 'kpm');
-  const isDirectInput = (lang, input) => lang === 'ja' || input === 'direct';
+  const isDirectInput = (lang, input) => (lang === 'ja' && input === 'mixed') || input === 'direct';
   const PACKS = ['all', 'daily', 'travel', 'work', 'food', 'weak', 'custom'];
   const FONTS = ['clean', 'round', 'serif', 'pixel', 'system'];
   const PETS = ['cat', 'dog', 'rabbit', 'bear', 'chick'];
@@ -121,7 +122,7 @@
   const G = {
     active: false, phase: 'idle', // idle | countdown | play | done
     lang: 'ja', input: 'hiragana', direct: true, mode: 'time', duration: 60, count: 10, level: 'mixed', pack: 'all',
-    pool: [], poolIdx: 0, sentence: null, target: '', units: [], uIdx: 0, buf: '', err: '', furi: null,
+    pool: [], poolIdx: 0, sentence: null, target: '', units: [], uIdx: 0, buf: '', err: '', furi: null, segs: null,
     startAt: 0, elapsed: 0, raf: 0, timer: 0, timeline: [], ghost: null,
     score: 0, combo: 0, maxCombo: 0, hits: 0, misses: 0, keys: 0, chars: 0,
     sentences: 0, perfect: 0, sentenceMisses: 0, levelSentences: { 1: 0, 2: 0, 3: 0 }, roundMisses: {},
@@ -268,7 +269,7 @@
   const countFor = (mode, sprintCount) => COUNT_MODES[mode] === null ? sprintCount : COUNT_MODES[mode];
   function labelFromKey(key) {
     const [lang, input, mode, len] = key.split(':');
-    const inputName = t('inputs')[lang][input].name;
+    const inputName = (t('inputs')[lang][input] || { name: input }).name;  // records from retired input modes keep their label
     const lenLabel = t('boardLen')[mode](mode === 'daily' ? len : parseInt(len, 10));
     return `${t('langNames')[lang]} · ${inputName} · ${lenLabel}`;
   }
@@ -280,7 +281,11 @@
     const w = S.weak[lang] || {};
     let score = 0;
     for (const ch of s.text) score += w[ch] || 0;
-    if (s.reading) for (const ch of kataToHira(s.reading)) score += w[ch] || 0;
+    if (s.reading) {
+      const hira = kataToHira(s.reading);
+      for (const ch of hira) score += w[ch] || 0;
+      for (const k of Object.keys(w)) if (k.length > 1 && hira.includes(k)) score += w[k];  // romaji units such as きゃ / っし
+    }
     return score;
   }
   function buildPool(lang, input, mode, level, pack, rnd, count) {
@@ -306,7 +311,7 @@
     if (mode === 'daily') return shuffle(all, rnd).slice(0, COUNT_MODES.daily);
     let list = all;
     if (pack === 'custom') {
-      list = (S.custom[lang] || []).filter(c => c.text && (lang === 'ko' || input === 'mixed' || c.reading));
+      list = (S.custom[lang] || []).filter(c => c.text && (lang !== 'ja' || input === 'mixed' || c.reading));  // romaji needs a reading
       if (!list.length) list = all;
     } else if (pack === 'weak') {
       const scored = all.map(s => ({ s, w: weakScore(lang, s) })).filter(x => x.w > 0).sort((a, b) => b.w - a.w);
@@ -350,7 +355,7 @@
     const inputs = LANGS[set.lang].inputs;
     if (!inputs.includes(set.input[set.lang])) set.input[set.lang] = inputs[0];
     const names = t('inputs')[set.lang];
-    el.inputLabel.textContent = set.lang === 'ja' ? t('script') : t('inputMethod');
+    el.inputLabel.textContent = t('inputMethod');
     el.inputChips.parentElement.hidden = set.lang === 'en';
     el.inputChips.innerHTML = inputs.map(id =>
       `<button class="chip${id === set.input[set.lang] ? ' active' : ''}" data-input="${id}">${names[id].name}</button>`).join('');
@@ -386,10 +391,10 @@
     el.sizeChips.innerHTML = SIZES.map(z => `<button class="chip${z === set.textSize ? ' active' : ''}" data-size="${z}">${t('sizes')[z]}</button>`).join('');
 
     const builtin = !isDirectInput(set.lang, set.input[set.lang]);
-    el.toggleGuide.hidden = !builtin || set.lang === 'en';
+    el.toggleGuide.hidden = !builtin || set.lang !== 'ko';   // the romaji line is always shown in Japanese
     el.toggleKeyboard.hidden = !builtin;
     el.toggleStrict.hidden = !builtin;
-    el.toggleFurigana.hidden = !(set.lang === 'ja' && set.input[set.lang] === 'mixed');
+    el.toggleFurigana.hidden = set.lang !== 'ja';
     el.toggleHideInput.hidden = builtin;
     el.optGuide.checked = set.guide;
     el.optKeyboard.checked = set.keyboard;
@@ -811,18 +816,20 @@
     el.directInput.value = '';
     el.directInput.classList.remove('bad');
 
-    if (G.lang === 'ja') G.target = G.input === 'hiragana' ? kataToHira(G.sentence.reading || G.sentence.text) : G.sentence.text;
-    else G.target = G.sentence.text;
-    G.units = G.direct ? [] : G.lang === 'en' ? plainUnits(G.target) : Hangul.buildUnits(G.target);
+    G.target = G.sentence.text;
+    const romaji = G.lang === 'ja' && !G.direct;
+    G.units = G.direct ? [] : romaji ? Romaji.buildUnits(G.sentence.reading || G.sentence.text) : G.lang === 'en' ? plainUnits(G.target) : Hangul.buildUnits(G.target);
 
-    G.furi = (G.lang === 'ja' && G.input === 'mixed' && set.furigana) ? alignFurigana(G.sentence.text, G.sentence.reading) : null;
+    G.furi = (G.lang === 'ja' && G.direct && set.furigana) ? alignFurigana(G.sentence.text, G.sentence.reading) : null;
+    G.segs = romaji ? readingSegments(G.sentence.text, G.sentence.reading) : null;
+    const showFuri = !!G.furi || (romaji && set.furigana && G.segs.some(s => s.kanji));
     el.reading.textContent = '';
     el.en.textContent = set.translation && G.mode !== 'paragraph' ? (G.sentence.en || '') : '';
     el.main.classList.remove('swap');
     void el.main.offsetWidth;
     el.main.classList.add('swap');
-    el.main.classList.toggle('long', G.target.length > 60);
-    el.main.classList.toggle('furi', !!G.furi);
+    el.main.classList.toggle('long', (G.lang === 'ja' && G.sentence.reading ? G.sentence.reading : G.target).length > 60);  // kanji text is short even when the reading is long
+    el.main.classList.toggle('furi', showFuri);
     renderSentence();
     renderDots();
   }
@@ -840,18 +847,21 @@
   function renderSentence() {
     if (G.direct) return renderDirect();
     const cur = G.uIdx;
-    el.main.innerHTML = G.units.map((u, i) => {
+    if (G.segs) renderMainReading();
+    else el.main.innerHTML = G.units.map((u, i) => {
       if (i === cur && G.err) return unitSpan('bad', G.buf ? u.partial(G.buf) : u.text);
       if (i === cur && G.buf) return unitSpan('cur', u.partial(G.buf));
       return unitSpan(i < cur ? 'done' : i === cur ? 'cur' : 'pend', u.text);
     }).join('');
 
-    if (set.guide && G.lang !== 'en') {
+    if (G.segs || (set.guide && G.lang === 'ko')) {
+      // Korean: the jamo each key produces sit above the keys (ㅇㅓㄹ over djf).
+      const jamo = u => G.lang === 'ko' ? `<span class="jm">${escapeHtml(Hangul.jamoFor(u.canon)) || '&nbsp;'}</span>` : '';
       el.guide.innerHTML = G.units.map((u, i) => {
         if (u.text === ' ') return '<span class="g sp"></span>';
-        if (i < cur) return `<span class="g done">${escapeHtml(u.typed)}</span>`;
-        if (i === cur) return `<span class="g cur"><span class="typed">${escapeHtml(G.buf)}</span><span class="err">${escapeHtml(G.err)}</span><span class="rest">${escapeHtml(u.canon.slice(G.buf.length))}</span></span>`;
-        return `<span class="g pend">${escapeHtml(u.canon)}</span>`;
+        if (i < cur) return `<span class="g done">${jamo(u)}${escapeHtml(u.typed)}</span>`;
+        if (i === cur) return `<span class="g cur">${jamo(u)}<span class="typed">${escapeHtml(G.buf)}</span><span class="err">${escapeHtml(G.err)}</span><span class="rest">${escapeHtml(u.canon.slice(G.buf.length))}</span></span>`;
+        return `<span class="g pend">${jamo(u)}${escapeHtml(u.canon)}</span>`;
       }).join('');
     } else {
       el.guide.innerHTML = '';
@@ -862,23 +872,68 @@
   function nextKey() {
     if (G.err) return 'Backspace';
     const u = G.units[G.uIdx];
-    return u ? u.canon[G.buf.length] || '' : '';
+    if (!u) return '';
+    if (G.buf.length < u.canon.length) return u.canon[G.buf.length];
+    const n = G.units[G.uIdx + 1];   // spelling complete but extendable (ん typed as "n"): point at the next unit
+    return n ? n.canon[0] : '';
+  }
+
+  // Japanese romaji mode: the kanji/kana sentence lights up as its reading is typed.
+  // Kana light up one by one; a kanji run lights up when its whole reading is done.
+  function readingSegments(text, reading) {
+    const hira = kataToHira(reading || text);
+    const furi = alignFurigana(text, reading);
+    const perChar = s => [...s].map(ch => ({ t: ch, r: kataToHira(ch), kanji: false }));
+    if (furi) return furi.flatMap(seg => seg.r ? [{ t: seg.t, r: kataToHira(seg.r), kanji: true }] : perChar(seg.t));
+    if (kataToHira(text) === hira) return perChar(text);
+    return [{ t: text, r: hira, kanji: true }];   // reading could not be aligned: treat the sentence as one block
+  }
+  function renderMainReading() {
+    const done = G.units.slice(0, G.uIdx).reduce((n, u) => n + u.text.length, 0);
+    const u = G.units[G.uIdx];
+    const curEnd = done + (u ? u.text.length : 0);
+    const furi = set.furigana;
+    let pos = 0, html = '';
+    for (const seg of G.segs) {
+      const start = pos, end = pos + seg.r.length;
+      pos = end;
+      const cls = end <= done ? 'done' : start >= curEnd ? 'pend' : G.err ? 'bad' : 'cur';
+      const inner = unitSpan(cls, seg.t);
+      html += seg.kanji && furi ? `<ruby>${inner}<rt>${escapeHtml(seg.r)}</rt></ruby>` : inner;
+    }
+    el.main.innerHTML = html;
   }
 
   // ---------------------------------------------------------------------
-  // Built-in 2-set keyboard input (Korean)
+  // Built-in keyboard input (Korean 2-set, Japanese romaji, English)
   // ---------------------------------------------------------------------
+  // Each unit lists every accepted key sequence in `alts`; `canon` is the one on display and
+  // follows whatever the player is typing (shi → si). A unit whose typed prefix is already a
+  // complete spelling but could go on (ん as "n" or "nn") is committed by the next key.
+  function commitUnit(u, typed) {
+    u.typed = typed;
+    u.canon = typed;
+    G.chars += u.text.length;
+    G.uIdx++;
+    G.buf = '';
+  }
   function pressKey(key) {
     const u = G.units[G.uIdx];
     if (!u) return false;
     const cand = G.buf + key;
-    if (!u.canon.startsWith(cand)) return false;
+    const match = u.alts.filter(a => a.startsWith(cand));
+    if (!match.length) {
+      if (G.buf && u.alts.includes(G.buf)) {
+        commitUnit(u, G.buf);
+        if (G.uIdx >= G.units.length) { completeSentence(); return true; }
+        return pressKey(key);
+      }
+      return false;
+    }
     G.buf = cand;
-    if (cand === u.canon) {
-      u.typed = cand;
-      G.chars += u.text.length;
-      G.uIdx++;
-      G.buf = '';
+    if (!match.includes(u.canon)) u.canon = match[0];
+    if (u.alts.includes(cand) && match.length === 1) {
+      commitUnit(u, cand);
       if (G.uIdx >= G.units.length) completeSentence();
     }
     return true;
@@ -898,10 +953,13 @@
 
     let key = e.key;
     if (/^[a-zA-Z]$/.test(key)) {
-      // 2-set layout: Shift picks the double consonants / ㅒ ㅖ. Ignore Caps Lock.
-      const caps = typeof e.getModifierState === 'function' && e.getModifierState('CapsLock');
-      if (caps) key = e.shiftKey ? key.toUpperCase() : key.toLowerCase();
-      else if (e.shiftKey) key = key.toUpperCase();
+      if (G.lang === 'ja') key = key.toLowerCase();   // romaji ignores case (and Caps Lock)
+      else if (G.lang === 'ko') {
+        // 2-set layout: Shift picks the double consonants / ㅒ ㅖ. Ignore Caps Lock.
+        const caps = typeof e.getModifierState === 'function' && e.getModifierState('CapsLock');
+        if (caps) key = e.shiftKey ? key.toUpperCase() : key.toLowerCase();
+        else if (e.shiftKey) key = key.toUpperCase();
+      }
     }
     flashKey(key);
     const u = G.units[G.uIdx];
