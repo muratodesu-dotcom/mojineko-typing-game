@@ -17,7 +17,7 @@ const I18N = {
     achUnlocked: '実績解除', levelUp: 'レベルアップ！', streak: '日連続', lv: 'Lv.', theme: 'テーマ切替', sound: 'サウンド切替',
     pack: 'テーマ', packs: { all: 'すべて', daily: '日常', travel: '旅行', work: '仕事', food: '食べ物', weak: '苦手', custom: 'カスタム' },
     packWeakHint: 'ミスが多い文字を含む文を集めます。', packWeakEmpty: 'まだ苦手データがありません。まずは何回かプレイしてみましょう。',
-    packCustomHint: '自分の文を追加できます。', customHelp: '1行に1文。日本語は「文｜よみ」の形式で書くと、ひらがなモードでも使えます。', customSave: '保存', customSaved: 'カスタム文を保存しました', customEmpty: 'カスタム文がまだありません。',
+    packCustomHint: '自分の文を追加できます。', customHelp: '1行に1文。日本語は「文｜よみ」の形式で書くと、ローマ字入力でも使えます。', customSave: '保存', customSaved: 'カスタム文を保存しました', customEmpty: 'カスタム文がまだありません。',
     modeDaily: 'デイリー', modeDrill: 'ウォームアップ', modeParagraph: '段落',
     modeHintParagraph: '4文つなげた長文を3つ入力します。テーマと難易度が使えます。', hudParagraphs: '段落',
     modeHintTime: '制限時間内にできるだけ多く入力します。', modeHintSprint: '決めた数の文をできるだけ速く入力します。',
@@ -62,7 +62,7 @@ const I18N = {
       howTitle: '使い方',
       how: [
         '**言語を選ぶ**：練習する言語を日本語・한국어・English から選びます。メニューの表示言語は、設定（歯車アイコン）の「表示言語」で別に変えられます。',
-        '**入力方式を選ぶ**：日本語は「ひらがな」か「混合（漢字・カナ）」。IMEをオンにして、表示された文をそのまま入力し、Enterで確定します。韓国語の「2벌식」と英語は、IMEをオフにしてキーを直接打ちます。',
+        '**入力方式を選ぶ**：日本語は「ローマ字入力」が基本。IMEをオフにして、漢字混じりの文の下に出るローマ字をそのまま打ちます（寿司打と同じ方式で、shi / si などどの綴りでもOK）。「IME入力」なら日本語IMEで文をそのまま入力し、Enterで確定します。韓国語の「2벌식」と英語も、IMEをオフにしてキーを直接打ちます。',
         '**モードを選ぶ**：タイムアタック（時間内にできるだけ多く）、スプリント（決めた数の文）、デイリー（毎日同じ10文）、ウォームアップ（かな行と短い単語）、段落（長めの文章）。',
         '**テーマと難易度を選んでスタート**：3秒のカウントダウンのあと始まります。途中でやめたいときは Esc を押します。',
         '**結果を見る**：ランク・速度・正確さ・ミスした文字を確認できます。「結果を画像で保存」で記録を残せます。',
@@ -72,7 +72,7 @@ const I18N = {
         'ミスするとコンボが切れます。速さより正確さを優先したほうが、スコアは伸びやすいです。',
         '「苦手」テーマはミスが多い文字を含む文を集めます。「カスタム」には自分の文を追加できます（1行に1文、日本語は「文｜よみ」）。',
         '「仕事」テーマは、お疲れ様です・お世話になっております など、職場で毎日使う言い回しを集めています。',
-        '設定（歯車アイコン）でペット・フォント・文字サイズ・ふりがな・音量などを変更できます。',
+        '漢字の上のふりがなは、設定（歯車アイコン）の「ふりがなを表示」でオン・オフできます。ペット・フォント・文字サイズ・音量などもそこで変更できます。',
         'ペットはクリックするとなでられます。毎日プレイすると連続記録が伸びます（1日休んでも週1回は守られます）。',
         '「データを書き出す／読み込む」で、ほかのブラウザやパソコンに記録を移せます。',
       ],
@@ -84,9 +84,9 @@ const I18N = {
     boardLen: { time: s => `${s}秒`, sprint: n => `${n}文`, daily: d => d, drill: n => `${n}問`, paragraph: n => `${n}段落` },
     inputs: {
       ja: {
-        hiragana: { name: 'ひらがな', hint: 'IMEでひらがなのまま入力します。漢字変換は不要です。' },
-        mixed: { name: '混合（漢字・カナ）', hint: 'IMEで漢字・カタカナを含む文をそのまま入力します。' },
-        ko: '韓国語',
+        romaji: { name: 'ローマ字入力', hint: 'IMEをオフにして、文の下に出るローマ字をそのまま打ちます。shi / si、tsu / tu、nn / n などどの綴りでもOK。' },
+        mixed: { name: 'IME入力', hint: '日本語IMEをオンにして、漢字・カナを含む文をそのまま入力し、Enterで確定します。' },
+        hiragana: { name: 'ひらがな（旧）', hint: '' },  // retired mode: label for old records only
       },
       ko: {
         jamo: { name: '2ボル式キー', hint: '通常のキーボードで韓国語2ボル式配列のキーを打ちます。IMEはオフにしてください。' },
@@ -190,7 +190,7 @@ const I18N = {
       howTitle: '사용 방법',
       how: [
         '**언어 선택**: 연습할 언어를 日本語·한국어·English 중에서 고릅니다. 메뉴 표시 언어는 설정(톱니바퀴 아이콘)의 「표시 언어」에서 따로 바꿀 수 있습니다.',
-        '**입력 방식 선택**: 한국어는 「2벌식」(IME를 끄고 자판을 직접 입력) 또는 「직접 입력」(한글 IME 사용). 일본어는 IME를 켜고 화면의 문장을 그대로 입력한 뒤 Enter로 확정합니다. 영어는 자판을 직접 입력합니다.',
+        '**입력 방식 선택**: 한국어는 「2벌식」(IME를 끄고 자판을 직접 입력) 또는 「직접 입력」(한글 IME 사용). 일본어는 「로마자 입력」이 기본으로, IME를 끄고 한자 섞인 문장 아래에 표시되는 로마자를 그대로 입력합니다(스시다와 같은 방식, shi / si 등 어떤 표기든 OK). 「IME 입력」은 일본어 IME로 문장을 그대로 입력한 뒤 Enter로 확정합니다. 영어는 자판을 직접 입력합니다.',
         '**모드 선택**: 타임 어택(제한 시간 안에 최대한 많이), 스프린트(정해진 문장 수), 데일리(매일 같은 10문장), 워밍업(자모 행과 짧은 단어), 문단(긴 글).',
         '**테마와 난이도를 고르고 시작**: 3초 카운트다운 후 시작됩니다. 도중에 그만두려면 Esc를 누르세요.',
         '**결과 확인**: 랭크·속도·정확도·틀린 글자를 확인할 수 있습니다. 「결과를 이미지로 저장」으로 기록을 남길 수 있어요.',
@@ -200,7 +200,7 @@ const I18N = {
         '틀리면 콤보가 끊깁니다. 속도보다 정확도를 우선하는 편이 점수가 잘 오릅니다.',
         '「약점」 테마는 자주 틀리는 글자가 들어간 문장을 모읍니다. 「커스텀」에는 직접 문장을 추가할 수 있습니다(한 줄에 한 문장).',
         '「일」 테마는 수고하십니다·확인 부탁드립니다 등 직장에서 매일 쓰는 표현을 모았습니다.',
-        '설정(톱니바퀴 아이콘)에서 펫·글꼴·글자 크기·음량 등을 바꿀 수 있습니다.',
+        '한자 위의 후리가나는 설정(톱니바퀴 아이콘)의 「후리가나 표시」로 켜고 끌 수 있습니다. 펫·글꼴·글자 크기·음량 등도 거기서 바꿀 수 있습니다.',
         '펫을 클릭하면 쓰다듬을 수 있어요. 매일 플레이하면 연속 기록이 늘어납니다(하루 쉬어도 주 1회는 지켜 줍니다).',
         '「데이터 내보내기/불러오기」로 다른 브라우저나 PC에 기록을 옮길 수 있습니다.',
       ],
@@ -212,8 +212,9 @@ const I18N = {
     boardLen: { time: s => `${s}초`, sprint: n => `${n}문장`, daily: d => d, drill: n => `${n}문제`, paragraph: n => `${n}문단` },
     inputs: {
       ja: {
-        hiragana: { name: '히라가나', hint: 'IME로 히라가나만 입력합니다. 한자 변환은 필요 없습니다.' },
-        mixed: { name: '혼합 (한자·가나)', hint: 'IME로 한자와 가타카나가 포함된 문장을 그대로 입력합니다.' },
+        romaji: { name: '로마자 입력', hint: 'IME를 끄고, 문장 아래에 표시되는 로마자를 그대로 입력합니다. shi / si, tsu / tu, nn / n 등 어떤 표기든 괜찮아요.' },
+        mixed: { name: 'IME 입력', hint: '일본어 IME를 켜고 한자·가나가 포함된 문장을 그대로 입력한 뒤 Enter로 확정합니다.' },
+        hiragana: { name: '히라가나 (구)', hint: '' },
       },
       ko: {
         jamo: { name: '두벌식 키보드', hint: '일반 키보드에서 두벌식 배열로 입력합니다. IME는 꺼 주세요.' },
@@ -320,7 +321,7 @@ const I18N = {
       howTitle: 'How to use',
       how: [
         '**Pick a language**: choose what to practise, 日本語, 한국어 or English. The menu language is set separately under Settings (gear icon) → Menu language.',
-        '**Pick an input method**: Japanese is typed through your IME (ひらがな or 混合 with kanji), pressing Enter to confirm each sentence. Korean 2-set and English are typed directly on the keyboard, so turn your IME off.',
+        '**Pick an input method**: Japanese defaults to Romaji: turn your IME off and type the romaji shown under the kanji sentence, Sushida-style, with any spelling accepted (shi / si, tsu / tu, nn / n). "IME" lets you type the sentence with your Japanese IME instead, pressing Enter to confirm. Korean 2-set and English are typed directly on the keyboard, so turn your IME off.',
         '**Pick a mode**: Time attack (as much as you can in the time), Sprint (a set number of sentences), Daily (the same 10 sentences every day), Warm-up (rows and short words) or Paragraph (longer passages).',
         '**Choose a theme and difficulty, then start**: the round begins after a 3-second countdown. Press Esc to quit early.',
         '**Check your result**: rank, speed, accuracy and the characters you missed. "Save result as image" keeps a record.',
@@ -330,7 +331,7 @@ const I18N = {
         'A miss breaks your combo. Accuracy beats speed for a high score.',
         'The "Weak spots" theme collects sentences with the characters you miss most. "Custom" takes your own sentences (one per line; Japanese as 文｜よみ).',
         'The "Work" theme is everyday office language: greetings, emails and polite requests.',
-        'Settings (gear icon) change the pet, font, text size, furigana, volume and more.',
+        'Furigana above kanji can be switched on or off under Settings (gear icon) → Show furigana. The pet, font, text size and volume live there too.',
         'Click the pet to give it a pat. Play every day to grow your streak (one missed day per week is forgiven).',
         'Export / import data to move your records to another browser or computer.',
       ],
@@ -338,8 +339,9 @@ const I18N = {
     },
     inputs: {
       ja: {
-        hiragana: { name: 'Hiragana', hint: 'Type hiragana with your IME. No kanji conversion needed.' },
-        mixed: { name: 'Mixed (kanji & kana)', hint: 'Type the sentence as written, kanji and katakana included, with your IME.' },
+        romaji: { name: 'Romaji', hint: 'Turn your IME off and type the romaji shown under the sentence. Any spelling works: shi / si, tsu / tu, nn / n.' },
+        mixed: { name: 'IME', hint: 'Turn your Japanese IME on, type the sentence as written (kanji and kana) and press Enter to confirm.' },
+        hiragana: { name: 'Hiragana (old)', hint: '' },
       },
       ko: {
         jamo: { name: '2-set keys', hint: 'Type on a regular keyboard using the Korean 2-set layout. Turn your IME off.' },

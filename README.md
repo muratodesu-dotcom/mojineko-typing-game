@@ -35,8 +35,12 @@ what the app is, the five steps to a round, and tips (IME on/off, packs, setting
   plus hand-written paragraphs per language for paragraph mode. The 仕事 pack is everyday
   office language (お疲れ様です。いつもお世話になっております。, business-email phrases) rather than
   sentences *about* work, so what you practise is what you type at your desk.
-- **Japanese** is typed through your IME. Choose ひらがな (kana reading only) or 混合 (kanji,
-  katakana, hiragana as written), with an optional reading hint under kanji sentences.
+- **Japanese** shows the sentence as written (kanji, katakana, hiragana) with optional furigana
+  above the kanji, and is typed as **romaji on a plain keyboard** (Sushida-style, the default):
+  the romaji line under the sentence lights up as you type, kana light up one by one and a kanji
+  run lights up once its reading is done. Every spelling an IME accepts works (shi / si / ci,
+  tsu / tu, fu / hu, ji / zi, kya / kixya, kko / xtuko, n / nn / xn for ん) and the displayed
+  spelling follows what you type. An **IME** mode types the same sentence through your Japanese IME.
 - **Korean**: 2-set (두벌식) keys on a regular keyboard with live syllable composition, an
   on-screen keyboard and a key guide, or your Korean IME. Optional strict mode where wrong
   keys must be erased with Backspace.
@@ -84,6 +88,7 @@ index.html                page structure
 css/style.css             pixel theme, light/dark palettes
 js/game.js                game loop, modes, scoring, results, persistence, share card
 js/hangul.js              Hangul ↔ 2-set key sequence engine + partial composition
+js/romaji.js              kana reading → romaji typing units with every accepted spelling
 js/sprite.js              pixel-art sprites (cat mascot with looks, hearts, stars)
 js/i18n.js                Japanese / Korean / English UI strings
 js/storage.js             localStorage persistence, export/import
@@ -97,7 +102,8 @@ js/data/en.js             English sentences, paragraphs and warm-up drills
 ## Adding sentences
 
 Append to `js/data/ja.js`, `js/data/ko.js` or `js/data/en.js` with a `tag` (`daily`, `travel`, `work`, `food`)
-and a `level` (1–3). Japanese entries need a full kana `reading` so ひらがな mode can use them.
+and a `level` (1–3). Japanese entries need a full kana `reading`: romaji mode types the reading, and
+furigana is aligned from it.
 Paragraphs live in `JA_PARAGRAPHS` / `KO_PARAGRAPHS` in the same files with the same fields.
 
 ## Not included
