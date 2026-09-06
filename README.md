@@ -58,12 +58,14 @@ what the app is, the five steps to a round, and tips (IME on/off, packs, setting
 **Engagement**
 - Combo multiplier up to 3×, perfect-sentence bonuses, S–E ranks, chiptune sound effects
   with a volume slider, screen shake, confetti on a new record.
-- XP and levels with an XP multiplier by difficulty (×1 / ×1.25 / ×1.5, mixed ×1.2), 27
+- XP and five player levels (見習い → 正メイド → プレミアム → スーパープレミアム → レジェンド at 0 / 5,000 /
+  20,000 / 50,000 / 100,000 XP) with an XP multiplier by difficulty (×1 / ×1.25 / ×1.5, mixed ×1.2), 27
   achievements (30), a goals panel with tiered targets per difficulty, per-mode top-10 leaderboards,
   a history chart of your recent rounds, and a ghost pace marker comparing you to your best run.
 - Daily streak with one automatic freeze per week.
-- A pixel cat mascot that reacts to your typing, can be petted, and gains new looks as you
-  level up (bow, scarf, crown, new coats).
+- A pixel cat mascot that reacts to your typing, can be petted, and gains a new look at every
+  level (maid headdress, ribbon and cream coat, scarf, crown and golden coat); the home panel
+  shows all five looks with the ones still locked dimmed.
 - Result share card saved as a PNG.
 
 **Interface**

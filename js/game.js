@@ -144,7 +144,7 @@
     btnSound: $('#btn-sound'), btnTheme: $('#btn-theme'), btnSettings: $('#btn-settings'), btnSettingsClose: $('#btn-settings-close'), settingsModal: $('#settings-modal'),
     btnHelp: $('#btn-help'), btnAboutClose: $('#btn-about-close'), aboutModal: $('#about-modal'), aboutBody: $('#about-body'), brandMark: $('#brand-mark'),
     sideTabs: $('#side-tabs'),
-    goals: $('#goals'), mascotHome: $('#mascot-home'), mascotPlay: $('#mascot-play'), mascotPreview: $('#mascot-preview'), mascotNext: $('#mascot-next'),
+    goals: $('#goals'), mascotHome: $('#mascot-home'), mascotPlay: $('#mascot-play'), mascotPreview: $('#mascot-preview'), mascotNext: $('#mascot-next'), lookLadder: $('#look-ladder'),
     homeStats: $('#home-stats'), homeBoard: $('#home-board'), boardLabel: $('#board-label'), achGrid: $('#ach-grid'), achCount: $('#ach-count'),
     historyChart: $('#history-chart'), historyList: $('#history-list'), historyLabel: $('#history-label'), dailyList: $('#daily-list'), dailyLabel: $('#daily-label'),
     streak: $('#streak-count'), streakLabel: $('#streak-label'), levelNum: $('#level-num'), levelTitle: $('#level-title'), xpFill: $('#xp-fill'),
@@ -217,9 +217,12 @@
   // ---------------------------------------------------------------------
   // Helpers: level, streak, boards, dates, seeded random
   // ---------------------------------------------------------------------
-  const levelFromXp = xp => Math.floor(Math.sqrt(xp / 400)) + 1;
-  const xpForLevel = lv => (lv - 1) * (lv - 1) * 400;
-  const levelTitle = lv => t('titles')[clamp(Math.floor((lv - 1) / 3), 0, t('titles').length - 1)];
+  // Five player levels, one title and one pet look each: 見習い → 正メイド → プレミアム → スーパープレミアム → レジェンド.
+  const LEVEL_XP = [0, 5000, 20000, 50000, 100000];   // total XP needed to reach Lv.1 … Lv.5
+  const MAX_LEVEL = LEVEL_XP.length;
+  const levelFromXp = xp => LEVEL_XP.filter(x => xp >= x).length;
+  const xpForLevel = lv => LEVEL_XP[clamp(lv, 1, MAX_LEVEL) - 1];
+  const levelTitle = lv => t('titles')[clamp(lv, 1, MAX_LEVEL) - 1];
 
   const dateStr = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   const todayStr = () => dateStr(new Date());
@@ -472,7 +475,7 @@
     const lo = xpForLevel(lv), hi = xpForLevel(lv + 1);
     el.levelNum.textContent = lv;
     el.levelTitle.textContent = levelTitle(lv);
-    el.xpFill.style.width = `${clamp(((S.stats.xp - lo) / (hi - lo)) * 100, 0, 100)}%`;
+    el.xpFill.style.width = `${lv >= MAX_LEVEL ? 100 : clamp(((S.stats.xp - lo) / (hi - lo)) * 100, 0, 100)}%`;
   }
 
   function statCard(k, v, unit = '') {
@@ -598,7 +601,15 @@
   function renderMascotPanel() {
     setMascot(el.mascotPreview, 'idle');
     const look = currentLook();
-    el.mascotNext.textContent = look.nextLevel ? t('mascotNext')(look.nextLevel) : t('mascotMax');
+    const lv = levelFromXp(S.stats.xp);
+    el.mascotNext.textContent = look.nextLevel
+      ? `${t('mascotNext')(look.nextLevel)} · ${t('xpToGo')(fmt(xpForLevel(look.nextLevel) - S.stats.xp))}`
+      : t('mascotMax');
+    // The five looks side by side: reached ones in colour, the rest dimmed.
+    el.lookLadder.innerHTML = LEVEL_XP.map((xp, i) => {
+      const l = i + 1;
+      return `<div class="look${l <= lv ? ' on' : ''}" title="${t('lv')}${l} ${t('titles')[i]} · ${fmt(xp)} XP">${Sprite.pet(set.pet, 'idle', 2, Sprite.lookFor(l))}<small>${t('lv')}${l}</small><span>${t('titles')[i]}</span></div>`;
+    }).join('');
   }
   let mascotTimer = 0;
   function mascotReact(frame, ms) {

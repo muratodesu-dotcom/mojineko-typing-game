@@ -449,6 +449,12 @@ main { padding: 14px 28px 14px; max-width: 1160px; margin: 0 auto; width: 100%; 
 
 .mascot-growth { display: flex; align-items: center; gap: 14px; }
 .mascot-growth .hint { margin: 0; }
+/* The five looks, one per level: reached ones in colour, the rest dimmed. */
+.look-ladder { display: flex; justify-content: space-between; gap: 6px; margin-top: 12px; }
+.look-ladder .look { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; font-size: 0.66rem; color: var(--muted); line-height: 1.2; }
+.look-ladder .look small { font-family: var(--font-num); font-size: 0.6rem; margin-top: 2px; }
+.look-ladder .look.on { color: var(--text); }
+.look-ladder .look:not(.on) .px { opacity: 0.3; filter: grayscale(1); }
 .data-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip.danger:hover { background: var(--bad); color: #fff; border-color: var(--ink); }
 
