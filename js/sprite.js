@@ -168,31 +168,34 @@ const Sprite = (() => {
 
   // Accessories drawn over the base map: [x, y, colour key]
   const ACCESSORIES = {
+    // Maid headdress: an accent band across the top of the head with a scalloped lace edge above it.
+    headdress: [[4, 2, 'k'], [6, 2, 'k'], [8, 2, 'k'], [3, 3, 'k'], [4, 3, 'b'], [5, 3, 'b'], [6, 3, 'b'], [7, 3, 'b'], [8, 3, 'b'], [9, 3, 'b'], [10, 3, 'k']],
     bow: [[0, 0, 'b'], [2, 0, 'b'], [1, 1, 'b'], [0, 2, 'b'], [2, 2, 'b'], [1, 0, 'k'], [1, 2, 'k']],
     scarf: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(x => [x, 9, 'r']).concat([[3, 10, 'r'], [4, 10, 'r']]),
     crown: [[5, 1, 'y'], [7, 1, 'y'], [9, 1, 'y'], [5, 2, 'y'], [6, 2, 'y'], [7, 2, 'y'], [8, 2, 'y'], [9, 2, 'y']],
   };
 
-  // Looks unlocked by player level. Body colours and accessories accumulate.
+  // One look per player level (five levels: 見習い → 正メイド → プレミアム → スーパープレミアム → レジェンド).
+  // Accessories accumulate from level to level; `drop` removes one that the new piece replaces; `body` recolours the coat.
   const LOOKS = [
-    { lv: 1, body: null },
-    { lv: 3, acc: 'bow' },
-    { lv: 5, body: '#ffe9c4' },
-    { lv: 8, acc: 'scarf' },
-    { lv: 11, body: '#d8d3e6' },
-    { lv: 15, acc: 'crown' },
-    { lv: 20, body: '#ffc48a' },
+    { lv: 1 },
+    { lv: 2, acc: 'headdress' },
+    { lv: 3, acc: 'bow', body: '#ffe9c4' },
+    { lv: 4, acc: 'scarf' },
+    { lv: 5, acc: 'crown', drop: 'headdress', body: '#ffd88a' },
   ];
 
   function lookFor(level) {
-    let body = null, acc = null;
+    let body = null;
+    let accs = [];
     for (const l of LOOKS) {
       if (l.lv > level) break;
       if (l.body !== undefined) body = l.body;
-      if (l.acc !== undefined) acc = l.acc;
+      if (l.drop) accs = accs.filter(a => a !== l.drop);
+      if (l.acc) accs.push(l.acc);
     }
     const next = LOOKS.find(l => l.lv > level);
-    return { body, acc, nextLevel: next ? next.lv : null };
+    return { body, accs, nextLevel: next ? next.lv : null };
   }
 
   const HEART = ['.kk.kk.', 'kppkppk', 'kpppppk', '.kpppk.', '..kpk..', '...k...'];
@@ -202,8 +205,8 @@ const Sprite = (() => {
 
   function pixels(map, look) {
     const grid = map.map(row => row.split(''));
-    if (look && look.acc && ACCESSORIES[look.acc]) {
-      for (const [x, y, c] of ACCESSORIES[look.acc]) if (grid[y] && grid[y][x] !== undefined) grid[y][x] = c;
+    for (const acc of (look && look.accs) || []) {
+      for (const [x, y, c] of ACCESSORIES[acc] || []) if (grid[y] && grid[y][x] !== undefined) grid[y][x] = c;
     }
     return grid;
   }
