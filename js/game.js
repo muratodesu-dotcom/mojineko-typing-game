@@ -116,6 +116,7 @@
     soundOn: '<svg viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4zM15.5 8.5a5 5 0 0 1 0 7M19 5.5a9 9 0 0 1 0 13"/></svg>',
     soundOff: '<svg viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4zM22 9l-6 6M16 9l6 6"/></svg>',
     help: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.6 2.2c-.8.5-1.1 1-1.1 1.8M12 17h.01"/></svg>',
+    globe: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>',
     gear: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>',
   };
 
@@ -142,6 +143,7 @@
     inputLabel: $('#input-label'), inputChips: $('#input-chips'), inputHint: $('#input-hint'), modeHint: $('#mode-hint'),
     fieldDuration: $('#field-duration'), fieldSprint: $('#field-sprint'), fieldPack: $('#field-pack'), fieldLevel: $('#field-level'),
     fontChips: $('#font-chips'), sizeChips: $('#size-chips'), petChips: $('#pet-chips'), uiLangChips: $('#ui-lang-chips'),
+    uiLangSwitch: $('#ui-lang-switch'), btnUiLang: $('#btn-ui-lang'), uiLangCurrent: $('#ui-lang-current'), uiLangMenu: $('#ui-lang-menu'), uiLangMenuChips: $('#ui-lang-menu-chips'),
     cheerHome: $('#cheer-home-text'), cheerResult: $('#cheer-result-text'),
     packChips: $('#pack-chips'), packHint: $('#pack-hint'), customEditor: $('#custom-editor'), customText: $('#custom-text'), customHelp: $('#custom-help'), btnCustomSave: $('#btn-custom-save'),
     toggleGuide: $('#toggle-guide'), toggleKeyboard: $('#toggle-keyboard'), toggleStrict: $('#toggle-strict'), toggleFurigana: $('#toggle-furigana'), toggleHideInput: $('#toggle-hide-input'),
@@ -204,6 +206,10 @@
     el.btnSettings.title = t('settingsTitle');
     el.btnHelp.innerHTML = ICONS.help;
     el.btnHelp.title = t('aboutTitle');
+    el.uiLangSwitch.querySelector('.lang-switch-ico').innerHTML = ICONS.globe;
+    el.uiLangCurrent.textContent = UI_LANG_NAMES[set.uiLang];
+    el.uiLangCurrent.lang = set.uiLang;
+    el.btnUiLang.title = t('menuLang');
     el.brandMark.innerHTML = Sprite.cat('idle', 2);
     applyTheme();
   }
@@ -224,7 +230,7 @@
   // ---------------------------------------------------------------------
   // Helpers: level, streak, boards, dates, seeded random
   // ---------------------------------------------------------------------
-  // Five player levels, one title and one pet look each: 見習い → 正メイド → プレミアム → スーパープレミアム → レジェンド.
+  // Five player levels, one title and one pet look each: 新人 → 見習い → プレミアム → スーパープレミアム → レジェンド.
   const LEVEL_XP = [0, 5000, 20000, 50000, 100000];   // total XP needed to reach Lv.1 … Lv.5
   const MAX_LEVEL = LEVEL_XP.length;
   const levelFromXp = xp => LEVEL_XP.filter(x => xp >= x).length;
@@ -395,7 +401,10 @@
       clean: "'Noto Sans JP', 'Noto Sans KR', sans-serif", round: "'Zen Maru Gothic', 'Gowun Dodum', sans-serif", serif: "'Noto Serif JP', 'Noto Serif KR', serif",
       pixel: "'Galmuri11', 'DotGothic16', monospace", system: 'system-ui, sans-serif',
     };
-    el.uiLangChips.innerHTML = UI_LANGS.map(l => `<button class="chip${l === set.uiLang ? ' active' : ''}" data-ui-lang="${l}" lang="${l}">${UI_LANG_NAMES[l]}</button>`).join('');
+    // The menu language is offered in two places: the top-bar switcher and Settings. Both show the same chips.
+    const uiLangChips = UI_LANGS.map(l => `<button class="chip${l === set.uiLang ? ' active' : ''}" data-ui-lang="${l}" lang="${l}">${UI_LANG_NAMES[l]}</button>`).join('');
+    el.uiLangChips.innerHTML = uiLangChips;
+    el.uiLangMenuChips.innerHTML = uiLangChips;
     el.petChips.innerHTML = PETS.map(p => `<button class="chip${p === set.pet ? ' active' : ''}" data-pet="${p}">${Sprite.pet(p, 'idle', 2, currentLook())}${t('pets')[p]}</button>`).join('');
     el.fontChips.innerHTML = FONTS.map(f => `<button class="chip${f === set.font ? ' active' : ''}" data-font="${f}" style="font-family:${previewFonts[f]}">${t('fonts')[f]}</button>`).join('');
     el.sizeChips.innerHTML = SIZES.map(z => `<button class="chip${z === set.textSize ? ' active' : ''}" data-size="${z}">${t('sizes')[z]}</button>`).join('');
@@ -1432,10 +1441,21 @@
   chipHandler('#pack-chips', 'pack', v => { set.pack = v; });
   chipHandler('#font-chips', 'font', v => { set.font = v; });
   chipHandler('#pet-chips', 'pet', v => { set.pet = v; });
-  el.uiLangChips.addEventListener('click', e => {
+  const pickUiLang = e => {
     const b = e.target.closest('[data-ui-lang]'); if (!b) return;
-    set.uiLang = b.dataset.uiLang; Store.save(); applyI18n(); renderHome();
+    set.uiLang = b.dataset.uiLang; Store.save(); applyI18n(); renderHome(); closeUiLangMenu();
+  };
+  el.uiLangChips.addEventListener('click', pickUiLang);
+  el.uiLangMenuChips.addEventListener('click', pickUiLang);
+  function closeUiLangMenu() { el.uiLangMenu.hidden = true; el.btnUiLang.setAttribute('aria-expanded', 'false'); }
+  el.btnUiLang.addEventListener('click', () => {
+    const open = el.uiLangMenu.hidden;
+    el.uiLangMenu.hidden = !open;
+    el.btnUiLang.setAttribute('aria-expanded', String(open));
+    if (open) { const cur = el.uiLangMenuChips.querySelector('.chip.active'); if (cur) cur.focus(); }
   });
+  document.addEventListener('click', e => { if (!el.uiLangSwitch.contains(e.target)) closeUiLangMenu(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !el.uiLangMenu.hidden) closeUiLangMenu(); }, true);
   chipHandler('#side-tabs', 'tab', v => { set.sideTab = v; });
   el.btnSettings.addEventListener('click', () => { renderHome(); el.settingsModal.showModal(); });
   el.btnSettingsClose.addEventListener('click', () => el.settingsModal.close());

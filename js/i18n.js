@@ -3,7 +3,7 @@ const I18N = {
   ja: {
     heroTitle: 'タイピング練習',
     heroSub: '言語を選んでスタート。ハイスコアを目指そう。',
-    language: '練習する言語', languageHint: '入力する文の言語です。メニューの言語は設定（歯車）の「表示言語」で変えられます。', script: '文字', inputMethod: '入力方式', mode: 'モード', duration: '時間', sentenceCount: '文の数', difficulty: '難易度',
+    language: '練習する言語', languageHint: '入力する文の言語です。メニューの言語は右上の 🌐 ボタン（または設定の「表示言語」）で変えられます。', script: '文字', inputMethod: '入力方式', mode: 'モード', duration: '時間', sentenceCount: '文の数', difficulty: '難易度',
     modeTime: 'タイムアタック', modeSprint: 'スプリント', sec: '秒', sentencesUnit: '文',
     levelMixed: 'ミックス', level1: 'やさしい', level2: 'ふつう', level3: 'むずかしい',
     optGuide: 'キーガイドを表示', optKeyboard: 'キーボードを表示', optTranslation: '英訳を表示',
@@ -51,7 +51,7 @@ const I18N = {
     xpBonus: '難易度ボーナス', madeBy: 'Made by muratodesu',
     petsStat: 'なでた回数',
     pageTitle: 'もじねこ！ – 日本語・韓国語・英語・トルコ語のタイピング練習ゲーム',
-    uiLang: '表示言語（メニュー・設定）', uiLangHint: 'メニュー・設定・メッセージの言語です。練習する文の言語はホーム画面の「練習する言語」で選びます。', aboutTitle: 'このアプリについて',
+    uiLang: '表示言語（メニュー・設定）', menuLang: '表示言語', uiLangHint: 'メニュー・設定・メッセージの言語です。練習する文の言語はホーム画面の「練習する言語」で選びます。', aboutTitle: 'このアプリについて',
     about: {
       whatTitle: 'もじねこ！とは',
       what: [
@@ -79,7 +79,7 @@ const I18N = {
       foot: 'ゆっくりでも、毎日少しずつ。それがいちばんの近道です。',
     },
     ranks: { S: '伝説級！', A: 'すばらしい', B: 'いいね', C: 'まずまず', D: 'その調子', E: 'ウォームアップ' },
-    titles: ['見習い', '正メイド', 'プレミアム', 'スーパー\u200bプレミアム', 'レジェンド'],  // \u200b: break hint so the pet ladder wraps スーパー / プレミアム
+    titles: ['新人', '見習い', 'プレミアム', 'スーパー\u200bプレミアム', 'レジェンド'],  // \u200b: break hint so the pet ladder wraps スーパー / プレミアム
     perfectFloat: 'パーフェクト +200', bonusFloat: '+100', comboLost: 'コンボ切れ', comboHit: 'コンボ！',
     boardLen: { time: s => `${s}秒`, sprint: n => `${n}文`, daily: d => d, drill: n => `${n}問`, paragraph: n => `${n}段落` },
     inputs: {
@@ -133,7 +133,7 @@ const I18N = {
   ko: {
     heroTitle: '타자 연습',
     heroSub: '언어를 고르고 시작하세요. 최고 점수에 도전!',
-    language: '연습할 언어', languageHint: '입력할 문장의 언어입니다. 메뉴 언어는 설정(톱니바퀴)의 「표시 언어」에서 바꿀 수 있습니다.', script: '문자', inputMethod: '입력 방식', mode: '모드', duration: '시간', sentenceCount: '문장 수', difficulty: '난이도',
+    language: '연습할 언어', languageHint: '입력할 문장의 언어입니다. 메뉴 언어는 오른쪽 위 🌐 버튼(또는 설정의 「표시 언어」)에서 바꿀 수 있습니다.', script: '문자', inputMethod: '입력 방식', mode: '모드', duration: '시간', sentenceCount: '문장 수', difficulty: '난이도',
     modeTime: '타임 어택', modeSprint: '스프린트', sec: '초', sentencesUnit: '문장',
     levelMixed: '섞어서', level1: '쉬움', level2: '보통', level3: '어려움',
     optGuide: '키 가이드 표시', optKeyboard: '키보드 표시', optTranslation: '영어 번역 표시',
@@ -181,7 +181,7 @@ const I18N = {
     xpBonus: '난이도 보너스', madeBy: 'Made by muratodesu',
     petsStat: '쓰다듬은 횟수',
     pageTitle: '모지네코! – 일본어·한국어·영어·터키어 타자 연습 게임',
-    uiLang: '표시 언어 (메뉴·설정)', uiLangHint: '메뉴·설정·메시지의 언어입니다. 연습할 문장의 언어는 홈 화면의 「연습할 언어」에서 고릅니다.', aboutTitle: '이 앱에 대해',
+    uiLang: '표시 언어 (메뉴·설정)', menuLang: '표시 언어', uiLangHint: '메뉴·설정·메시지의 언어입니다. 연습할 문장의 언어는 홈 화면의 「연습할 언어」에서 고릅니다.', aboutTitle: '이 앱에 대해',
     about: {
       whatTitle: '모지네코!란',
       what: [
@@ -209,7 +209,7 @@ const I18N = {
       foot: '천천히라도 매일 조금씩. 그게 가장 빠른 길이에요.',
     },
     ranks: { S: '전설급!', A: '훌륭해요', B: '좋아요', C: '괜찮아요', D: '계속 해봐요', E: '워밍업' },
-    titles: ['견습', '정메이드', '프리미엄', '슈퍼 프리미엄', '레전드'],
+    titles: ['신입', '견습', '프리미엄', '슈퍼 프리미엄', '레전드'],
     perfectFloat: '퍼펙트 +200', bonusFloat: '+100', comboLost: '콤보 끊김', comboHit: '콤보!',
     boardLen: { time: s => `${s}초`, sprint: n => `${n}문장`, daily: d => d, drill: n => `${n}문제`, paragraph: n => `${n}문단` },
     inputs: {
@@ -263,7 +263,7 @@ const I18N = {
   en: {
     heroTitle: 'Typing practice',
     heroSub: 'Pick a language, hit start, and chase a new high score.',
-    language: 'Practice language', languageHint: 'The language of the sentences you type. The menu language is set separately in Settings (gear) → Menu language.', script: 'Script', inputMethod: 'Input method', mode: 'Mode', duration: 'Duration', sentenceCount: 'Sentences', difficulty: 'Difficulty',
+    language: 'Practice language', languageHint: 'The language of the sentences you type. The menu language is the 🌐 button at the top right (or Settings → Menu language).', script: 'Script', inputMethod: 'Input method', mode: 'Mode', duration: 'Duration', sentenceCount: 'Sentences', difficulty: 'Difficulty',
     modeTime: 'Time attack', modeSprint: 'Sprint', sec: 's', sentencesUnit: '',
     levelMixed: 'Mixed', level1: 'Easy', level2: 'Normal', level3: 'Hard',
     optGuide: 'Show key guide', optKeyboard: 'Show keyboard', optTranslation: 'Show translation',
@@ -276,7 +276,7 @@ const I18N = {
     rank: 'Rank', score: 'Score', newRecord: 'New record!', speed: 'Speed', accuracy: 'Accuracy', maxCombo: 'Max combo', sentencesDone: 'Completed', perfect: 'perfect', misses: 'Misses', xpEarned: 'XP earned',
     achUnlocked: 'Achievement unlocked', levelUp: 'Level up!', streak: ' day streak', lv: 'Lv.', theme: 'Toggle theme', sound: 'Toggle sound',
     ranks: { S: 'Legendary!', A: 'Excellent', B: 'Great', C: 'Good', D: 'Keep going', E: 'Warming up' },
-    titles: ['Trainee', 'Maid', 'Premium', 'Super Premium', 'Legend'],
+    titles: ['Rookie', 'Trainee', 'Premium', 'Super Premium', 'Legend'],
     perfectFloat: 'PERFECT +200', bonusFloat: '+100', comboLost: 'Combo lost', comboHit: 'COMBO!',
     boardLen: { time: s => `${s}s`, sprint: n => `${n} sentences`, daily: d => d, drill: n => `${n} items`, paragraph: n => `${n} paragraphs` },
     pack: 'Theme', packs: { all: 'All', daily: 'Daily life', travel: 'Travel', work: 'Work', food: 'Food', weak: 'Weak spots', custom: 'Custom' },
@@ -314,7 +314,7 @@ const I18N = {
     xpBonus: 'Difficulty bonus', madeBy: 'Made by muratodesu',
     petsStat: 'Times petted',
     pageTitle: 'もじねこ！ – Japanese, Korean, English & Turkish typing game',
-    uiLang: 'Menu language (menus & settings)', uiLangHint: 'Language of the menus, settings and messages. What you practise is chosen on the home screen under Practice language.', aboutTitle: 'About',
+    uiLang: 'Menu language (menus & settings)', menuLang: 'Menu language', uiLangHint: 'Language of the menus, settings and messages. What you practise is chosen on the home screen under Practice language.', aboutTitle: 'About',
     about: {
       whatTitle: 'What is もじねこ！?',
       what: [
@@ -392,7 +392,7 @@ const I18N = {
   tr: {
     heroTitle: 'Klavye alıştırması',
     heroSub: 'Bir dil seç, başlat ve yeni bir rekorun peşine düş.',
-    language: 'Alıştırma dili', languageHint: 'Yazacağın cümlelerin dili. Menü dili ayrıca Ayarlar (dişli) → Menü dili altından seçilir.', script: 'Yazı', inputMethod: 'Giriş yöntemi', mode: 'Mod', duration: 'Süre', sentenceCount: 'Cümle sayısı', difficulty: 'Zorluk',
+    language: 'Alıştırma dili', languageHint: 'Yazacağın cümlelerin dili. Menü dili sağ üstteki 🌐 düğmesinden (ya da Ayarlar → Menü dili) seçilir.', script: 'Yazı', inputMethod: 'Giriş yöntemi', mode: 'Mod', duration: 'Süre', sentenceCount: 'Cümle sayısı', difficulty: 'Zorluk',
     modeTime: 'Zamana karşı', modeSprint: 'Sprint', sec: 'sn', sentencesUnit: ' cümle',
     levelMixed: 'Karışık', level1: 'Kolay', level2: 'Orta', level3: 'Zor',
     optGuide: 'Tuş kılavuzunu göster', optKeyboard: 'Klavyeyi göster', optTranslation: 'Çeviriyi göster',
@@ -405,7 +405,7 @@ const I18N = {
     rank: 'Rütbe', score: 'Skor', newRecord: 'Yeni rekor!', speed: 'Hız', accuracy: 'İsabet', maxCombo: 'En yüksek kombo', sentencesDone: 'Tamamlanan', perfect: 'kusursuz', misses: 'Hata', xpEarned: 'Kazanılan XP',
     achUnlocked: 'Başarım açıldı', levelUp: 'Seviye atladın!', streak: ' günlük seri', lv: 'Sv.', theme: 'Temayı değiştir', sound: 'Sesi aç/kapat',
     ranks: { S: 'Efsanevi!', A: 'Mükemmel', B: 'Harika', C: 'İyi', D: 'Devam et', E: 'Isınıyorsun' },
-    titles: ['Çırak', 'Hizmetçi', 'Premium', 'Süper Premium', 'Efsane'],
+    titles: ['Acemi', 'Çırak', 'Premium', 'Süper Premium', 'Efsane'],
     perfectFloat: 'KUSURSUZ +200', bonusFloat: '+100', comboLost: 'Kombo bitti', comboHit: 'KOMBO!',
     boardLen: { time: s => `${s} sn`, sprint: n => `${n} cümle`, daily: d => d, drill: n => `${n} öğe`, paragraph: n => `${n} paragraf` },
     pack: 'Tema', packs: { all: 'Tümü', daily: 'Günlük hayat', travel: 'Seyahat', work: 'İş', food: 'Yemek', weak: 'Zayıf noktalar', custom: 'Özel' },
@@ -443,7 +443,7 @@ const I18N = {
     xpBonus: 'Zorluk bonusu', madeBy: 'Made by muratodesu',
     petsStat: 'Sevme sayısı',
     pageTitle: 'もじねこ！ – Japonca, Korece, İngilizce ve Türkçe klavye oyunu',
-    uiLang: 'Menü dili (menüler ve ayarlar)', uiLangHint: 'Menülerin, ayarların ve mesajların dili. Neyi yazarak çalışacağını ana ekrandaki Alıştırma dili belirler.', aboutTitle: 'Hakkında',
+    uiLang: 'Menü dili (menüler ve ayarlar)', menuLang: 'Menü dili', uiLangHint: 'Menülerin, ayarların ve mesajların dili. Neyi yazarak çalışacağını ana ekrandaki Alıştırma dili belirler.', aboutTitle: 'Hakkında',
     about: {
       whatTitle: 'もじねこ！ nedir?',
       what: [

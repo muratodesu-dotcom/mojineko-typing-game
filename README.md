@@ -62,7 +62,7 @@ what the app is, the five steps to a round, and tips (IME on/off, packs, setting
 **Engagement**
 - Combo multiplier up to 3×, perfect-sentence bonuses, S–E ranks, chiptune sound effects
   with a volume slider, screen shake, confetti on a new record.
-- XP and five player levels (見習い → 正メイド → プレミアム → スーパープレミアム → レジェンド at 0 / 5,000 /
+- XP and five player levels (新人 → 見習い → プレミアム → スーパープレミアム → レジェンド at 0 / 5,000 /
   20,000 / 50,000 / 100,000 XP) with an XP multiplier by difficulty (×1 / ×1.25 / ×1.5, mixed ×1.2), 31
   achievements, a goals panel with tiered targets per difficulty, per-mode top-10 leaderboards,
   a history chart of your recent rounds, and a ghost pace marker comparing you to your best run.
@@ -74,7 +74,7 @@ what the app is, the five steps to a round, and tips (IME on/off, packs, setting
 
 **Interface**
 - Menu and HUD in Japanese, Korean, English or Turkish, chosen separately from the practice language
-  (Settings → 表示言語 / Menu language; Japanese by default). Light theme by default, dark theme via the header toggle.
+  (the 🌐 switcher in the header, or Settings → 表示言語 / Menu language; Japanese by default). Light theme by default, dark theme via the header toggle.
 - Settings behind the gear icon: five font sets, three text sizes, input options, volume, and data export / import / reset. The home page fits a desktop screen without scrolling; stats, records, goals, rankings and achievements live in tabs.
 - Arrow keys move between options on the menu; everything is keyboard-accessible.
 - Export / import all local data as a JSON file.
