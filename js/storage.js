@@ -14,7 +14,7 @@ const Store = (() => {
       textSize: 'm',     // sentence size: 's' | 'm' | 'l'
       sideTab: 'overview',
       pet: 'cat',        // 'cat' | 'dog' | 'rabbit' | 'bear' | 'chick'
-      input: { ja: 'romaji', ko: 'jamo', en: 'keys' },  // ja: 'romaji' (plain keyboard) | 'mixed' (IME); ko: 'jamo' | 'direct'
+      input: { ja: 'romaji', ko: 'jamo', en: 'keys', tr: 'keys' },  // ja: 'romaji' (plain keyboard) | 'mixed' (IME); ko: 'jamo' | 'direct'
       mode: 'time',      // 'time' | 'sprint' | 'daily' | 'drill'
       duration: 60,      // seconds, for time mode
       sprintCount: 10,   // sentences, for sprint mode
@@ -32,7 +32,7 @@ const Store = (() => {
     },
     stats: {
       games: 0, chars: 0, keys: 0, seconds: 0, bestCombo: 0, xp: 0, pets: 0,
-      langs: { ja: 0, ko: 0, en: 0 },
+      langs: { ja: 0, ko: 0, en: 0, tr: 0 },
       // Per-difficulty progress (mixed games credit each sentence to its own level).
       levels: {
         1: { games: 0, sentences: 0, bestRank: '', bestScore: 0 },
@@ -44,8 +44,8 @@ const Store = (() => {
     ghosts: {},        // boardKey -> score sampled each second of the best run
     daily: {},         // "YYYY-MM-DD:lang:input" -> best entry that day
     history: [],       // recent rounds: {t, lang, input, mode, level, score, speed, acc, rank}
-    weak: { ja: {}, ko: {}, en: {} },  // character -> miss count
-    custom: { ja: [], ko: [], en: [] }, // user sentences: {text, reading, en}
+    weak: { ja: {}, ko: {}, en: {}, tr: {} },  // character -> miss count
+    custom: { ja: [], ko: [], en: [], tr: [] }, // user sentences: {text, reading, en}
     achievements: {},  // id -> ISO date unlocked
     streak: { last: '', count: 0, best: 0, freezeUsed: '' },
     egg: { last: false, day: '', count: 0 },  // easter-egg sentence: shown last round? how many times today?

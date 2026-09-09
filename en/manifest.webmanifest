@@ -1,7 +1,7 @@
 {
   "name": "Mojineko",
   "short_name": "Mojineko",
-  "description": "A cute typing practice game for Japanese, Korean and English. Scores, ranks, achievements and streaks. Runs in your browser and keeps your progress on your device.",
+  "description": "A cute typing practice game for Japanese, Korean, English and Turkish. Scores, ranks, achievements and streaks. Runs in your browser and keeps your progress on your device.",
   "lang": "en",
   "start_url": "./",
   "scope": "./",

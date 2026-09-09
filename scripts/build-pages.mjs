@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 // Builds the per-language entry pages of the site from index.html.
 //
-//   index.html            Japanese (also the x-default page) — the template for the other two
+//   index.html            Japanese (also the x-default page) — the template for the other three
 //   ko/index.html         Korean
 //   en/index.html         English
-//   manifest.webmanifest, ko/manifest.webmanifest, en/manifest.webmanifest
+//   tr/index.html         Turkish
+//   manifest.webmanifest and one per language directory
 //   sitemap.xml
 //
 // Each page is the same app with its own <title>, description, Open Graph / Twitter card, JSON-LD and
@@ -21,8 +22,9 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = 'https://type.muratodesu.com/';
-const LANGS = ['ja', 'ko', 'en'];
-const DIR = { ja: '', ko: 'ko/', en: 'en/' };            // page directory; also the URL path under SITE
+const LANGS = ['ja', 'ko', 'en', 'tr'];
+const DIR = { ja: '', ko: 'ko/', en: 'en/', tr: 'tr/' };   // page directory; also the URL path under SITE
+const AUTHOR = { '@type': 'Person', name: 'muratodesu', url: 'https://www.instagram.com/muratodesu/' };
 const url = l => SITE + DIR[l];
 
 // The UI strings are a plain script defining `const I18N`; evaluate it to reuse the titles.
@@ -30,40 +32,51 @@ const I18N = new Function(readFileSync(join(ROOT, 'js/i18n.js'), 'utf8') + '\nre
 
 const SEO = {
   ja: {
-    locale: 'ja_JP', appName: 'もじねこ！', author: 'ムラト', currency: 'JPY',
-    description: 'もじねこ！は日本語・韓国語・英語のかわいいピクセルアート風タイピング練習ゲーム。漢字混じりの文をローマ字で入力（IME入力も可）、2벌식・英語に対応。スコア、ランク、コンボ、実績、連続記録つき。登録不要、ブラウザだけで動き、記録は端末内に保存されます。',
-    ogDescription: 'ねこと一緒に毎日ちょっとずつ。日本語（ローマ字入力）・한국어・English に対応した、スコアと実績つきのかわいいタイピング練習ゲーム。',
+    locale: 'ja_JP', appName: 'もじねこ！', currency: 'JPY',
+    description: 'もじねこ！は日本語・韓国語・英語・トルコ語のかわいいピクセルアート風タイピング練習ゲーム。漢字混じりの文をローマ字で入力（IME入力も可）、2벌식・英語・トルコ語Q配列に対応。スコア、ランク、コンボ、実績、連続記録つき。登録不要、ブラウザだけで動き、記録は端末内に保存されます。',
+    ogDescription: 'ねこと一緒に毎日ちょっとずつ。日本語（ローマ字入力）・한국어・English・Türkçe に対応した、スコアと実績つきのかわいいタイピング練習ゲーム。',
     twitterDescription: 'ねこと一緒に毎日ちょっとずつ。スコアと実績つきのかわいいタイピング練習ゲーム。',
     image: 'assets/og.png', imageAlt: 'もじねこ！ ピクセルアートのねこと「日本語・韓国語・英語 タイピング練習ゲーム」の文字',
     ldName: 'もじねこ！', ldAlt: ['Mojineko', 'もじねこ', '모지네코'],
-    ldDescription: '日本語・韓国語・英語のタイピング練習ゲーム。漢字混じりの文をローマ字で入力、2벌식・英語に対応し、スコア、ランク、実績、連続記録で毎日の練習を続けやすくします。',
-    noscript: 'もじねこ！は日本語・韓国語・英語のタイピング練習ゲームです。日本語（ローマ字入力・IME入力）・한국어（2벌식）・English に対応し、スコア・ランク・実績・連続記録で毎日の練習を続けやすくします。プレイには JavaScript を有効にしてください。',
-    manifestDescription: '日本語・韓国語・英語のかわいいタイピング練習ゲーム。スコア・ランク・実績・連続記録つき。ブラウザだけで動き、記録は端末内に保存されます。',
+    ldDescription: '日本語・韓国語・英語・トルコ語のタイピング練習ゲーム。漢字混じりの文をローマ字で入力、2벌식・英語・トルコ語Q配列に対応し、スコア、ランク、実績、連続記録で毎日の練習を続けやすくします。',
+    noscript: 'もじねこ！は日本語・韓国語・英語・トルコ語のタイピング練習ゲームです。日本語（ローマ字入力・IME入力）・한국어（2벌식）・English・Türkçe（Q配列）に対応し、スコア・ランク・実績・連続記録で毎日の練習を続けやすくします。プレイには JavaScript を有効にしてください。',
+    manifestDescription: '日本語・韓国語・英語・トルコ語のかわいいタイピング練習ゲーム。スコア・ランク・実績・連続記録つき。ブラウザだけで動き、記録は端末内に保存されます。',
   },
   ko: {
-    locale: 'ko_KR', appName: '모지네코!', author: '무라토', currency: 'KRW',
-    description: '모지네코!는 한국어·일본어·영어를 연습하는 귀여운 픽셀아트 타자 연습 게임입니다. 한국어는 두벌식 자판(화면 키보드 포함) 또는 한글 IME, 일본어는 로마자 입력(IME 입력도 가능), 영어는 자판 직접 입력. 점수·랭크·콤보·업적·연속 기록 제공. 회원 가입 없이 브라우저에서 바로 실행되고 기록은 기기 안에 저장됩니다.',
-    ogDescription: '고양이와 함께 매일 조금씩. 한국어(두벌식)·일본어(로마자 입력)·영어에 대응하는, 점수와 업적이 있는 귀여운 타자 연습 게임.',
+    locale: 'ko_KR', appName: '모지네코!', currency: 'KRW',
+    description: '모지네코!는 한국어·일본어·영어·터키어를 연습하는 귀여운 픽셀아트 타자 연습 게임입니다. 한국어는 두벌식 자판(화면 키보드 포함) 또는 한글 IME, 일본어는 로마자 입력(IME 입력도 가능), 영어와 터키어(Q 자판)는 자판 직접 입력. 점수·랭크·콤보·업적·연속 기록 제공. 회원 가입 없이 브라우저에서 바로 실행되고 기록은 기기 안에 저장됩니다.',
+    ogDescription: '고양이와 함께 매일 조금씩. 한국어(두벌식)·일본어(로마자 입력)·영어·터키어에 대응하는, 점수와 업적이 있는 귀여운 타자 연습 게임.',
     twitterDescription: '고양이와 함께 매일 조금씩. 점수와 업적이 있는 귀여운 타자 연습 게임.',
-    image: 'assets/og-ko.png', imageAlt: '모지네코! 픽셀아트 고양이와 「한국어·일본어·영어 타자 연습 게임」 문구',
+    image: 'assets/og-ko.png', imageAlt: '모지네코! 픽셀아트 고양이와 「한국어·일본어·영어·터키어 타자 연습 게임」 문구',
     ldName: '모지네코!', ldAlt: ['Mojineko', 'もじねこ！', '모지네코'],
-    ldDescription: '한국어·일본어·영어 타자 연습 게임. 한글 두벌식 자판, 일본어 로마자 입력, 영어 자판에 대응하며 점수·랭크·업적·연속 기록으로 매일 연습을 이어가기 쉽게 도와줍니다.',
-    noscript: '모지네코!는 한국어·일본어·영어 타자 연습 게임입니다. 한국어(두벌식·IME)·일본어(로마자 입력·IME 입력)·영어에 대응하며, 점수·랭크·업적·연속 기록으로 매일 연습을 이어가기 쉽게 도와줍니다. 플레이하려면 JavaScript를 켜 주세요.',
-    manifestDescription: '한국어·일본어·영어 귀여운 타자 연습 게임. 점수·랭크·업적·연속 기록. 브라우저만으로 실행되고 기록은 기기 안에 저장됩니다.',
+    ldDescription: '한국어·일본어·영어·터키어 타자 연습 게임. 한글 두벌식 자판, 일본어 로마자 입력, 영어·터키어 Q 자판에 대응하며 점수·랭크·업적·연속 기록으로 매일 연습을 이어가기 쉽게 도와줍니다.',
+    noscript: '모지네코!는 한국어·일본어·영어·터키어 타자 연습 게임입니다. 한국어(두벌식·IME)·일본어(로마자 입력·IME 입력)·영어·터키어(Q 자판)에 대응하며, 점수·랭크·업적·연속 기록으로 매일 연습을 이어가기 쉽게 도와줍니다. 플레이하려면 JavaScript를 켜 주세요.',
+    manifestDescription: '한국어·일본어·영어·터키어 귀여운 타자 연습 게임. 점수·랭크·업적·연속 기록. 브라우저만으로 실행되고 기록은 기기 안에 저장됩니다.',
   },
   en: {
-    locale: 'en_US', appName: 'Mojineko', author: 'Murat', currency: 'USD',
-    description: 'Mojineko is a cute pixel-art typing game for practising Japanese, Korean and English. Type Japanese sentences with kanji as romaji (or through your IME), Korean on the 2-set (두벌식) layout with an on-screen keyboard, and English directly. Scores, ranks, combos, achievements and daily streaks. Free, no account, runs in your browser and keeps your progress on your device.',
-    ogDescription: 'Practise a little every day with a pixel cat. Japanese (romaji input), Korean (2-set layout) and English typing with scores, ranks and achievements.',
+    locale: 'en_US', appName: 'Mojineko', currency: 'USD',
+    description: 'Mojineko is a cute pixel-art typing game for practising Japanese, Korean, English and Turkish. Type Japanese sentences with kanji as romaji (or through your IME), Korean on the 2-set (두벌식) layout with an on-screen keyboard, and English and Turkish (Türkçe Q layout) directly. Scores, ranks, combos, achievements and daily streaks. Free, no account, runs in your browser and keeps your progress on your device.',
+    ogDescription: 'Practise a little every day with a pixel cat. Japanese (romaji input), Korean (2-set layout), English and Turkish typing with scores, ranks and achievements.',
     twitterDescription: 'Practise a little every day with a pixel cat. A cute typing game with scores, ranks and achievements.',
-    image: 'assets/og-en.png', imageAlt: 'Mojineko: a pixel-art cat next to the words “Japanese, Korean & English typing game”',
+    image: 'assets/og-en.png', imageAlt: 'Mojineko: a pixel-art cat next to the words “Japanese · Korean · English · Turkish typing practice game”',
     ldName: 'Mojineko', ldAlt: ['もじねこ！', '모지네코!', 'Mojineko!'],
-    ldDescription: 'A typing practice game for Japanese, Korean and English: Japanese sentences with kanji typed as romaji, Korean on the 2-set (두벌식) keyboard layout, and English, with scores, ranks, achievements and streaks that make a daily habit easy to keep.',
-    noscript: 'Mojineko is a typing practice game for Japanese, Korean and English. Japanese (romaji or IME input), Korean (2-set layout or IME) and English, with scores, ranks, achievements and daily streaks. Please enable JavaScript to play.',
-    manifestDescription: 'A cute typing practice game for Japanese, Korean and English. Scores, ranks, achievements and streaks. Runs in your browser and keeps your progress on your device.',
+    ldDescription: 'A typing practice game for Japanese, Korean, English and Turkish: Japanese sentences with kanji typed as romaji, Korean on the 2-set (두벌식) keyboard layout, English and Turkish (Q layout), with scores, ranks, achievements and streaks that make a daily habit easy to keep.',
+    noscript: 'Mojineko is a typing practice game for Japanese, Korean, English and Turkish. Japanese (romaji or IME input), Korean (2-set layout or IME), English and Turkish (Q layout), with scores, ranks, achievements and daily streaks. Please enable JavaScript to play.',
+    manifestDescription: 'A cute typing practice game for Japanese, Korean, English and Turkish. Scores, ranks, achievements and streaks. Runs in your browser and keeps your progress on your device.',
+  },
+  tr: {
+    locale: 'tr_TR', appName: 'Mojineko', currency: 'TRY',
+    description: 'Mojineko, Japonca, Korece, İngilizce ve Türkçe klavye pratiği için sevimli bir piksel sanatı yazma oyunudur. Türkçeyi Türkçe Q düzeninde (ı ğ ü ş i ö ç gerçek yerlerinde) ekran klavyesiyle, Japoncayı romaji ile (ya da IME ile), Koreceyi 2-set (두벌식) düzeninde, İngilizceyi doğrudan yazın. Puan, rütbe, kombo, başarım ve günlük seri. Ücretsiz, hesap gerektirmez, tarayıcıda çalışır ve ilerlemeni cihazında saklar.',
+    ogDescription: 'Piksel bir kediyle her gün biraz. Türkçe (Q düzeni), Japonca (romaji), Korece (2-set) ve İngilizce klavye pratiği; puan, rütbe ve başarımlarla.',
+    twitterDescription: 'Piksel bir kediyle her gün biraz. Puan, rütbe ve başarımlı sevimli bir klavye oyunu.',
+    image: 'assets/og-tr.png', imageAlt: 'Mojineko: piksel sanatı bir kedi ve “Japonca · Korece · İngilizce · Türkçe klavye pratiği oyunu” yazısı',
+    ldName: 'Mojineko', ldAlt: ['もじねこ！', '모지네코!', 'Mojineko!'],
+    ldDescription: 'Japonca, Korece, İngilizce ve Türkçe için klavye pratiği oyunu: Türkçe Q düzeni, Japonca romaji girişi, Korece 2-set (두벌식) düzeni ve İngilizce; puan, rütbe, başarım ve günlük seriyle alışkanlık edinmeyi kolaylaştırır.',
+    noscript: 'Mojineko, Japonca, Korece, İngilizce ve Türkçe için bir klavye pratiği oyunudur. Türkçe (Q düzeni), Japonca (romaji veya IME), Korece (2-set veya IME) ve İngilizce; puan, rütbe, başarım ve günlük seriyle. Oynamak için lütfen JavaScript\'i etkinleştirin.',
+    manifestDescription: 'Japonca, Korece, İngilizce ve Türkçe için sevimli bir klavye pratiği oyunu. Puan, rütbe, başarım ve seri. Tarayıcıda çalışır, ilerlemeni cihazında saklar.',
   },
 };
-const LANG_NAMES = { ja: '日本語', ko: '한국어', en: 'English' };
+const LANG_NAMES = { ja: '日本語', ko: '한국어', en: 'English', tr: 'Türkçe' };
 
 const esc = s => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const rel = (l, path) => (DIR[l] ? '../' : '') + path;          // asset path as seen from the page's directory
@@ -78,7 +91,7 @@ function seoBlock(l) {
     operatingSystem: 'Any (web browser)', browserRequirements: 'Requires JavaScript',
     inLanguage: [l, ...LANGS.filter(x => x !== l)], isAccessibleForFree: true,
     offers: { '@type': 'Offer', price: '0', priceCurrency: m.currency },
-    image: SITE + m.image, author: { '@type': 'Person', name: m.author },
+    image: SITE + m.image, author: AUTHOR,
   };
   return [
     `  <title>${esc(title)}</title>`,

@@ -1,6 +1,6 @@
-# もじねこ！ (Mojineko) — Japanese, Korean & English typing game
+# もじねこ！ (Mojineko) — Japanese, Korean, English & Turkish typing game
 
-A cute, pixel-art typing game for practising **Japanese**, **Korean** and **English**.
+A cute, pixel-art typing game for practising **Japanese**, **Korean**, **English** and **Turkish**.
 No build step, no server, no accounts: open `index.html` and play. Everything
 (scores, stats, achievements, streaks, custom sentences) is saved in your
 browser's `localStorage`.
@@ -24,17 +24,18 @@ The site has one entry page per language, all running the same app:
 | `/` | 日本語 (also `x-default`) | `index.html`, `manifest.webmanifest`, `assets/og.png` |
 | `/ko/` | 한국어 | `ko/index.html`, `ko/manifest.webmanifest`, `assets/og-ko.png` |
 | `/en/` | English | `en/index.html`, `en/manifest.webmanifest`, `assets/og-en.png` |
+| `/tr/` | Türkçe | `tr/index.html`, `tr/manifest.webmanifest`, `assets/og-tr.png` |
 
 Each page carries its own title, meta description, Open Graph / Twitter card (with a 1200×630
 preview image in that language), schema.org `WebApplication` JSON-LD, `og:locale`, hreflang links to
-the other two pages, and a localized `<noscript>` text and hero. `sitemap.xml` lists the three URLs
-with their hreflang alternates; `robots.txt` points at it. The footer links the three pages to each
+the other pages, and a localized `<noscript>` text and hero. `sitemap.xml` lists the four URLs
+with their hreflang alternates; `robots.txt` points at it. The footer links the four pages to each
 other. A first visit to a page starts with that language for both the menu and the practice
 sentences; afterwards the saved settings win, and the address bar follows the menu language
 (switching the menu to 한국어 on `/` moves the URL to `/ko/`).
 
-`ko/` and `en/` are **generated** from `index.html` by `scripts/build-pages.mjs`, which also rewrites
-the SEO block of `index.html` itself, the three manifests and the sitemap. The per-language copy
+`ko/`, `en/` and `tr/` are **generated** from `index.html` by `scripts/build-pages.mjs`, which also rewrites
+the SEO block of `index.html` itself, the four manifests and the sitemap. The per-language copy
 (descriptions, JSON-LD, noscript) lives in that script; the titles and hero come from `js/i18n.js`.
 After editing any of those run `node scripts/build-pages.mjs` (no dependencies) and commit the output.
 The Pages workflow runs it before deploying, so the deployed copies never lag behind. The preview
@@ -49,7 +50,8 @@ The `?` button in the header opens an **About / How to use** panel in the select
 what the app is, the five steps to a round, and tips (IME on/off, packs, settings, streaks, backup).
 
 **Practice**
-- Japanese and Korean with about 170 sentences each (with English translations) and English with 75,
+- Japanese and Korean with about 170 sentences each (with English translations), English with 75 and
+  Turkish with 77 (also with English translations),
   three difficulty tiers, themed packs: 日常 / 旅行 / 仕事 / 食べ物 (daily, travel, work, food),
   plus hand-written paragraphs per language for paragraph mode. The 仕事 pack is everyday
   office language (お疲れ様です。いつもお世話になっております。, business-email phrases) rather than
@@ -67,6 +69,9 @@ what the app is, the five steps to a round, and tips (IME on/off, packs, setting
   Optional strict mode where wrong keys must be erased with Backspace.
 - **English**: typed directly on the keyboard with the on-screen keyboard highlighting the next
   key; speed is shown in WPM.
+- **Turkish**: typed directly on the keyboard as well, with the on-screen keyboard showing the
+  **Türkçe Q** layout (ı ğ ü ş i ö ç in their real positions) and the Turkish casing rules that
+  JavaScript gets wrong (`I` → `ı`, `İ` → `i`); speed is shown in WPM.
 - **Modes**: Time attack (30 / 60 / 120 s), Sprint (5 / 10 / 20 sentences), Daily challenge
   (the same 10 sentences for everyone that day, with a per-day leaderboard), Warm-up (kana or
   syllable rows and short words), Paragraph (three passages: curated paragraphs matching the
@@ -78,9 +83,9 @@ what the app is, the five steps to a round, and tips (IME on/off, packs, setting
 **Engagement**
 - Combo multiplier up to 3×, perfect-sentence bonuses, S–E ranks, chiptune sound effects
   with a volume slider, screen shake, confetti on a new record.
-- XP and five player levels (見習い → 正メイド → プレミアム → スーパープレミアム → レジェンド at 0 / 5,000 /
-  20,000 / 50,000 / 100,000 XP) with an XP multiplier by difficulty (×1 / ×1.25 / ×1.5, mixed ×1.2), 27
-  achievements (30), a goals panel with tiered targets per difficulty, per-mode top-10 leaderboards,
+- XP and five player levels (新人 → 見習い → プレミアム → スーパープレミアム → レジェンド at 0 / 5,000 /
+  20,000 / 50,000 / 100,000 XP) with an XP multiplier by difficulty (×1 / ×1.25 / ×1.5, mixed ×1.2), 31
+  achievements, a goals panel with tiered targets per difficulty, per-mode top-10 leaderboards,
   a history chart of your recent rounds, and a ghost pace marker comparing you to your best run.
 - Daily streak with one automatic freeze per week.
 - A pixel cat mascot that reacts to your typing, can be petted, and gains a new look at every
@@ -90,8 +95,8 @@ what the app is, the five steps to a round, and tips (IME on/off, packs, setting
 - Result share card saved as a PNG.
 
 **Interface**
-- Menu and HUD in Japanese, Korean or English, chosen separately from the practice language
-  (Settings → 表示言語 / Menu language; Japanese by default). Light theme by default, dark theme via the header toggle.
+- Menu and HUD in Japanese, Korean, English or Turkish, chosen separately from the practice language
+  (the 🌐 switcher in the header, or Settings → 表示言語 / Menu language; Japanese by default). Light theme by default, dark theme via the header toggle.
 - Settings behind the gear icon: five font sets, three text sizes, input options, volume, and data export / import / reset. The home page fits a desktop screen without scrolling; stats, records, goals, rankings and achievements live in tabs.
 - Arrow keys move between options on the menu; everything is keyboard-accessible.
 - Export / import all local data as a JSON file.
@@ -108,30 +113,31 @@ what the app is, the five steps to a round, and tips (IME on/off, packs, setting
 ## Project layout
 
 ```
-index.html                page structure (Japanese entry page; template for the other two)
-ko/, en/                  generated Korean / English entry pages and manifests (do not edit by hand)
-scripts/build-pages.mjs   generates ko/, en/, the manifests, sitemap.xml and the SEO block of index.html
+index.html                page structure (Japanese entry page; template for the other three)
+ko/, en/, tr/             generated Korean / English / Turkish entry pages and manifests (do not edit by hand)
+scripts/build-pages.mjs   generates ko/, en/, tr/, the manifests, sitemap.xml and the SEO block of index.html
 scripts/make-og.mjs       renders the per-language link-preview images (Playwright)
 css/style.css             pixel theme, light/dark palettes
 js/game.js                game loop, modes, scoring, results, persistence, share card
 js/hangul.js              Hangul ↔ 2-set key sequence engine + partial composition
 js/romaji.js              kana reading → romaji typing units with every accepted spelling
 js/sprite.js              pixel-art sprites (cat mascot with looks, hearts, stars)
-js/i18n.js                Japanese / Korean / English UI strings
+js/i18n.js                Japanese / Korean / English / Turkish UI strings
 js/storage.js             localStorage persistence, export/import
 js/audio.js               chiptune WebAudio sound effects
 js/data/ja.js             Japanese sentences and warm-up drills
 js/data/ko.js             Korean sentences and warm-up drills
 js/data/en.js             English sentences, paragraphs and warm-up drills
+js/data/tr.js             Turkish sentences, paragraphs and warm-up drills
 .github/workflows/pages.yml  GitHub Pages deploy from main
 ```
 
 ## Adding sentences
 
-Append to `js/data/ja.js`, `js/data/ko.js` or `js/data/en.js` with a `tag` (`daily`, `travel`, `work`, `food`)
+Append to `js/data/ja.js`, `js/data/ko.js`, `js/data/en.js` or `js/data/tr.js` with a `tag` (`daily`, `travel`, `work`, `food`)
 and a `level` (1–3). Japanese entries need a full kana `reading`: romaji mode types the reading, and
 furigana is aligned from it.
-Paragraphs live in `JA_PARAGRAPHS` / `KO_PARAGRAPHS` in the same files with the same fields.
+Paragraphs live in `JA_PARAGRAPHS` / `KO_PARAGRAPHS` / `EN_PARAGRAPHS` / `TR_PARAGRAPHS` in the same files with the same fields.
 
 ## Not included
 

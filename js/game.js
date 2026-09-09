@@ -38,9 +38,11 @@
     ja: { sentences: () => JA_SENTENCES, drills: () => JA_DRILLS, paragraphs: () => JA_PARAGRAPHS, inputs: ['romaji', 'mixed'] },
     ko: { sentences: () => KO_SENTENCES, drills: () => KO_DRILLS, paragraphs: () => KO_PARAGRAPHS, inputs: ['jamo', 'direct'] },
     en: { sentences: () => EN_SENTENCES, drills: () => EN_DRILLS, paragraphs: () => EN_PARAGRAPHS, inputs: ['keys'] },
+    tr: { sentences: () => TR_SENTENCES, drills: () => TR_DRILLS, paragraphs: () => TR_PARAGRAPHS, inputs: ['keys'] },
   };
   const plainUnits = text => [...text].map(ch => ({ text: ch, alts: [ch], canon: ch, typed: '', partial: p => p }));
-  const speedUnitFor = (lang, direct) => (direct ? 'cpm' : lang === 'en' ? 'wpm' : 'kpm');
+  const LATIN = ['en', 'tr'];   // typed letter by letter on a plain keyboard, speed measured in words
+  const speedUnitFor = (lang, direct) => (direct ? 'cpm' : LATIN.includes(lang) ? 'wpm' : 'kpm');
   const isDirectInput = (lang, input) => (lang === 'ja' && input === 'mixed') || input === 'direct';
   const PACKS = ['all', 'daily', 'travel', 'work', 'food', 'weak', 'custom'];
   const FONTS = ['clean', 'round', 'serif', 'pixel', 'system'];
@@ -48,10 +50,14 @@
   const SIZES = ['s', 'm', 'l'];
   const COUNT_MODES = { sprint: null, daily: 10, drill: 15, paragraph: 3 }; // null = user-selected
   const PARAGRAPH_SENTENCES = 4;
-  const EGG_RATE = 1 / 12; // chance per round that the easter-egg sentence appears (Japanese and Korean)
+  const EGG_RATE = 1 / 12; // chance per round that the easter-egg sentence appears (Japanese, Korean and Turkish)
   const EGG_MAX_PER_DAY = 2;
   // The 仕事 pack gets a business-email flavoured version of the same sentence.
-  const EGGS = { ja: pack => pack === 'work' ? JA_EGG_WORK : JA_EGG, ko: pack => pack === 'work' ? KO_EGG_WORK : KO_EGG };
+  const EGGS = {
+    ja: pack => pack === 'work' ? JA_EGG_WORK : JA_EGG,
+    ko: pack => pack === 'work' ? KO_EGG_WORK : KO_EGG,
+    tr: pack => pack === 'work' ? TR_EGG_WORK : TR_EGG,
+  };
 
   const RANKS = [
     { r: 'S', min: 8000 }, { r: 'A', min: 5500 }, { r: 'B', min: 3500 },
@@ -72,6 +78,7 @@
     { id: 'games50', ico: '🏅', test: (r, s) => s.stats.games >= 50 },
     { id: 'bilingual', ico: '🌏', test: (r, s) => s.stats.langs.ja > 0 && s.stats.langs.ko > 0 },
     { id: 'trilingual', ico: '🌐', test: (r, s) => s.stats.langs.ja > 0 && s.stats.langs.ko > 0 && (s.stats.langs.en || 0) > 0 },
+    { id: 'polyglot', ico: '🗺️', test: (r, s) => Object.keys(LANGS).every(l => (s.stats.langs[l] || 0) > 0) },
     { id: 'lucky', ico: '🍀', test: r => r.lucky },
     { id: 'streak3', ico: '📅', test: (r, s) => s.streak.count >= 3 },
     { id: 'streak7', ico: '🗓️', test: (r, s) => s.streak.count >= 7 },
@@ -100,9 +107,9 @@
     { id: 'rank', tiers: ['B', 'A', 'S'] },
   ];
 
-  const UI_LANGS = ['ja', 'ko', 'en'];
-  const UI_LANG_NAMES = { ja: '日本語', ko: '한국어', en: 'English' };
-  // The site has one entry page per language (/ for ja, /ko/, /en/) with that language's title and preview card.
+  const UI_LANGS = ['ja', 'ko', 'en', 'tr'];
+  const UI_LANG_NAMES = { ja: '日本語', ko: '한국어', en: 'English', tr: 'Türkçe' };
+  // The site has one entry page per language (/ for ja, /ko/, /en/, /tr/) with that language's title and preview card.
   // The address bar is kept on the page matching the menu language so a copied link carries the right one.
   let pageLang = document.documentElement.dataset.siteLang || 'ja';
   const langPageUrl = l => (pageLang === 'ja' ? '' : '../') + (l === 'ja' ? '' : l + '/');
@@ -117,6 +124,7 @@
     soundOn: '<svg viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4zM15.5 8.5a5 5 0 0 1 0 7M19 5.5a9 9 0 0 1 0 13"/></svg>',
     soundOff: '<svg viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4zM22 9l-6 6M16 9l6 6"/></svg>',
     help: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.6 2.2c-.8.5-1.1 1-1.1 1.8M12 17h.01"/></svg>',
+    globe: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>',
     gear: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>',
   };
 
@@ -143,6 +151,7 @@
     inputLabel: $('#input-label'), inputChips: $('#input-chips'), inputHint: $('#input-hint'), modeHint: $('#mode-hint'),
     fieldDuration: $('#field-duration'), fieldSprint: $('#field-sprint'), fieldPack: $('#field-pack'), fieldLevel: $('#field-level'),
     fontChips: $('#font-chips'), sizeChips: $('#size-chips'), petChips: $('#pet-chips'), uiLangChips: $('#ui-lang-chips'),
+    uiLangSwitch: $('#ui-lang-switch'), btnUiLang: $('#btn-ui-lang'), uiLangCurrent: $('#ui-lang-current'), uiLangMenu: $('#ui-lang-menu'), uiLangMenuChips: $('#ui-lang-menu-chips'),
     cheerHome: $('#cheer-home-text'), cheerResult: $('#cheer-result-text'),
     packChips: $('#pack-chips'), packHint: $('#pack-hint'), customEditor: $('#custom-editor'), customText: $('#custom-text'), customHelp: $('#custom-help'), btnCustomSave: $('#btn-custom-save'),
     toggleGuide: $('#toggle-guide'), toggleKeyLetters: $('#toggle-key-letters'), toggleKeyboard: $('#toggle-keyboard'), toggleStrict: $('#toggle-strict'), toggleFurigana: $('#toggle-furigana'), toggleHideInput: $('#toggle-hide-input'),
@@ -207,6 +216,10 @@
     el.btnSettings.title = t('settingsTitle');
     el.btnHelp.innerHTML = ICONS.help;
     el.btnHelp.title = t('aboutTitle');
+    el.uiLangSwitch.querySelector('.lang-switch-ico').innerHTML = ICONS.globe;
+    el.uiLangCurrent.textContent = UI_LANG_NAMES[set.uiLang];
+    el.uiLangCurrent.lang = set.uiLang;
+    el.btnUiLang.title = t('menuLang');
     el.brandMark.innerHTML = Sprite.cat('idle', 2);
     applyTheme();
   }
@@ -227,7 +240,7 @@
   // ---------------------------------------------------------------------
   // Helpers: level, streak, boards, dates, seeded random
   // ---------------------------------------------------------------------
-  // Five player levels, one title and one pet look each: 見習い → 正メイド → プレミアム → スーパープレミアム → レジェンド.
+  // Five player levels, one title and one pet look each: 新人 → 見習い → プレミアム → スーパープレミアム → レジェンド.
   const LEVEL_XP = [0, 5000, 20000, 50000, 100000];   // total XP needed to reach Lv.1 … Lv.5
   const MAX_LEVEL = LEVEL_XP.length;
   const levelFromXp = xp => LEVEL_XP.filter(x => xp >= x).length;
@@ -369,7 +382,7 @@
     if (!inputs.includes(set.input[set.lang])) set.input[set.lang] = inputs[0];
     const names = t('inputs')[set.lang];
     el.inputLabel.textContent = t('inputMethod');
-    el.inputChips.parentElement.hidden = set.lang === 'en';
+    el.inputChips.parentElement.hidden = LANGS[set.lang].inputs.length < 2;
     el.inputChips.innerHTML = inputs.map(id =>
       `<button class="chip${id === set.input[set.lang] ? ' active' : ''}" data-input="${id}">${names[id].name}</button>`).join('');
     el.inputHint.textContent = names[set.input[set.lang]].hint;
@@ -391,14 +404,17 @@
     el.customEditor.hidden = set.pack !== 'custom';
     if (set.pack === 'custom') {
       el.customText.value = (S.custom[set.lang] || []).map(c => c.reading ? `${c.text}｜${c.reading}` : c.text).join('\n');
-      el.customText.placeholder = set.lang === 'ja' ? '今日はいい天気ですね。｜きょうはいいてんきですね。' : set.lang === 'ko' ? '오늘 날씨가 좋네요.' : 'The weather is nice today.';
+      el.customText.placeholder = { ja: '今日はいい天気ですね。｜きょうはいいてんきですね。', ko: '오늘 날씨가 좋네요.', tr: 'Bugün hava çok güzel.' }[set.lang] || 'The weather is nice today.';
     }
 
     const previewFonts = {
       clean: "'Noto Sans JP', 'Noto Sans KR', sans-serif", round: "'Zen Maru Gothic', 'Gowun Dodum', sans-serif", serif: "'Noto Serif JP', 'Noto Serif KR', serif",
       pixel: "'Galmuri11', 'DotGothic16', monospace", system: 'system-ui, sans-serif',
     };
-    el.uiLangChips.innerHTML = UI_LANGS.map(l => `<button class="chip${l === set.uiLang ? ' active' : ''}" data-ui-lang="${l}" lang="${l}">${UI_LANG_NAMES[l]}</button>`).join('');
+    // The menu language is offered in two places: the top-bar switcher and Settings. Both show the same chips.
+    const uiLangChips = UI_LANGS.map(l => `<button class="chip${l === set.uiLang ? ' active' : ''}" data-ui-lang="${l}" lang="${l}">${UI_LANG_NAMES[l]}</button>`).join('');
+    el.uiLangChips.innerHTML = uiLangChips;
+    el.uiLangMenuChips.innerHTML = uiLangChips;
     el.petChips.innerHTML = PETS.map(p => `<button class="chip${p === set.pet ? ' active' : ''}" data-pet="${p}">${Sprite.pet(p, 'idle', 2, currentLook())}${t('pets')[p]}</button>`).join('');
     el.fontChips.innerHTML = FONTS.map(f => `<button class="chip${f === set.font ? ' active' : ''}" data-font="${f}" style="font-family:${previewFonts[f]}">${t('fonts')[f]}</button>`).join('');
     el.sizeChips.innerHTML = SIZES.map(z => `<button class="chip${z === set.textSize ? ' active' : ''}" data-size="${z}">${t('sizes')[z]}</button>`).join('');
@@ -822,7 +838,7 @@
   function speedNow() {
     const mins = Math.max(G.elapsed, 1) / 60;
     if (G.direct) return Math.round(G.chars / mins);
-    if (G.lang === 'en') return Math.round(G.keys / 5 / mins);
+    if (LATIN.includes(G.lang)) return Math.round(G.keys / 5 / mins);
     return Math.round(G.keys / mins);
   }
 
@@ -854,7 +870,7 @@
 
     G.target = G.sentence.text;
     const romaji = G.lang === 'ja' && !G.direct;
-    G.units = G.direct ? [] : romaji ? Romaji.buildUnits(G.sentence.reading || G.sentence.text) : G.lang === 'en' ? plainUnits(G.target) : Hangul.buildUnits(G.target);
+    G.units = G.direct ? [] : romaji ? Romaji.buildUnits(G.sentence.reading || G.sentence.text) : LATIN.includes(G.lang) ? plainUnits(G.target) : Hangul.buildUnits(G.target);
 
     G.furi = (G.lang === 'ja' && G.direct && set.furigana) ? alignFurigana(G.sentence.text, G.sentence.reading) : null;
     G.segs = romaji ? readingSegments(G.sentence.text, G.sentence.reading) : null;
@@ -1180,11 +1196,26 @@
     ['shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/'],
     [' '],
   ];
+  // Turkish Q (Türkçe Q): ı ğ ü ş i ö ç sit where the ASCII punctuation does on a US board.
+  const KEY_ROWS_TR = [
+    ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '*', '-', 'backspace'],
+    ['q', 'w', 'e', 'r', 't', 'y', 'u', 'ı', 'o', 'p', 'ğ', 'ü'],
+    ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ş', 'i', ','],
+    ['shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', 'ö', 'ç', '.'],
+    [' '],
+  ];
   const SHIFT_MAP = { '?': '/', '!': '1', '~': '`', '_': '-', '"': "'", ':': ';', '<': ',', '>': '.' };
+  const SHIFT_MAP_TR = { '?': '*', '!': '1', "'": '2', '^': '3', '+': '4', '%': '5', '&': '6', '/': '7', '(': '8', ')': '9', '=': '0', '_': '-', ';': ',', ':': '.' };
+  const keyRowsFor = lang => (lang === 'tr' ? KEY_ROWS_TR : KEY_ROWS);
+  const shiftMapFor = lang => (lang === 'tr' ? SHIFT_MAP_TR : SHIFT_MAP);
+  // Turkish has two i's: I lowercases to ı and İ to i, which JS's toLowerCase gets wrong.
+  const lowerFor = lang => (lang === 'tr'
+    ? ch => (ch === 'I' ? 'ı' : ch === 'İ' ? 'i' : ch.toLowerCase())
+    : ch => ch.toLowerCase());
 
   function buildKeyboard() {
     if (!set.keyboard || G.direct) { el.keyboard.innerHTML = ''; return; }
-    el.keyboard.innerHTML = KEY_ROWS.map(row => `<div class="krow">${row.map(k => {
+    el.keyboard.innerHTML = keyRowsFor(G.lang).map(row => `<div class="krow">${row.map(k => {
       if (k === 'shift') return '<div class="key wide" data-key="shift">⇧</div>';
       if (k === 'backspace') return '<div class="key wide" data-key="Backspace">⌫</div>';
       if (k === ' ') return '<div class="key space" data-key=" ">space</div>';
@@ -1202,16 +1233,18 @@
     const nk = nextKey();
     if (!nk) return;
     if (nk === 'Backspace') { el.keyboard.querySelector('.key[data-key="Backspace"]').classList.add('next'); return; }
-    const upper = nk !== nk.toLowerCase();
-    const base = SHIFT_MAP[nk] || nk.toLowerCase();
+    const lower = lowerFor(G.lang);
+    const shifted = shiftMapFor(G.lang);
+    const upper = nk !== lower(nk);
+    const base = shifted[nk] || lower(nk);
     const k = el.keyboard.querySelector(`.key[data-key="${CSS.escape(base)}"]`);
     if (k) k.classList.add('next');
-    if (upper || SHIFT_MAP[nk]) el.keyboard.querySelector('.key[data-key="shift"]').classList.add('next');
+    if (upper || shifted[nk]) el.keyboard.querySelector('.key[data-key="shift"]').classList.add('next');
   }
 
   function flashKey(key) {
     if (!el.keyboard.children.length) return;
-    const base = SHIFT_MAP[key] || key.toLowerCase();
+    const base = shiftMapFor(G.lang)[key] || lowerFor(G.lang)(key);
     const k = el.keyboard.querySelector(`.key[data-key="${CSS.escape(base)}"]`);
     if (!k) return;
     k.classList.add('pressed');
@@ -1445,12 +1478,23 @@
   chipHandler('#pack-chips', 'pack', v => { set.pack = v; });
   chipHandler('#font-chips', 'font', v => { set.font = v; });
   chipHandler('#pet-chips', 'pet', v => { set.pet = v; });
-  el.uiLangChips.addEventListener('click', e => {
+  const pickUiLang = e => {
     const b = e.target.closest('[data-ui-lang]'); if (!b) return;
-    set.uiLang = b.dataset.uiLang; Store.save(); applyI18n(); renderHome();
+    set.uiLang = b.dataset.uiLang; Store.save(); applyI18n(); renderHome(); closeUiLangMenu();
+  };
+  el.uiLangChips.addEventListener('click', pickUiLang);
+  el.uiLangMenuChips.addEventListener('click', pickUiLang);
+  function closeUiLangMenu() { el.uiLangMenu.hidden = true; el.btnUiLang.setAttribute('aria-expanded', 'false'); }
+  el.btnUiLang.addEventListener('click', () => {
+    const open = el.uiLangMenu.hidden;
+    el.uiLangMenu.hidden = !open;
+    el.btnUiLang.setAttribute('aria-expanded', String(open));
+    if (open) { const cur = el.uiLangMenuChips.querySelector('.chip.active'); if (cur) cur.focus(); }
   });
   // Footer links to the other language pages: remember the choice so the target page opens in its own language.
   $$('.lang-nav a').forEach(a => a.addEventListener('click', () => { set.uiLang = a.hreflang; Store.save(); }));
+  document.addEventListener('click', e => { if (!el.uiLangSwitch.contains(e.target)) closeUiLangMenu(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !el.uiLangMenu.hidden) closeUiLangMenu(); }, true);
   chipHandler('#side-tabs', 'tab', v => { set.sideTab = v; });
   el.btnSettings.addEventListener('click', () => { renderHome(); el.settingsModal.showModal(); });
   el.btnSettingsClose.addEventListener('click', () => el.settingsModal.close());
