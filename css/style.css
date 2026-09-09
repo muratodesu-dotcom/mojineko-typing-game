@@ -310,8 +310,9 @@ main { padding: 14px 28px 14px; max-width: 1160px; margin: 0 auto; width: 100%; 
 .u.ws { min-width: 0.4em; }
 .g { display: inline-block; vertical-align: bottom; text-align: center; margin-right: 0.22em; }
 .g:last-child { margin-right: 0; }
-.g .jm { display: block; font-family: var(--font-ko); font-size: 0.68em; line-height: 1.2; letter-spacing: 0; color: var(--muted); font-weight: 400; }
-.g.cur .jm { color: var(--text); }
+/* Korean: the jamo line is the guide itself; the QWERTY letters are an optional small line under it. */
+.g .jm { display: block; font-family: var(--font-ko); letter-spacing: 0; line-height: 1.3; }
+.g .kk { display: block; font-family: var(--font-mono); font-size: 0.6em; line-height: 1.3; letter-spacing: 0.04em; color: var(--muted); font-weight: 400; }
 .g.done { color: var(--ok); }
 .g.cur { color: var(--text); font-weight: 700; }
 .g .typed { color: var(--ok); }
@@ -379,6 +380,12 @@ main { padding: 14px 28px 14px; max-width: 1160px; margin: 0 auto; width: 100%; 
   border-top: 2px solid var(--ink); background: var(--surface); padding: 10px 28px; text-align: center;
   font-size: 0.8rem; color: var(--muted); display: flex; align-items: center; justify-content: center; gap: 8px;
 }
+
+.lang-nav { display: flex; gap: 10px; }
+.lang-nav::before { content: '·'; }
+.lang-nav a { color: var(--muted); text-decoration: none; }
+.lang-nav a:hover { color: var(--text); text-decoration: underline; }
+.lang-nav a.active { color: var(--text); font-weight: 700; }
 
 #confetti { position: fixed; inset: 0; pointer-events: none; z-index: 50; }
 
@@ -454,6 +461,7 @@ main { padding: 14px 28px 14px; max-width: 1160px; margin: 0 auto; width: 100%; 
 .look-ladder .look { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; font-size: 0.66rem; color: var(--muted); line-height: 1.2; }
 .look-ladder .look small { font-family: var(--font-num); font-size: 0.6rem; margin-top: 2px; }
 .look-ladder .look.on { color: var(--text); }
+.look-ladder .look.secret small { color: var(--bad); }
 .look-ladder .look:not(.on) .px { opacity: 0.3; filter: grayscale(1); }
 .data-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip.danger:hover { background: var(--bad); color: #fff; border-color: var(--ink); }

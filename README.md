@@ -17,12 +17,31 @@ automatically once Pages is set to "GitHub Actions" in the repository settings.
 
 ## SEO / sharing
 
-`index.html` carries a descriptive title and meta description, Open Graph and Twitter card tags
-with a 1200×630 preview image (`assets/og.png`), a web app manifest with pixel-cat icons, and
-schema.org `WebApplication` structured data. `robots.txt` and `sitemap.xml` sit at the root.
-The absolute URLs point at `https://type.muratodesu.com/`; if the app moves to another
-domain, replace that address in `index.html` (canonical, `og:url`, `og:image`, `twitter:image`,
-JSON-LD), `robots.txt` and `sitemap.xml`.
+The site has one entry page per language, all running the same app:
+
+| URL | Language | Files |
+| --- | --- | --- |
+| `/` | 日本語 (also `x-default`) | `index.html`, `manifest.webmanifest`, `assets/og.png` |
+| `/ko/` | 한국어 | `ko/index.html`, `ko/manifest.webmanifest`, `assets/og-ko.png` |
+| `/en/` | English | `en/index.html`, `en/manifest.webmanifest`, `assets/og-en.png` |
+
+Each page carries its own title, meta description, Open Graph / Twitter card (with a 1200×630
+preview image in that language), schema.org `WebApplication` JSON-LD, `og:locale`, hreflang links to
+the other two pages, and a localized `<noscript>` text and hero. `sitemap.xml` lists the three URLs
+with their hreflang alternates; `robots.txt` points at it. The footer links the three pages to each
+other. A first visit to a page starts with that language for both the menu and the practice
+sentences; afterwards the saved settings win, and the address bar follows the menu language
+(switching the menu to 한국어 on `/` moves the URL to `/ko/`).
+
+`ko/` and `en/` are **generated** from `index.html` by `scripts/build-pages.mjs`, which also rewrites
+the SEO block of `index.html` itself, the three manifests and the sitemap. The per-language copy
+(descriptions, JSON-LD, noscript) lives in that script; the titles and hero come from `js/i18n.js`.
+After editing any of those run `node scripts/build-pages.mjs` (no dependencies) and commit the output.
+The Pages workflow runs it before deploying, so the deployed copies never lag behind. The preview
+images are rendered by `scripts/make-og.mjs` (needs Playwright + Chromium).
+
+The absolute URLs point at `https://type.muratodesu.com/`; if the app moves to another domain,
+change `SITE` in `scripts/build-pages.mjs`, run it, and update `robots.txt`.
 
 ## Features
 
@@ -42,9 +61,10 @@ what the app is, the five steps to a round, and tips (IME on/off, packs, setting
   tsu / tu, fu / hu, ji / zi, kya / kixya, kko / xtuko, n / nn / xn for ん) and the displayed
   spelling follows what you type. An **IME** mode types the same sentence through your Japanese IME.
 - **Korean**: 2-set (두벌식) keys on a regular keyboard with live syllable composition, an
-  on-screen keyboard and a key guide under the sentence that shows, per syllable, the jamo each
-  key produces above the keys themselves (ㅇㅓㄹ over djf); or your Korean IME. Optional strict mode where wrong
-  keys must be erased with Backspace.
+  on-screen keyboard with jamo on the keys, and a key guide under the sentence that shows each
+  syllable as the jamo its keys produce (ㅇㅓㄹ), lighting up jamo by jamo as you type; the QWERTY
+  letters (djf) can be added underneath with a setting, off by default. Or your Korean IME.
+  Optional strict mode where wrong keys must be erased with Backspace.
 - **English**: typed directly on the keyboard with the on-screen keyboard highlighting the next
   key; speed is shown in WPM.
 - **Modes**: Time attack (30 / 60 / 120 s), Sprint (5 / 10 / 20 sentences), Daily challenge
@@ -65,7 +85,8 @@ what the app is, the five steps to a round, and tips (IME on/off, packs, setting
 - Daily streak with one automatic freeze per week.
 - A pixel cat mascot that reacts to your typing, can be petted, and gains a new look at every
   level (maid headdress, ribbon and cream coat, scarf, crown and golden coat); the home panel
-  shows all five looks with the ones still locked dimmed.
+  shows all five looks with the ones still locked dimmed. Petting it 1,000 times unlocks a secret
+  accessory (a little heart on the ear) that stays on at every level and joins the look ladder.
 - Result share card saved as a PNG.
 
 **Interface**
@@ -87,7 +108,10 @@ what the app is, the five steps to a round, and tips (IME on/off, packs, setting
 ## Project layout
 
 ```
-index.html                page structure
+index.html                page structure (Japanese entry page; template for the other two)
+ko/, en/                  generated Korean / English entry pages and manifests (do not edit by hand)
+scripts/build-pages.mjs   generates ko/, en/, the manifests, sitemap.xml and the SEO block of index.html
+scripts/make-og.mjs       renders the per-language link-preview images (Playwright)
 css/style.css             pixel theme, light/dark palettes
 js/game.js                game loop, modes, scoring, results, persistence, share card
 js/hangul.js              Hangul ↔ 2-set key sequence engine + partial composition
