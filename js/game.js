@@ -109,6 +109,14 @@
 
   const UI_LANGS = ['ja', 'ko', 'en', 'tr'];
   const UI_LANG_NAMES = { ja: '日本語', ko: '한국어', en: 'English', tr: 'Türkçe' };
+  // The site has one entry page per language (/ for ja, /ko/, /en/, /tr/) with that language's title and preview card.
+  // The address bar is kept on the page matching the menu language so a copied link carries the right one.
+  let pageLang = document.documentElement.dataset.siteLang || 'ja';
+  const langPageUrl = l => (pageLang === 'ja' ? '' : '../') + (l === 'ja' ? '' : l + '/');
+  function syncLangUrl(l) {
+    if (l === pageLang || location.protocol === 'file:') return;
+    try { history.replaceState(null, '', langPageUrl(l) + location.search + location.hash); pageLang = l; } catch (e) { /* not allowed here: keep the URL */ }
+  }
 
   const ICONS = {
     sun: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',
@@ -146,8 +154,8 @@
     uiLangSwitch: $('#ui-lang-switch'), btnUiLang: $('#btn-ui-lang'), uiLangCurrent: $('#ui-lang-current'), uiLangMenu: $('#ui-lang-menu'), uiLangMenuChips: $('#ui-lang-menu-chips'),
     cheerHome: $('#cheer-home-text'), cheerResult: $('#cheer-result-text'),
     packChips: $('#pack-chips'), packHint: $('#pack-hint'), customEditor: $('#custom-editor'), customText: $('#custom-text'), customHelp: $('#custom-help'), btnCustomSave: $('#btn-custom-save'),
-    toggleGuide: $('#toggle-guide'), toggleKeyboard: $('#toggle-keyboard'), toggleStrict: $('#toggle-strict'), toggleFurigana: $('#toggle-furigana'), toggleHideInput: $('#toggle-hide-input'),
-    optGuide: $('#opt-guide'), optKeyboard: $('#opt-keyboard'), optStrict: $('#opt-strict'), optFurigana: $('#opt-furigana'), optHideInput: $('#opt-hide-input'), optTranslation: $('#opt-translation'), optVolume: $('#opt-volume'),
+    toggleGuide: $('#toggle-guide'), toggleKeyLetters: $('#toggle-key-letters'), toggleKeyboard: $('#toggle-keyboard'), toggleStrict: $('#toggle-strict'), toggleFurigana: $('#toggle-furigana'), toggleHideInput: $('#toggle-hide-input'),
+    optGuide: $('#opt-guide'), optKeyLetters: $('#opt-key-letters'), optKeyboard: $('#opt-keyboard'), optStrict: $('#opt-strict'), optFurigana: $('#opt-furigana'), optHideInput: $('#opt-hide-input'), optTranslation: $('#opt-translation'), optVolume: $('#opt-volume'),
     btnStart: $('#btn-start'), btnRetry: $('#btn-retry'), btnHome: $('#btn-home'), btnReset: $('#btn-reset'), btnShare: $('#btn-share'),
     btnExport: $('#btn-export'), btnImport: $('#btn-import'), importFile: $('#import-file'),
     btnSound: $('#btn-sound'), btnTheme: $('#btn-theme'), btnSettings: $('#btn-settings'), btnSettingsClose: $('#btn-settings-close'), settingsModal: $('#settings-modal'),
@@ -192,6 +200,8 @@
     el.root.dataset.lang = set.lang;   // accent colour and sentence font follow the practice language
     el.root.dataset.ui = set.uiLang;   // menu font follows the display language
     el.root.lang = set.uiLang;
+    syncLangUrl(set.uiLang);
+    $$('.lang-nav a').forEach(a => a.classList.toggle('active', a.hreflang === set.uiLang));
     // Sentences, weak-spot characters and the custom editor are in the practice language (correct CJK glyphs).
     el.screens.play.lang = set.lang; el.screens.result.lang = set.lang; el.customText.lang = set.lang;
     document.title = t('pageTitle');
@@ -411,11 +421,13 @@
 
     const builtin = !isDirectInput(set.lang, set.input[set.lang]);
     el.toggleGuide.hidden = !builtin || set.lang !== 'ko';   // the romaji line is always shown in Japanese
+    el.toggleKeyLetters.hidden = el.toggleGuide.hidden || !set.guide;
     el.toggleKeyboard.hidden = !builtin;
     el.toggleStrict.hidden = !builtin;
     el.toggleFurigana.hidden = set.lang !== 'ja';
     el.toggleHideInput.hidden = builtin;
     el.optGuide.checked = set.guide;
+    el.optKeyLetters.checked = set.keyLetters;
     el.optKeyboard.checked = set.keyboard;
     el.optStrict.checked = set.strict;
     el.optFurigana.checked = set.furigana;
@@ -607,7 +619,10 @@
   // ---------------------------------------------------------------------
   // Mascot (grows with your level; pettable)
   // ---------------------------------------------------------------------
-  const currentLook = () => Sprite.lookFor(levelFromXp(S.stats.xp));
+  // Petting the mascot SECRET_PETS times unlocks a hidden accessory that every level's look keeps.
+  const SECRET_PETS = 1000;
+  const secretAccs = () => (S.stats.pets || 0) >= SECRET_PETS ? ['heart'] : [];
+  const currentLook = () => Sprite.lookFor(levelFromXp(S.stats.xp), secretAccs());
   function setMascot(node, frame) {
     if (!node) return;
     const zzz = node.querySelector('.zzz');
@@ -626,6 +641,10 @@
       const l = i + 1;
       return `<div class="look${l <= lv ? ' on' : ''}" title="${t('lv')}${l} ${t('titles')[i]} · ${fmt(xp)} XP">${Sprite.pet(set.pet, 'idle', 2, Sprite.lookFor(l))}<small>${t('lv')}${l}</small><span>${t('titles')[i]}</span></div>`;
     }).join('');
+    // The secret accessory joins the ladder only once it is unlocked; before that there is no hint of it.
+    if (secretAccs().length) {
+      el.lookLadder.innerHTML += `<div class="look on secret" title="${escapeHtml(t('secretLookDesc'))}">${Sprite.pet(set.pet, 'idle', 2, currentLook())}<small>♥${fmt(SECRET_PETS)}</small><span>${t('secretLook')}</span></div>`;
+    }
   }
   let mascotTimer = 0;
   function mascotReact(frame, ms) {
@@ -686,6 +705,12 @@
     node.appendChild(heart);
     setTimeout(() => heart.remove(), 900);
     petTimers.set(node, setTimeout(() => { node.classList.remove('pet'); setMascot(node, 'idle'); }, 900));
+    if (S.stats.pets === SECRET_PETS) {
+      // The 1000th pet: the heart is already on this mascot (setMascot above); dress the others and celebrate.
+      [el.mascotHome, el.mascotPlay, el.mascotPreview].forEach(n => { if (n !== node) setMascot(n, 'idle'); });
+      toast('💗', t('secretUnlocked'), t('secretLookDesc'));
+      if (el.screens.home.classList.contains('active')) renderMascotPanel();
+    }
     if (S.stats.pets === 100 && !S.achievements.catLover) {
       const a = ACHIEVEMENTS.find(x => x.id === 'catLover');
       S.achievements.catLover = todayStr();
@@ -882,18 +907,30 @@
     }).join('');
 
     if (G.segs || (set.guide && G.lang === 'ko')) {
-      // Korean: the jamo each key produces sit above the keys (ㅇㅓㄹ over djf).
-      const jamo = u => G.lang === 'ko' ? `<span class="jm">${escapeHtml(Hangul.jamoFor(u.canon)) || '&nbsp;'}</span>` : '';
       el.guide.innerHTML = G.units.map((u, i) => {
         if (u.text === ' ') return '<span class="g sp"></span>';
-        if (i < cur) return `<span class="g done">${jamo(u)}${escapeHtml(u.typed)}</span>`;
-        if (i === cur) return `<span class="g cur">${jamo(u)}<span class="typed">${escapeHtml(G.buf)}</span><span class="err">${escapeHtml(G.err)}</span><span class="rest">${escapeHtml(u.canon.slice(G.buf.length))}</span></span>`;
-        return `<span class="g pend">${jamo(u)}${escapeHtml(u.canon)}</span>`;
+        if (G.lang === 'ko') return koGuideUnit(u, i, cur);
+        if (i < cur) return `<span class="g done">${escapeHtml(u.typed)}</span>`;
+        if (i === cur) return `<span class="g cur"><span class="typed">${escapeHtml(G.buf)}</span><span class="err">${escapeHtml(G.err)}</span><span class="rest">${escapeHtml(u.canon.slice(G.buf.length))}</span></span>`;
+        return `<span class="g pend">${escapeHtml(u.canon)}</span>`;
       }).join('');
     } else {
       el.guide.innerHTML = '';
     }
     highlightNextKey();
+  }
+
+  // Korean guide: one block per syllable showing the jamo its keys produce (ㅇㅓㄹ), coloured as they are typed.
+  // The QWERTY letters (djf) are a small optional line below, off by default, since the on-screen keyboard already maps them.
+  function koGuideUnit(u, i, cur) {
+    const lab = keys => escapeHtml(Hangul.labelsFor(u.text, keys));
+    const keys = set.keyLetters ? `<span class="kk">${escapeHtml(u.canon)}</span>` : '';
+    if (i < cur) return `<span class="g done"><span class="jm">${lab(u.canon)}</span>${keys}</span>`;
+    if (i === cur) {
+      const err = escapeHtml([...G.err].map(Hangul.keyLabel).join(''));   // a wrong key shows the jamo it would have typed
+      return `<span class="g cur"><span class="jm"><span class="typed">${lab(G.buf)}</span><span class="err">${err}</span><span class="rest">${lab(u.canon.slice(G.buf.length))}</span></span>${keys}</span>`;
+    }
+    return `<span class="g pend"><span class="jm">${lab(u.canon)}</span>${keys}</span>`;
   }
 
   function nextKey() {
@@ -1454,6 +1491,8 @@
     el.btnUiLang.setAttribute('aria-expanded', String(open));
     if (open) { const cur = el.uiLangMenuChips.querySelector('.chip.active'); if (cur) cur.focus(); }
   });
+  // Footer links to the other language pages: remember the choice so the target page opens in its own language.
+  $$('.lang-nav a').forEach(a => a.addEventListener('click', () => { set.uiLang = a.hreflang; Store.save(); }));
   document.addEventListener('click', e => { if (!el.uiLangSwitch.contains(e.target)) closeUiLangMenu(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !el.uiLangMenu.hidden) closeUiLangMenu(); }, true);
   chipHandler('#side-tabs', 'tab', v => { set.sideTab = v; });
@@ -1474,7 +1513,7 @@
     toast('📝', t('customSaved'), '');
     renderHome();
   });
-  [['optGuide', 'guide'], ['optKeyboard', 'keyboard'], ['optStrict', 'strict'], ['optFurigana', 'furigana'], ['optHideInput', 'hideInput'], ['optTranslation', 'translation']]
+  [['optGuide', 'guide'], ['optKeyLetters', 'keyLetters'], ['optKeyboard', 'keyboard'], ['optStrict', 'strict'], ['optFurigana', 'furigana'], ['optHideInput', 'hideInput'], ['optTranslation', 'translation']]
     .forEach(([id, k]) => el[id].addEventListener('change', () => { set[k] = el[id].checked; persist(); }));
   el.optVolume.addEventListener('input', () => { set.volume = +el.optVolume.value; Sfx.setVolume(set.volume / 100); Store.save(); });
   el.optVolume.addEventListener('change', () => { Sfx.unlock(); Sfx.hit(0); });

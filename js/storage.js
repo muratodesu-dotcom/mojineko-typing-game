@@ -2,10 +2,13 @@
 const Store = (() => {
   const KEY = 'kotoba-type:v2';
 
+  // Each language has its own entry page (/ ja, /ko/, /en/); a first visit starts in that page's language.
+  const siteLang = () => document.documentElement.dataset.siteLang || 'ja';
+
   const DEFAULTS = () => ({
     settings: {
-      lang: 'ja',       // practice language
-      uiLang: 'ja',     // menu / settings language, independent of the practice language
+      lang: siteLang(),   // practice language
+      uiLang: siteLang(), // menu / settings language, independent of the practice language
       theme: 'light',    // 'light' | 'dark' (light is the default; anything else is treated as light)
       font: 'clean',     // 'clean' | 'round' | 'serif' | 'pixel' | 'system'
       textSize: 'm',     // sentence size: 's' | 'm' | 'l'
@@ -20,6 +23,7 @@ const Store = (() => {
       sound: true,
       volume: 60,        // 0..100
       guide: true,
+      keyLetters: false, // Korean key guide: also show the QWERTY letters under the jamo
       keyboard: true,
       translation: true,
       furigana: true,    // furigana above kanji (Japanese 混合)

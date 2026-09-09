@@ -173,6 +173,8 @@ const Sprite = (() => {
     bow: [[0, 0, 'b'], [2, 0, 'b'], [1, 1, 'b'], [0, 2, 'b'], [2, 2, 'b'], [1, 0, 'k'], [1, 2, 'k']],
     scarf: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(x => [x, 9, 'r']).concat([[3, 10, 'r'], [4, 10, 'r']]),
     crown: [[5, 1, 'y'], [7, 1, 'y'], [9, 1, 'y'], [5, 2, 'y'], [6, 2, 'y'], [7, 2, 'y'], [8, 2, 'y'], [9, 2, 'y']],
+    // Secret: a little red heart on the right ear, mirroring the bow, for petting the mascot 1000 times.
+    heart: [[11, 0, 'r'], [12, 0, 'k'], [13, 0, 'r'], [11, 1, 'r'], [12, 1, 'r'], [13, 1, 'r'], [12, 2, 'r']],
   };
 
   // One look per player level (five levels: 見習い → 正メイド → プレミアム → スーパープレミアム → レジェンド).
@@ -185,7 +187,8 @@ const Sprite = (() => {
     { lv: 5, acc: 'crown', drop: 'headdress', body: '#ffd88a' },
   ];
 
-  function lookFor(level) {
+  // `extras` are accessories earned outside the level ladder (see game.js secretAccs); they stay on at every level.
+  function lookFor(level, extras = []) {
     let body = null;
     let accs = [];
     for (const l of LOOKS) {
@@ -195,7 +198,7 @@ const Sprite = (() => {
       if (l.acc) accs.push(l.acc);
     }
     const next = LOOKS.find(l => l.lv > level);
-    return { body, accs, nextLevel: next ? next.lv : null };
+    return { body, accs: accs.concat(extras), nextLevel: next ? next.lv : null };
   }
 
   const HEART = ['.kk.kk.', 'kppkppk', 'kpppppk', '.kpppk.', '..kpk..', '...k...'];

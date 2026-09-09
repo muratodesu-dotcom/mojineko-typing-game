@@ -58,8 +58,10 @@ const Hangul = (() => {
     });
   }
 
-  // Jamo produced by each key of a key sequence, one per key ("dhk" → "ㅇㅗㅏ"); non-jamo keys give ''.
-  const jamoFor = keys => [...keys].map(k => KEY_LABELS[k] || SHIFT_LABELS[k.toLowerCase()] || '').join('');
+  // Jamo a key produces on the 2-set layout (d → ㅇ, R → ㄲ); keys without a jamo label themselves.
+  const keyLabel = k => KEY_LABELS[k] || SHIFT_LABELS[k.toLowerCase()] || k;
+  // Guide labels for (part of) a unit's key sequence: jamo for a syllable ("dhk" → "ㅇㅗㅏ"), the characters themselves otherwise ("?" → "?").
+  const labelsFor = (ch, keys) => isSyllable(ch) ? [...keys].map(keyLabel).join('') : keys;
 
-  return { buildUnits, keysFor, jamoFor, isSyllable, KEY_LABELS, SHIFT_LABELS };
+  return { buildUnits, keysFor, keyLabel, labelsFor, isSyllable, KEY_LABELS, SHIFT_LABELS };
 })();
