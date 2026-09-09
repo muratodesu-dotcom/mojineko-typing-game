@@ -1,6 +1,6 @@
-# もじねこ！ (Mojineko) — Japanese, Korean & English typing game
+# もじねこ！ (Mojineko) — Japanese, Korean, English & Turkish typing game
 
-A cute, pixel-art typing game for practising **Japanese**, **Korean** and **English**.
+A cute, pixel-art typing game for practising **Japanese**, **Korean**, **English** and **Turkish**.
 No build step, no server, no accounts: open `index.html` and play. Everything
 (scores, stats, achievements, streaks, custom sentences) is saved in your
 browser's `localStorage`.
@@ -30,7 +30,8 @@ The `?` button in the header opens an **About / How to use** panel in the select
 what the app is, the five steps to a round, and tips (IME on/off, packs, settings, streaks, backup).
 
 **Practice**
-- Japanese and Korean with about 170 sentences each (with English translations) and English with 75,
+- Japanese and Korean with about 170 sentences each (with English translations), English with 75 and
+  Turkish with 77 (also with English translations),
   three difficulty tiers, themed packs: 日常 / 旅行 / 仕事 / 食べ物 (daily, travel, work, food),
   plus hand-written paragraphs per language for paragraph mode. The 仕事 pack is everyday
   office language (お疲れ様です。いつもお世話になっております。, business-email phrases) rather than
@@ -47,6 +48,9 @@ what the app is, the five steps to a round, and tips (IME on/off, packs, setting
   keys must be erased with Backspace.
 - **English**: typed directly on the keyboard with the on-screen keyboard highlighting the next
   key; speed is shown in WPM.
+- **Turkish**: typed directly on the keyboard as well, with the on-screen keyboard showing the
+  **Türkçe Q** layout (ı ğ ü ş i ö ç in their real positions) and the Turkish casing rules that
+  JavaScript gets wrong (`I` → `ı`, `İ` → `i`); speed is shown in WPM.
 - **Modes**: Time attack (30 / 60 / 120 s), Sprint (5 / 10 / 20 sentences), Daily challenge
   (the same 10 sentences for everyone that day, with a per-day leaderboard), Warm-up (kana or
   syllable rows and short words), Paragraph (three passages: curated paragraphs matching the
@@ -59,8 +63,8 @@ what the app is, the five steps to a round, and tips (IME on/off, packs, setting
 - Combo multiplier up to 3×, perfect-sentence bonuses, S–E ranks, chiptune sound effects
   with a volume slider, screen shake, confetti on a new record.
 - XP and five player levels (見習い → 正メイド → プレミアム → スーパープレミアム → レジェンド at 0 / 5,000 /
-  20,000 / 50,000 / 100,000 XP) with an XP multiplier by difficulty (×1 / ×1.25 / ×1.5, mixed ×1.2), 27
-  achievements (30), a goals panel with tiered targets per difficulty, per-mode top-10 leaderboards,
+  20,000 / 50,000 / 100,000 XP) with an XP multiplier by difficulty (×1 / ×1.25 / ×1.5, mixed ×1.2), 31
+  achievements, a goals panel with tiered targets per difficulty, per-mode top-10 leaderboards,
   a history chart of your recent rounds, and a ghost pace marker comparing you to your best run.
 - Daily streak with one automatic freeze per week.
 - A pixel cat mascot that reacts to your typing, can be petted, and gains a new look at every
@@ -69,7 +73,7 @@ what the app is, the five steps to a round, and tips (IME on/off, packs, setting
 - Result share card saved as a PNG.
 
 **Interface**
-- Menu and HUD in Japanese, Korean or English, chosen separately from the practice language
+- Menu and HUD in Japanese, Korean, English or Turkish, chosen separately from the practice language
   (Settings → 表示言語 / Menu language; Japanese by default). Light theme by default, dark theme via the header toggle.
 - Settings behind the gear icon: five font sets, three text sizes, input options, volume, and data export / import / reset. The home page fits a desktop screen without scrolling; stats, records, goals, rankings and achievements live in tabs.
 - Arrow keys move between options on the menu; everything is keyboard-accessible.
@@ -93,21 +97,22 @@ js/game.js                game loop, modes, scoring, results, persistence, share
 js/hangul.js              Hangul ↔ 2-set key sequence engine + partial composition
 js/romaji.js              kana reading → romaji typing units with every accepted spelling
 js/sprite.js              pixel-art sprites (cat mascot with looks, hearts, stars)
-js/i18n.js                Japanese / Korean / English UI strings
+js/i18n.js                Japanese / Korean / English / Turkish UI strings
 js/storage.js             localStorage persistence, export/import
 js/audio.js               chiptune WebAudio sound effects
 js/data/ja.js             Japanese sentences and warm-up drills
 js/data/ko.js             Korean sentences and warm-up drills
 js/data/en.js             English sentences, paragraphs and warm-up drills
+js/data/tr.js             Turkish sentences, paragraphs and warm-up drills
 .github/workflows/pages.yml  GitHub Pages deploy from main
 ```
 
 ## Adding sentences
 
-Append to `js/data/ja.js`, `js/data/ko.js` or `js/data/en.js` with a `tag` (`daily`, `travel`, `work`, `food`)
+Append to `js/data/ja.js`, `js/data/ko.js`, `js/data/en.js` or `js/data/tr.js` with a `tag` (`daily`, `travel`, `work`, `food`)
 and a `level` (1–3). Japanese entries need a full kana `reading`: romaji mode types the reading, and
 furigana is aligned from it.
-Paragraphs live in `JA_PARAGRAPHS` / `KO_PARAGRAPHS` in the same files with the same fields.
+Paragraphs live in `JA_PARAGRAPHS` / `KO_PARAGRAPHS` / `EN_PARAGRAPHS` / `TR_PARAGRAPHS` in the same files with the same fields.
 
 ## Not included
 

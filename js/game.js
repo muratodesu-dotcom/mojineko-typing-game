@@ -38,9 +38,11 @@
     ja: { sentences: () => JA_SENTENCES, drills: () => JA_DRILLS, paragraphs: () => JA_PARAGRAPHS, inputs: ['romaji', 'mixed'] },
     ko: { sentences: () => KO_SENTENCES, drills: () => KO_DRILLS, paragraphs: () => KO_PARAGRAPHS, inputs: ['jamo', 'direct'] },
     en: { sentences: () => EN_SENTENCES, drills: () => EN_DRILLS, paragraphs: () => EN_PARAGRAPHS, inputs: ['keys'] },
+    tr: { sentences: () => TR_SENTENCES, drills: () => TR_DRILLS, paragraphs: () => TR_PARAGRAPHS, inputs: ['keys'] },
   };
   const plainUnits = text => [...text].map(ch => ({ text: ch, alts: [ch], canon: ch, typed: '', partial: p => p }));
-  const speedUnitFor = (lang, direct) => (direct ? 'cpm' : lang === 'en' ? 'wpm' : 'kpm');
+  const LATIN = ['en', 'tr'];   // typed letter by letter on a plain keyboard, speed measured in words
+  const speedUnitFor = (lang, direct) => (direct ? 'cpm' : LATIN.includes(lang) ? 'wpm' : 'kpm');
   const isDirectInput = (lang, input) => (lang === 'ja' && input === 'mixed') || input === 'direct';
   const PACKS = ['all', 'daily', 'travel', 'work', 'food', 'weak', 'custom'];
   const FONTS = ['clean', 'round', 'serif', 'pixel', 'system'];
@@ -48,10 +50,14 @@
   const SIZES = ['s', 'm', 'l'];
   const COUNT_MODES = { sprint: null, daily: 10, drill: 15, paragraph: 3 }; // null = user-selected
   const PARAGRAPH_SENTENCES = 4;
-  const EGG_RATE = 1 / 12; // chance per round that the easter-egg sentence appears (Japanese and Korean)
+  const EGG_RATE = 1 / 12; // chance per round that the easter-egg sentence appears (Japanese, Korean and Turkish)
   const EGG_MAX_PER_DAY = 2;
   // The 仕事 pack gets a business-email flavoured version of the same sentence.
-  const EGGS = { ja: pack => pack === 'work' ? JA_EGG_WORK : JA_EGG, ko: pack => pack === 'work' ? KO_EGG_WORK : KO_EGG };
+  const EGGS = {
+    ja: pack => pack === 'work' ? JA_EGG_WORK : JA_EGG,
+    ko: pack => pack === 'work' ? KO_EGG_WORK : KO_EGG,
+    tr: pack => pack === 'work' ? TR_EGG_WORK : TR_EGG,
+  };
 
   const RANKS = [
     { r: 'S', min: 8000 }, { r: 'A', min: 5500 }, { r: 'B', min: 3500 },
@@ -72,6 +78,7 @@
     { id: 'games50', ico: '🏅', test: (r, s) => s.stats.games >= 50 },
     { id: 'bilingual', ico: '🌏', test: (r, s) => s.stats.langs.ja > 0 && s.stats.langs.ko > 0 },
     { id: 'trilingual', ico: '🌐', test: (r, s) => s.stats.langs.ja > 0 && s.stats.langs.ko > 0 && (s.stats.langs.en || 0) > 0 },
+    { id: 'polyglot', ico: '🗺️', test: (r, s) => Object.keys(LANGS).every(l => (s.stats.langs[l] || 0) > 0) },
     { id: 'lucky', ico: '🍀', test: r => r.lucky },
     { id: 'streak3', ico: '📅', test: (r, s) => s.streak.count >= 3 },
     { id: 'streak7', ico: '🗓️', test: (r, s) => s.streak.count >= 7 },
@@ -100,8 +107,8 @@
     { id: 'rank', tiers: ['B', 'A', 'S'] },
   ];
 
-  const UI_LANGS = ['ja', 'ko', 'en'];
-  const UI_LANG_NAMES = { ja: '日本語', ko: '한국어', en: 'English' };
+  const UI_LANGS = ['ja', 'ko', 'en', 'tr'];
+  const UI_LANG_NAMES = { ja: '日本語', ko: '한국어', en: 'English', tr: 'Türkçe' };
 
   const ICONS = {
     sun: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',
@@ -359,7 +366,7 @@
     if (!inputs.includes(set.input[set.lang])) set.input[set.lang] = inputs[0];
     const names = t('inputs')[set.lang];
     el.inputLabel.textContent = t('inputMethod');
-    el.inputChips.parentElement.hidden = set.lang === 'en';
+    el.inputChips.parentElement.hidden = LANGS[set.lang].inputs.length < 2;
     el.inputChips.innerHTML = inputs.map(id =>
       `<button class="chip${id === set.input[set.lang] ? ' active' : ''}" data-input="${id}">${names[id].name}</button>`).join('');
     el.inputHint.textContent = names[set.input[set.lang]].hint;
@@ -381,7 +388,7 @@
     el.customEditor.hidden = set.pack !== 'custom';
     if (set.pack === 'custom') {
       el.customText.value = (S.custom[set.lang] || []).map(c => c.reading ? `${c.text}｜${c.reading}` : c.text).join('\n');
-      el.customText.placeholder = set.lang === 'ja' ? '今日はいい天気ですね。｜きょうはいいてんきですね。' : set.lang === 'ko' ? '오늘 날씨가 좋네요.' : 'The weather is nice today.';
+      el.customText.placeholder = { ja: '今日はいい天気ですね。｜きょうはいいてんきですね。', ko: '오늘 날씨가 좋네요.', tr: 'Bugün hava çok güzel.' }[set.lang] || 'The weather is nice today.';
     }
 
     const previewFonts = {
@@ -797,7 +804,7 @@
   function speedNow() {
     const mins = Math.max(G.elapsed, 1) / 60;
     if (G.direct) return Math.round(G.chars / mins);
-    if (G.lang === 'en') return Math.round(G.keys / 5 / mins);
+    if (LATIN.includes(G.lang)) return Math.round(G.keys / 5 / mins);
     return Math.round(G.keys / mins);
   }
 
@@ -829,7 +836,7 @@
 
     G.target = G.sentence.text;
     const romaji = G.lang === 'ja' && !G.direct;
-    G.units = G.direct ? [] : romaji ? Romaji.buildUnits(G.sentence.reading || G.sentence.text) : G.lang === 'en' ? plainUnits(G.target) : Hangul.buildUnits(G.target);
+    G.units = G.direct ? [] : romaji ? Romaji.buildUnits(G.sentence.reading || G.sentence.text) : LATIN.includes(G.lang) ? plainUnits(G.target) : Hangul.buildUnits(G.target);
 
     G.furi = (G.lang === 'ja' && G.direct && set.furigana) ? alignFurigana(G.sentence.text, G.sentence.reading) : null;
     G.segs = romaji ? readingSegments(G.sentence.text, G.sentence.reading) : null;
@@ -1143,11 +1150,26 @@
     ['shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/'],
     [' '],
   ];
+  // Turkish Q (Türkçe Q): ı ğ ü ş i ö ç sit where the ASCII punctuation does on a US board.
+  const KEY_ROWS_TR = [
+    ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '*', '-', 'backspace'],
+    ['q', 'w', 'e', 'r', 't', 'y', 'u', 'ı', 'o', 'p', 'ğ', 'ü'],
+    ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ş', 'i', ','],
+    ['shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', 'ö', 'ç', '.'],
+    [' '],
+  ];
   const SHIFT_MAP = { '?': '/', '!': '1', '~': '`', '_': '-', '"': "'", ':': ';', '<': ',', '>': '.' };
+  const SHIFT_MAP_TR = { '?': '*', '!': '1', "'": '2', '^': '3', '+': '4', '%': '5', '&': '6', '/': '7', '(': '8', ')': '9', '=': '0', '_': '-', ';': ',', ':': '.' };
+  const keyRowsFor = lang => (lang === 'tr' ? KEY_ROWS_TR : KEY_ROWS);
+  const shiftMapFor = lang => (lang === 'tr' ? SHIFT_MAP_TR : SHIFT_MAP);
+  // Turkish has two i's: I lowercases to ı and İ to i, which JS's toLowerCase gets wrong.
+  const lowerFor = lang => (lang === 'tr'
+    ? ch => (ch === 'I' ? 'ı' : ch === 'İ' ? 'i' : ch.toLowerCase())
+    : ch => ch.toLowerCase());
 
   function buildKeyboard() {
     if (!set.keyboard || G.direct) { el.keyboard.innerHTML = ''; return; }
-    el.keyboard.innerHTML = KEY_ROWS.map(row => `<div class="krow">${row.map(k => {
+    el.keyboard.innerHTML = keyRowsFor(G.lang).map(row => `<div class="krow">${row.map(k => {
       if (k === 'shift') return '<div class="key wide" data-key="shift">⇧</div>';
       if (k === 'backspace') return '<div class="key wide" data-key="Backspace">⌫</div>';
       if (k === ' ') return '<div class="key space" data-key=" ">space</div>';
@@ -1165,16 +1187,18 @@
     const nk = nextKey();
     if (!nk) return;
     if (nk === 'Backspace') { el.keyboard.querySelector('.key[data-key="Backspace"]').classList.add('next'); return; }
-    const upper = nk !== nk.toLowerCase();
-    const base = SHIFT_MAP[nk] || nk.toLowerCase();
+    const lower = lowerFor(G.lang);
+    const shifted = shiftMapFor(G.lang);
+    const upper = nk !== lower(nk);
+    const base = shifted[nk] || lower(nk);
     const k = el.keyboard.querySelector(`.key[data-key="${CSS.escape(base)}"]`);
     if (k) k.classList.add('next');
-    if (upper || SHIFT_MAP[nk]) el.keyboard.querySelector('.key[data-key="shift"]').classList.add('next');
+    if (upper || shifted[nk]) el.keyboard.querySelector('.key[data-key="shift"]').classList.add('next');
   }
 
   function flashKey(key) {
     if (!el.keyboard.children.length) return;
-    const base = SHIFT_MAP[key] || key.toLowerCase();
+    const base = shiftMapFor(G.lang)[key] || lowerFor(G.lang)(key);
     const k = el.keyboard.querySelector(`.key[data-key="${CSS.escape(base)}"]`);
     if (!k) return;
     k.classList.add('pressed');

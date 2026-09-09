@@ -46,7 +46,7 @@
   --dot: #2a2238;
 }
 :root[data-ui="ko"] { --font-ui: var(--font-ko); }
-:root[data-ui="en"] { --font-ui: var(--font-en); }
+:root[data-ui="en"], :root[data-ui="tr"] { --font-ui: var(--font-en); }
 :root[data-font="pixel"] {
   --font-ja: 'DotGothic16', 'Galmuri11', 'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic', 'Meiryo', sans-serif;
   --font-ko: 'Galmuri11', 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
@@ -81,6 +81,8 @@
 :root[data-lang="en"] { --bg: #eefaf3; --surface-2: #e8f6ee; --accent: #3fbf8a; --accent-soft: #d3f2e2; --dot: #d3e9dc; }
 :root[data-lang="en"][data-theme="dark"] { --bg: #16221c; --surface: #1f2d26; --surface-2: #27382f; --accent: #5fd6a8; --accent-soft: #2b4a3c; --dot: #1f2d26; }
 :root[data-lang="ko"][data-theme="dark"] { --bg: #171d2a; --surface: #222a3a; --surface-2: #2b3446; --accent: #86c5ff; --accent-soft: #2e4460; --dot: #222a3a; }
+:root[data-lang="tr"] { --bg: #fff3f0; --surface-2: #ffeae5; --accent: #f2705c; --accent-soft: #ffd9d1; --dot: #f5dcd6; }
+:root[data-lang="tr"][data-theme="dark"] { --bg: #251a19; --surface: #332422; --surface-2: #402d2a; --accent: #ff9483; --accent-soft: #5a332d; --dot: #332422; }
 
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
@@ -171,7 +173,7 @@ main { padding: 14px 28px 14px; max-width: 1160px; margin: 0 auto; width: 100%; 
 .field-row { display: flex; gap: 24px; flex-wrap: wrap; }
 .hint { color: var(--muted); font-size: 0.78rem; margin: 6px 0 0; min-height: 1.2em; }
 
-.lang-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.lang-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }  /* four languages: a 2×2 block */
 .lang-card { display: flex; align-items: center; gap: 12px; padding: 7px 12px; text-align: left; }
 .lang-card:hover { background: var(--surface-2); }
 .lang-card.active { background: var(--accent-soft); }
@@ -290,7 +292,7 @@ main { padding: 14px 28px 14px; max-width: 1160px; margin: 0 auto; width: 100%; 
   word-break: keep-all; overflow-wrap: anywhere;
 }
 :root[data-lang="ko"] .sentence-main { font-family: var(--font-ko); }
-:root[data-lang="en"] .sentence-main { font-family: var(--font-en); letter-spacing: 0.01em; }
+:root[data-lang="en"] .sentence-main, :root[data-lang="tr"] .sentence-main { font-family: var(--font-en); letter-spacing: 0.01em; }
 .sentence-main ruby { ruby-position: over; ruby-align: center; }
 .sentence-main rt { font-size: 0.42em; color: var(--muted); letter-spacing: 0; font-weight: 400; line-height: 1; }
 .sentence-main.furi { line-height: 2.1; }
@@ -379,6 +381,8 @@ main { padding: 14px 28px 14px; max-width: 1160px; margin: 0 auto; width: 100%; 
   border-top: 2px solid var(--ink); background: var(--surface); padding: 10px 28px; text-align: center;
   font-size: 0.8rem; color: var(--muted); display: flex; align-items: center; justify-content: center; gap: 8px;
 }
+.made-by { color: inherit; text-decoration: none; border-bottom: 1px solid transparent; transition: color 0.15s, border-color 0.15s; }
+.made-by:hover, .made-by:focus-visible { color: var(--accent); border-bottom-color: currentColor; }
 
 #confetti { position: fixed; inset: 0; pointer-events: none; z-index: 50; }
 
