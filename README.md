@@ -8,7 +8,7 @@ browser's `localStorage`.
 ## Play
 
 ```
-git clone <this repo>
+git clone https://github.com/muratodesu-dotcom/mojineko-typing-game.git
 open index.html        # or double-click it, or serve the folder with any static server
 ```
 
@@ -142,3 +142,8 @@ Paragraphs live in `JA_PARAGRAPHS` / `KO_PARAGRAPHS` / `EN_PARAGRAPHS` / `TR_PAR
 
 - Korean 3-set (세벌식) layout: left out until the key mapping can be verified against a
   reference layout; a wrong mapping would be worse than none.
+
+## License
+
+[MIT](LICENSE). The web fonts are loaded from their own CDNs under their own licenses and are not part
+of this repository.
