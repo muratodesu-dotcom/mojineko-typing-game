@@ -12,8 +12,8 @@ git clone <this repo>
 open index.html        # or double-click it, or serve the folder with any static server
 ```
 
-Works offline. The default font is Noto Sans for readability; the settings offer 丸ゴシック (Zen Maru Gothic / Gowun Dodum), 明朝 (Noto Serif), ピクセル (Galmuri / DotGothic16 / Press Start 2P) and your system font, plus three sentence sizes. Web fonts load from CDNs when available and fall back to your system CJK fonts. A GitHub Pages workflow deploys `main`
-automatically once Pages is set to "GitHub Actions" in the repository settings.
+Works offline. The default font is Noto Sans for readability; the settings offer 丸ゴシック (Zen Maru Gothic / Gowun Dodum), 明朝 (Noto Serif), ピクセル (Galmuri / DotGothic16 / Press Start 2P) and your system font, plus three sentence sizes. Web fonts load from CDNs when available and fall back to your system CJK fonts. The live site,
+https://type.muratodesu.com/, is deployed by Vercel from `main` and serves the committed files as they are.
 
 ## SEO / sharing
 
@@ -37,8 +37,8 @@ sentences; afterwards the saved settings win, and the address bar follows the me
 `ko/`, `en/` and `tr/` are **generated** from `index.html` by `scripts/build-pages.mjs`, which also rewrites
 the SEO block of `index.html` itself, the four manifests and the sitemap. The per-language copy
 (descriptions, JSON-LD, noscript) lives in that script; the titles and hero come from `js/i18n.js`.
-After editing any of those run `node scripts/build-pages.mjs` (no dependencies) and commit the output.
-The Pages workflow runs it before deploying, so the deployed copies never lag behind. The preview
+After editing any of those run `node scripts/build-pages.mjs` (no dependencies) and commit the output:
+the deploy has no build step, so what is committed is what goes live. The preview
 images are rendered by `scripts/make-og.mjs` (needs Playwright + Chromium).
 
 The absolute URLs point at `https://type.muratodesu.com/`; if the app moves to another domain,
@@ -129,7 +129,6 @@ js/data/ja.js             Japanese sentences and warm-up drills
 js/data/ko.js             Korean sentences and warm-up drills
 js/data/en.js             English sentences, paragraphs and warm-up drills
 js/data/tr.js             Turkish sentences, paragraphs and warm-up drills
-.github/workflows/pages.yml  GitHub Pages deploy from main
 ```
 
 ## Adding sentences
