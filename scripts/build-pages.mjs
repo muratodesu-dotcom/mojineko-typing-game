@@ -14,8 +14,8 @@
 //
 //   node scripts/build-pages.mjs
 //
-// The GitHub Pages workflow runs it before deploying, so the committed copies only need to be fresh
-// for opening the files locally. No dependencies; Node 18+.
+// The deploy serves the committed files with no build step, so commit the output after running it.
+// No dependencies; Node 18+.
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
